@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { validatePMX, validateName, validatePhone, validatePostalCode, validateAddress, validateBirthDate, validateCURP } from "./validation";
+import { validatePMX, validateName, validatePhone, validatePostalCode, validateAddress, validateBirthDate, validateCURPWithBirthDate } from "./validation";
 
 // Esquema simplificado del candidato según los campos obligatorios
 export const simplifiedCandidateSchema = z.object({
@@ -67,9 +67,14 @@ export const simplifiedCandidateSchema = z.object({
   motivation: z.string({ required_error: "Seleccione la motivación" }),
   
   // Información legal (Obligatorio)
-  curp: z.string({ required_error: "Ingrese el CURP" })
-    .refine(validateCURP, "CURP inválido, debe tener 18 caracteres en formato válido"),
+  curp: z.string({ required_error: "Ingrese el CURP" }),
   
   // Discapacidad (Obligatorio)
   hasDisability: z.string({ required_error: "Indique si tiene alguna discapacidad" })
-});
+}).refine(
+  (data) => validateCURPWithBirthDate(data.curp, data.birthDate),
+  {
+    message: "La fecha en el CURP no coincide con la fecha de nacimiento",
+    path: ["curp"]
+  }
+);

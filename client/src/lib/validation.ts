@@ -88,6 +88,37 @@ export function validateCURP(curp: string): boolean {
   return age >= 18;
 }
 
+// CURP validation with birth date cross-check
+export function validateCURPWithBirthDate(curp: string, birthDate: string): boolean {
+  // First check basic CURP format
+  if (!validateCURP(curp)) return false;
+  
+  // If no birth date provided, we can't cross-validate
+  if (!birthDate) return true;
+  
+  // Extract date from CURP (positions 4-9: YYMMDD)
+  const curpYear = curp.substring(4, 6);
+  const curpMonth = curp.substring(6, 8);
+  const curpDay = curp.substring(8, 10);
+  
+  // Convert birth date to comparable format
+  const birthDateObj = new Date(birthDate);
+  const birthYear = birthDateObj.getFullYear();
+  const birthMonth = birthDateObj.getMonth() + 1; // getMonth() returns 0-11
+  const birthDay = birthDateObj.getDate();
+  
+  // Determine full year from CURP (considering century)
+  // If year is 00-29, assume 2000s; if 30-99, assume 1900s
+  const fullCurpYear = parseInt(curpYear) <= 29 ? 2000 + parseInt(curpYear) : 1900 + parseInt(curpYear);
+  
+  // Compare dates
+  return (
+    fullCurpYear === birthYear &&
+    parseInt(curpMonth) === birthMonth &&
+    parseInt(curpDay) === birthDay
+  );
+}
+
 // RFC validation (13 alphanumeric characters)
 export function validateRFC(rfc: string): boolean {
   if (rfc.length !== 13) return false;
