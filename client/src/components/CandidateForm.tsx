@@ -73,8 +73,6 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
     }
     return value !== "" && value !== null && value !== undefined;
   });
-
-
   
 
   
