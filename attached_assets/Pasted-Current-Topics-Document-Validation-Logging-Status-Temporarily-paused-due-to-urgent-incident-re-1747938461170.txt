@@ -1,0 +1,154 @@
+Current Topics
+
+Document Validation Logging
+
+Status:
+	•	Temporarily paused due to urgent incident resolution taking priority.
+	•	Required by multiple clients (Walmart, Bimbo).
+
+Next Steps:
+	•	Francisco to provide updated ETA post-incident resolution. Proposed safe estimate: early July ￼.
+
+⸻
+
+Browsing by Location & Category
+
+Status:
+	•	Category ✅ completed; Location blocked due to required filter adjustment.
+
+Next Steps:
+	•	Launch “Category” independently (2025-06-05).
+	•	Francisco & David awaiting implementation of additional filter for Location ￼.
+
+⸻
+
+Reminders v2 (Arks)
+
+Status:
+	•	Mati’s updates releasing; testing in progress.
+
+Next Steps:
+	•	Validate and confirm resolution by 2025-06-02 ￼.
+
+⸻
+
+Astro Deployment & Deira Integration
+
+Status:
+	•	Astro deployed to production; integration progressing slowly due to team bandwidth.
+
+Next Steps:
+	•	Guillermo to confirm ETA with Carlo and Ángel ASAP.
+	•	Ana & Guillermo to align integration timeline with client once ETA is available ￼.
+
+⸻
+
+Apli Score MVP
+
+Status:
+	•	Ready for initial implementation with Apple as a test client before Walmart deployment.
+
+Next Steps:
+	•	Javier confirms exact process stage for activation; David implements side effect logic.
+	•	Prepare Walmart communication strategy post-Apple validation ￼.
+
+⸻
+
+CURP Early Validation (Client Request)
+
+Status:
+	•	Awaiting José’s confirmation on pricing strategy (Renapo vs. Finpe).
+
+Next Steps:
+	•	Ana to finalize feasibility and cost decision ASAP ￼.
+
+⸻
+
+Nearby Vacancy Location Improvements
+
+Status:
+	•	Ana to formally submit Product Request; pending internal review.
+
+Next Steps:
+	•	Francisco & Guillermo to review Google API enhancements post-request submission ￼.
+
+⸻
+
+Zapier Validation Migration
+
+Status:
+	•	Migration to Lambda pending Ana’s script handover.
+
+Next Steps:
+	•	Ana to provide scripts; Guillermo schedules implementation ASAP.
+
+⸻
+
+Job Builder Initiative (Priority Increase)
+
+Status:
+	•	Active redefinition ongoing; progressing slower than target pace.
+
+Next Steps:
+	•	Team continues sessions to clarify strategy and implementation roadmap.
+
+⸻
+
+🔥 New Critical Topic
+
+Forced Session Logout (Walmart Request)
+
+Status:
+	•	Walmart identified security risk: session remains active after exiting VPN.
+	•	Plan: Detect IP changes and force session logout for security.
+
+Next Steps:
+	•	Francisco to implement forced logout upon IP change, production release targeted by 2025-06-05.
+	•	Communication to clients about mandatory session re-login upon deployment ￼.
+
+⸻
+
+🔥 New Client Request
+
+Interview Availability Landing Page (Dimex)
+
+Status:
+	•	Development blocked pending security implementation decision (token-based).
+
+Next Steps:
+	•	Ana & Guillermo to discuss priority with José.
+	•	Team assesses quick alternative solutions (single-use tokens) to expedite release ￼.
+
+⸻
+
+Backlog
+	•	Hiring Manager Email Field (Mandatory extra field)
+	•	Storage for Conversation Logs (Astro vs Dynamo)
+	•	Change Stage Decision (discarded → other)
+	•	Recruiter Links Channels (WhatsApp & others)
+	•	Application History Prominence
+	•	Candidate Recommendations
+	•	Lambda for CLABE
+
+⸻
+
+Babysit
+	•	Translation API Performance: accuracy, latency, user feedback
+	•	Document Validation: logging accuracy (manual vs automated)
+	•	Webhook Callback Monitoring: endpoint reliability /documents/webhooks/{ID}
+	•	INE Model Post-launch: extraction error rate ≤ 1%
+	•	Vacuum Service Stability: Lambda memory usage post-migration (Azure)
+	•	Session Security: monitor forced logout issues post-launch
+
+⸻
+
+Actions before 2025-06-05
+	•	Francisco: Update ETA for Document Validation Logging.
+	•	Francisco & David: Launch Category browsing independently; update on Location filter implementation.
+	•	Mati & Iván: Complete Reminders v2 fixes.
+	•	Guillermo & Ana: Confirm Astro-Deira integration timeline.
+	•	Javier & David: Deploy Apli Score MVP with Apple for initial testing; define stage activation logic.
+	•	Ana: Finalize CURP validation pricing decision.
+	•	Ana: Submit Product Request for Nearby Vacancy Location improvements.
+	•	Francisco: Deploy Forced Session Logout (IP-change detection).
+	•	Ana & Guillermo: Define Interview Availability Page security approach & priority with José.
