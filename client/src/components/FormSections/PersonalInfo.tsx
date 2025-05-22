@@ -3,8 +3,7 @@ import { useFormContext, useWatch } from "react-hook-form";
 import { CustomInput } from "@/components/ui/custom-input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
-import { mexicanStates, getMunicipalitiesForState, maritalStatuses, yesNoOptions, disabilityTypes } from "@/lib/data";
+import { genders, nationalities, mexicanStates, getMunicipalitiesForState, maritalStatuses } from "@/lib/data";
 
 export default function PersonalInfo() {
   const { control, setValue } = useFormContext();
@@ -12,12 +11,6 @@ export default function PersonalInfo() {
   const selectedState = useWatch({
     control,
     name: "state",
-    defaultValue: "",
-  });
-  
-  const hasDisability = useWatch({
-    control,
-    name: "hasDisability",
     defaultValue: "",
   });
   
@@ -30,9 +23,170 @@ export default function PersonalInfo() {
   
   return (
     <section id="personal-info" className="bg-white p-6 shadow-md">
-      <h2 className="important section-title">Información Personal</h2>
+      <h2 className="important section-title">Información personal</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-4">
+          <FormField
+            control={control}
+            name="firstName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="body-text required">Nombre(s)</FormLabel>
+                <FormControl>
+                  <CustomInput
+                    {...field}
+                    placeholder="Nombre(s)"
+                    className="form-control"
+                  />
+                </FormControl>
+                <FormMessage className="error-message" />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={control}
+            name="firstLastName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="body-text required">Apellido paterno</FormLabel>
+                <FormControl>
+                  <CustomInput
+                    {...field}
+                    placeholder="Apellido paterno"
+                    className="form-control"
+                  />
+                </FormControl>
+                <FormMessage className="error-message" />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={control}
+            name="secondLastName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="body-text">Apellido materno</FormLabel>
+                <FormControl>
+                  <CustomInput
+                    {...field}
+                    placeholder="Apellido materno"
+                    className="form-control"
+                  />
+                </FormControl>
+                <FormMessage className="error-message" />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={control}
+            name="birthDate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="body-text required">Fecha de nacimiento</FormLabel>
+                <FormControl>
+                  <CustomInput
+                    {...field}
+                    type="date"
+                    className="form-control"
+                  />
+                </FormControl>
+                <FormMessage className="error-message" />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="body-text required">Correo electrónico</FormLabel>
+                <FormControl>
+                  <CustomInput
+                    {...field}
+                    type="email"
+                    placeholder="ejemplo@dominio.com"
+                    className="form-control"
+                  />
+                </FormControl>
+                <FormMessage className="error-message" />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={control}
+            name="phone"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="body-text required">Número de teléfono</FormLabel>
+                <FormControl>
+                  <CustomInput
+                    {...field}
+                    placeholder="10 dígitos"
+                    className="form-control"
+                  />
+                </FormControl>
+                <FormMessage className="error-message" />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={control}
+            name="gender"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="body-text required">Género</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
+                  <FormControl>
+                    <SelectTrigger className="form-control">
+                      <SelectValue placeholder="Seleccionar" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {genders.map((gender) => (
+                      <SelectItem key={gender.value} value={gender.value}>
+                        {gender.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage className="error-message" />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={control}
+            name="nationality"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="body-text required">Nacionalidad</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
+                  <FormControl>
+                    <SelectTrigger className="form-control">
+                      <SelectValue placeholder="Seleccionar" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {nationalities.map((nationality) => (
+                      <SelectItem key={nationality} value={nationality}>
+                        {nationality}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage className="error-message" />
+              </FormItem>
+            )}
+          />
+        </div>
+        
         <div className="space-y-4">
           <FormField
             control={control}
@@ -94,7 +248,7 @@ export default function PersonalInfo() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="body-text required">Estado</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
                   <FormControl>
                     <SelectTrigger className="form-control">
                       <SelectValue placeholder="Seleccionar" />
@@ -119,7 +273,7 @@ export default function PersonalInfo() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="body-text required">Municipio</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value} disabled={!selectedState}>
+                <Select onValueChange={field.onChange} defaultValue={field.value || ""} disabled={!selectedState}>
                   <FormControl>
                     <SelectTrigger className="form-control">
                       <SelectValue placeholder={selectedState ? "Seleccionar" : "Seleccione primero un estado"} />
@@ -155,98 +309,6 @@ export default function PersonalInfo() {
               </FormItem>
             )}
           />
-        </div>
-        
-        <div className="space-y-4">
-          <FormField
-            control={control}
-            name="curp"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="body-text required">CURP</FormLabel>
-                <FormControl>
-                  <CustomInput
-                    {...field}
-                    placeholder="18 caracteres"
-                    className="form-control"
-                  />
-                </FormControl>
-                <FormMessage className="error-message" />
-              </FormItem>
-            )}
-          />
-          
-          <FormField
-            control={control}
-            name="rfc"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="body-text required">RFC</FormLabel>
-                <FormControl>
-                  <CustomInput
-                    {...field}
-                    placeholder="13 caracteres"
-                    className="form-control"
-                  />
-                </FormControl>
-                <FormMessage className="error-message" />
-              </FormItem>
-            )}
-          />
-          
-          <FormField
-            control={control}
-            name="nss"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="body-text required">NSS</FormLabel>
-                <FormControl>
-                  <CustomInput
-                    {...field}
-                    placeholder="10-11 dígitos"
-                    className="form-control"
-                  />
-                </FormControl>
-                <FormMessage className="error-message" />
-              </FormItem>
-            )}
-          />
-          
-          <FormField
-            control={control}
-            name="clabe"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="body-text">CLABE</FormLabel>
-                <FormControl>
-                  <CustomInput
-                    {...field}
-                    placeholder="18 dígitos"
-                    className="form-control"
-                  />
-                </FormControl>
-                <FormMessage className="error-message" />
-              </FormItem>
-            )}
-          />
-          
-          <FormField
-            control={control}
-            name="fiscalPostalCode"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="body-text">Código postal fiscal</FormLabel>
-                <FormControl>
-                  <CustomInput
-                    {...field}
-                    placeholder="5 dígitos"
-                    className="form-control"
-                  />
-                </FormControl>
-                <FormMessage className="error-message" />
-              </FormItem>
-            )}
-          />
           
           <FormField
             control={control}
@@ -254,7 +316,7 @@ export default function PersonalInfo() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="body-text required">Estado civil</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
                   <FormControl>
                     <SelectTrigger className="form-control">
                       <SelectValue placeholder="Seleccionar" />
@@ -272,79 +334,6 @@ export default function PersonalInfo() {
               </FormItem>
             )}
           />
-          
-          <FormField
-            control={control}
-            name="hasDisability"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="body-text required">Discapacidad</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="form-control">
-                      <SelectValue placeholder="Seleccionar" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {yesNoOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage className="error-message" />
-              </FormItem>
-            )}
-          />
-          
-          {hasDisability === "Sí" && (
-            <>
-              <FormField
-                control={control}
-                name="disabilityType"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="body-text required">Tipo de discapacidad</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="form-control">
-                          <SelectValue placeholder="Seleccionar" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {disabilityTypes.map((type) => (
-                          <SelectItem key={type} value={type}>
-                            {type}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage className="error-message" />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={control}
-                name="disabilityDescription"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="body-text required">Descripción de discapacidad</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        {...field}
-                        placeholder="Describa la discapacidad"
-                        className="form-control"
-                        rows={3}
-                      />
-                    </FormControl>
-                    <FormMessage className="error-message" />
-                  </FormItem>
-                )}
-              />
-            </>
-          )}
         </div>
       </div>
     </section>

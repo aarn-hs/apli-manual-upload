@@ -9,7 +9,7 @@ export default function EmergencyContact() {
   
   return (
     <section id="emergency-contact" className="bg-white p-6 shadow-md">
-      <h2 className="important section-title">Contacto de Emergencia</h2>
+      <h2 className="important section-title">Contacto de emergencia</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <FormField
@@ -36,7 +36,7 @@ export default function EmergencyContact() {
           render={({ field }) => (
             <FormItem>
               <FormLabel className="body-text required">Relación con contacto de emergencia</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
                 <FormControl>
                   <SelectTrigger className="form-control">
                     <SelectValue placeholder="Seleccionar" />
