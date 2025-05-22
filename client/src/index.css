@@ -40,6 +40,7 @@
   --red: 350 100% 60%;
   --magenta: 300 100% 60%;
   --pink: 330 100% 60%;
+  --purple: 270 100% 60%;
 
   /* Chart colors */
   --chart-1: 175 100% 60%;
@@ -119,11 +120,11 @@
   }
 
   .form-control.error {
-    @apply border-red;
+    @apply border-purple;
   }
 
   .error-message {
-    @apply text-red text-xs mt-1;
+    @apply text-purple text-xs mt-1;
   }
 
   .section-title {
