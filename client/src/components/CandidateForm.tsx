@@ -125,7 +125,17 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
   
   return (
     <FormProvider {...methods}>
-      <div className="flex gap-8">
+      <div className="flex gap-3">
+        {/* Progress Bar - pegada al formulario */}
+        <div className="w-2 flex-shrink-0">
+          <div className="sticky top-6 h-screen max-h-[600px]">
+            <ProgressBar 
+              completedFields={completedFieldsCount}
+              totalFields={requiredFields.length}
+            />
+          </div>
+        </div>
+        
         {/* Main Form */}
         <div className="flex-1">
           <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8">
@@ -150,17 +160,6 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
               </button>
             </div>
           </form>
-        </div>
-        
-        {/* Progress Bar Sidebar */}
-        <div className="w-48 flex-shrink-0">
-          <div className="sticky top-6">
-            <ProgressBar 
-              completedFields={completedFieldsCount}
-              totalFields={requiredFields.length}
-              className="bg-white p-4 rounded-lg shadow-sm border border-gray-200"
-            />
-          </div>
         </div>
       </div>
     </FormProvider>
