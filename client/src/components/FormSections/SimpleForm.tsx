@@ -316,12 +316,12 @@ export default function SimpleForm() {
           <FormField
             control={control}
             name="motivation"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem className="form-item">
                 <FormLabel className="body-text required">Motivación al elegir trabajo</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
                   <FormControl>
-                    <SelectTrigger className="form-control" tabIndex={25}>
+                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={25}>
                       <SelectValue placeholder="Seleccionar" />
                     </SelectTrigger>
                   </FormControl>
@@ -342,12 +342,12 @@ export default function SimpleForm() {
           <FormField
             control={control}
             name="hasDisability"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem className="form-item">
                 <FormLabel className="body-text required">Requiere algun ajuste durante el proceso debido a una discapacidad?</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
                   <FormControl>
-                    <SelectTrigger className="form-control" tabIndex={27}>
+                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={27}>
                       <SelectValue placeholder="Seleccionar" />
                     </SelectTrigger>
                   </FormControl>
