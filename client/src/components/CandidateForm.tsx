@@ -42,7 +42,7 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
     }
   });
   
-  const { handleSubmit, formState: { isSubmitting }, reset } = methods;
+  const { handleSubmit, formState: { isSubmitting, isDirty }, reset } = methods;
   
   const handleFormSubmit = (data: any) => {
     onSubmit(data);
@@ -70,6 +70,7 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
             type="button" 
             className="btn-secondary"
             onClick={handleClearForm}
+            disabled={!isDirty}
           >
             Limpiar formulario
           </button>
