@@ -59,7 +59,7 @@ export function DependentForm({ index, onRemove, isRemovable }: DependentFormPro
           render={({ field }) => (
             <FormItem>
               <FormLabel className="body-text">Relación con dependiente</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
                 <FormControl>
                   <SelectTrigger className="form-control">
                     <SelectValue placeholder="Seleccionar" />

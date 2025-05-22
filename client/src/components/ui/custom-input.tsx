@@ -4,7 +4,10 @@ import { cn } from "@/lib/utils";
 export interface CustomInputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 export const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
-  ({ className, type, ...props }, ref) => {
+  ({ className, type, value, ...props }, ref) => {
+    // Ensure value is never undefined to avoid controlled/uncontrolled warning
+    const safeValue = value === undefined ? "" : value;
+    
     return (
       <input
         type={type}
@@ -13,6 +16,7 @@ export const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
           className
         )}
         ref={ref}
+        value={safeValue}
         {...props}
       />
     );
