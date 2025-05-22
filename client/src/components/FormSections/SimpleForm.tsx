@@ -38,9 +38,10 @@ export default function SimpleForm() {
     <section id="simple-form" className="bg-white p-6 shadow-md">
       <h2 className="important section-title">Registro de candidato</h2>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-4">
-          {/* Campo 1 - Columna izquierda */}
+      {/* Diseño responsivo: columna única en móvil con orden zigzag, dos columnas en desktop */}
+      <div className="space-y-4 md:grid md:grid-cols-2 md:gap-6 md:space-y-0">
+        {/* 1L - Campo 1: Fuente */}
+        <div className="md:order-1">
           <FormField
             control={control}
             name="source"
