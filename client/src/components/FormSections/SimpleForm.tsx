@@ -2,10 +2,11 @@ import { useFormContext } from "react-hook-form";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CustomInput } from "@/components/ui/custom-input";
-import { agencySources, positions, locations, genders, nationalities, educationLevels, yesNoOptions, motivations, mexicanStates, maritalStatuses, disabilityTypes, emergencyContactRelations } from "@/lib/data";
+import { agencySources, positions, locations, genders, nationalities, educationLevels, yesNoOptions, motivations, mexicanStates, getMunicipalitiesForState, maritalStatuses, disabilityTypes } from "@/lib/data";
 
 export default function SimpleForm() {
-  const { control } = useFormContext();
+  const { control, watch } = useFormContext();
+  const selectedState = watch("state");
 
   return (
     <section id="simple-form" className="bg-white p-6 shadow-md">
@@ -14,7 +15,7 @@ export default function SimpleForm() {
       {/* Grid responsivo: columna única en móvil con orden zigzag, dos columnas en desktop */}
       <div className="space-y-4 md:grid md:grid-cols-2 md:gap-6 md:space-y-0">
         
-        {/* 1L - Campo 1: Fuente */}
+        {/* Campo 1: Fuente - Columna izquierda */}
         <div className="order-1 md:order-1">
           <FormField
             control={control}
@@ -42,7 +43,7 @@ export default function SimpleForm() {
           />
         </div>
 
-        {/* 1R - Campo 2: Puesto */}
+        {/* Campo 2: Puesto - Columna derecha */}
         <div className="order-2 md:order-2">
           <FormField
             control={control}
@@ -58,8 +59,8 @@ export default function SimpleForm() {
                   </FormControl>
                   <SelectContent>
                     {positions.map((position) => (
-                      <SelectItem key={position.value} value={position.value}>
-                        {position.label}
+                      <SelectItem key={position} value={position}>
+                        {position}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -70,7 +71,7 @@ export default function SimpleForm() {
           />
         </div>
 
-        {/* 2L - Campo 3: Ubicación */}
+        {/* Campo 3: Ubicación - Columna izquierda */}
         <div className="order-3 md:order-3">
           <FormField
             control={control}
@@ -86,8 +87,8 @@ export default function SimpleForm() {
                   </FormControl>
                   <SelectContent>
                     {locations.map((location) => (
-                      <SelectItem key={location.value} value={location.value}>
-                        {location.label}
+                      <SelectItem key={location} value={location}>
+                        {location}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -98,7 +99,7 @@ export default function SimpleForm() {
           />
         </div>
 
-        {/* 2R - Campo 4: PMX */}
+        {/* Campo 4: PMX - Columna derecha */}
         <div className="order-4 md:order-4">
           <FormField
             control={control}
@@ -120,18 +121,18 @@ export default function SimpleForm() {
           />
         </div>
 
-        {/* 3L - Campo 5: Primer nombre */}
+        {/* Campo 5: Nombre(s) - Columna izquierda */}
         <div className="order-5 md:order-5">
           <FormField
             control={control}
             name="firstName"
             render={({ field }) => (
               <FormItem className="form-item">
-                <FormLabel className="body-text required">Primer nombre</FormLabel>
+                <FormLabel className="body-text required">Nombre(s)</FormLabel>
                 <FormControl>
                   <CustomInput
                     {...field}
-                    placeholder="Primer nombre"
+                    placeholder="Nombre(s)"
                     className="form-control"
                     tabIndex={5}
                   />
@@ -142,18 +143,18 @@ export default function SimpleForm() {
           />
         </div>
 
-        {/* 3R - Campo 6: Segundo nombre */}
+        {/* Campo 6: Apellido paterno - Columna derecha */}
         <div className="order-6 md:order-6">
           <FormField
             control={control}
-            name="secondName"
+            name="firstLastName"
             render={({ field }) => (
               <FormItem className="form-item">
-                <FormLabel className="body-text">Segundo nombre</FormLabel>
+                <FormLabel className="body-text required">Apellido paterno</FormLabel>
                 <FormControl>
                   <CustomInput
                     {...field}
-                    placeholder="Segundo nombre"
+                    placeholder="Apellido paterno"
                     className="form-control"
                     tabIndex={6}
                   />
@@ -164,18 +165,18 @@ export default function SimpleForm() {
           />
         </div>
 
-        {/* 4L - Campo 7: Apellido paterno */}
+        {/* Campo 7: Apellido materno - Columna izquierda */}
         <div className="order-7 md:order-7">
           <FormField
             control={control}
-            name="paternalSurname"
+            name="secondLastName"
             render={({ field }) => (
               <FormItem className="form-item">
-                <FormLabel className="body-text required">Apellido paterno</FormLabel>
+                <FormLabel className="body-text">Apellido materno</FormLabel>
                 <FormControl>
                   <CustomInput
                     {...field}
-                    placeholder="Apellido paterno"
+                    placeholder="Apellido materno"
                     className="form-control"
                     tabIndex={7}
                   />
@@ -186,18 +187,18 @@ export default function SimpleForm() {
           />
         </div>
 
-        {/* 4R - Campo 8: Apellido materno */}
+        {/* Campo 8: Fecha de nacimiento - Columna derecha */}
         <div className="order-8 md:order-8">
           <FormField
             control={control}
-            name="maternalSurname"
+            name="birthDate"
             render={({ field }) => (
               <FormItem className="form-item">
-                <FormLabel className="body-text">Apellido materno</FormLabel>
+                <FormLabel className="body-text required">Fecha de nacimiento</FormLabel>
                 <FormControl>
                   <CustomInput
                     {...field}
-                    placeholder="Apellido materno"
+                    type="date"
                     className="form-control"
                     tabIndex={8}
                   />
@@ -208,8 +209,53 @@ export default function SimpleForm() {
           />
         </div>
 
-        {/* 5L - Campo 9: Género */}
+        {/* Campo 9: Correo electrónico - Columna izquierda */}
         <div className="order-9 md:order-9">
+          <FormField
+            control={control}
+            name="email"
+            render={({ field }) => (
+              <FormItem className="form-item">
+                <FormLabel className="body-text required">Correo electrónico</FormLabel>
+                <FormControl>
+                  <CustomInput
+                    {...field}
+                    type="email"
+                    placeholder="correo@ejemplo.com"
+                    className="form-control"
+                    tabIndex={9}
+                  />
+                </FormControl>
+                <FormMessage className="error-message" />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        {/* Campo 10: Número de teléfono - Columna derecha */}
+        <div className="order-10 md:order-10">
+          <FormField
+            control={control}
+            name="phone"
+            render={({ field }) => (
+              <FormItem className="form-item">
+                <FormLabel className="body-text required">Número de teléfono</FormLabel>
+                <FormControl>
+                  <CustomInput
+                    {...field}
+                    placeholder="10 dígitos"
+                    className="form-control"
+                    tabIndex={10}
+                  />
+                </FormControl>
+                <FormMessage className="error-message" />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        {/* Campo 11: Género - Columna izquierda */}
+        <div className="order-11 md:order-11">
           <FormField
             control={control}
             name="gender"
@@ -218,7 +264,7 @@ export default function SimpleForm() {
                 <FormLabel className="body-text required">Género</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value || ""}>
                   <FormControl>
-                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={9}>
+                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={11}>
                       <SelectValue placeholder="Seleccionar" />
                     </SelectTrigger>
                   </FormControl>
@@ -236,57 +282,7 @@ export default function SimpleForm() {
           />
         </div>
 
-        {/* 5R - Campo 10: Fecha de nacimiento */}
-        <div className="order-10 md:order-10">
-          <FormField
-            control={control}
-            name="birthDate"
-            render={({ field }) => (
-              <FormItem className="form-item">
-                <FormLabel className="body-text required">Fecha de nacimiento</FormLabel>
-                <FormControl>
-                  <CustomInput
-                    {...field}
-                    type="date"
-                    className="form-control"
-                    tabIndex={10}
-                  />
-                </FormControl>
-                <FormMessage className="error-message" />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        {/* 6L - Campo 11: Estado civil */}
-        <div className="order-11 md:order-11">
-          <FormField
-            control={control}
-            name="maritalStatus"
-            render={({ field, fieldState }) => (
-              <FormItem className="form-item">
-                <FormLabel className="body-text required">Estado civil</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ""}>
-                  <FormControl>
-                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={11}>
-                      <SelectValue placeholder="Seleccionar" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {maritalStatuses.map((status) => (
-                      <SelectItem key={status.value} value={status.value}>
-                        {status.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage className="error-message" />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        {/* 6R - Campo 12: Nacionalidad */}
+        {/* Campo 12: Nacionalidad - Columna derecha */}
         <div className="order-12 md:order-12">
           <FormField
             control={control}
@@ -302,8 +298,8 @@ export default function SimpleForm() {
                   </FormControl>
                   <SelectContent>
                     {nationalities.map((nationality) => (
-                      <SelectItem key={nationality.value} value={nationality.value}>
-                        {nationality.label}
+                      <SelectItem key={nationality} value={nationality}>
+                        {nationality}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -314,8 +310,102 @@ export default function SimpleForm() {
           />
         </div>
 
-        {/* 7L - Campo 13: Estado */}
+        {/* Campo 13: Calle y número de la vivienda - Columna izquierda */}
         <div className="order-13 md:order-13">
+          <FormField
+            control={control}
+            name="streetAndNumber"
+            render={({ field }) => (
+              <FormItem className="form-item">
+                <FormLabel className="body-text required">Calle y número de la vivienda</FormLabel>
+                <FormControl>
+                  <CustomInput
+                    {...field}
+                    placeholder="Calle y número"
+                    className="form-control"
+                    tabIndex={13}
+                  />
+                </FormControl>
+                <FormMessage className="error-message" />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        {/* Campo 14: Número interior - Columna derecha */}
+        <div className="order-14 md:order-14">
+          <FormField
+            control={control}
+            name="interiorNumber"
+            render={({ field }) => (
+              <FormItem className="form-item">
+                <FormLabel className="body-text">Número interior</FormLabel>
+                <FormControl>
+                  <CustomInput
+                    {...field}
+                    placeholder="Número interior"
+                    className="form-control"
+                    tabIndex={14}
+                  />
+                </FormControl>
+                <FormMessage className="error-message" />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        {/* Campo 15: Colonia - Columna izquierda */}
+        <div className="order-15 md:order-15">
+          <FormField
+            control={control}
+            name="neighborhood"
+            render={({ field }) => (
+              <FormItem className="form-item">
+                <FormLabel className="body-text required">Colonia</FormLabel>
+                <FormControl>
+                  <CustomInput
+                    {...field}
+                    placeholder="Colonia"
+                    className="form-control"
+                    tabIndex={15}
+                  />
+                </FormControl>
+                <FormMessage className="error-message" />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        {/* Campo 16: Municipio - Columna derecha */}
+        <div className="order-16 md:order-16">
+          <FormField
+            control={control}
+            name="municipality"
+            render={({ field, fieldState }) => (
+              <FormItem className="form-item">
+                <FormLabel className="body-text required">Municipio</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value || ""}>
+                  <FormControl>
+                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={16}>
+                      <SelectValue placeholder="Seleccionar" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {selectedState && getMunicipalitiesForState(selectedState).map((municipality) => (
+                      <SelectItem key={municipality} value={municipality}>
+                        {municipality}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage className="error-message" />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        {/* Campo 17: Estado - Columna izquierda */}
+        <div className="order-17 md:order-17">
           <FormField
             control={control}
             name="state"
@@ -324,7 +414,7 @@ export default function SimpleForm() {
                 <FormLabel className="body-text required">Estado</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value || ""}>
                   <FormControl>
-                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={13}>
+                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={17}>
                       <SelectValue placeholder="Seleccionar" />
                     </SelectTrigger>
                   </FormControl>
@@ -342,52 +432,8 @@ export default function SimpleForm() {
           />
         </div>
 
-        {/* 7R - Campo 14: Ciudad */}
-        <div className="order-14 md:order-14">
-          <FormField
-            control={control}
-            name="city"
-            render={({ field }) => (
-              <FormItem className="form-item">
-                <FormLabel className="body-text required">Ciudad</FormLabel>
-                <FormControl>
-                  <CustomInput
-                    {...field}
-                    placeholder="Ciudad"
-                    className="form-control"
-                    tabIndex={14}
-                  />
-                </FormControl>
-                <FormMessage className="error-message" />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        {/* 8L - Campo 15: Dirección */}
-        <div className="order-15 md:order-15">
-          <FormField
-            control={control}
-            name="address"
-            render={({ field }) => (
-              <FormItem className="form-item">
-                <FormLabel className="body-text required">Dirección</FormLabel>
-                <FormControl>
-                  <CustomInput
-                    {...field}
-                    placeholder="Dirección completa"
-                    className="form-control"
-                    tabIndex={15}
-                  />
-                </FormControl>
-                <FormMessage className="error-message" />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        {/* 8R - Campo 16: Código postal */}
-        <div className="order-16 md:order-16">
+        {/* Campo 18: Código postal - Columna derecha */}
+        <div className="order-18 md:order-18">
           <FormField
             control={control}
             name="postalCode"
@@ -399,51 +445,6 @@ export default function SimpleForm() {
                     {...field}
                     placeholder="5 dígitos"
                     className="form-control"
-                    tabIndex={16}
-                  />
-                </FormControl>
-                <FormMessage className="error-message" />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        {/* 9L - Campo 17: Teléfono */}
-        <div className="order-17 md:order-17">
-          <FormField
-            control={control}
-            name="phone"
-            render={({ field }) => (
-              <FormItem className="form-item">
-                <FormLabel className="body-text required">Teléfono</FormLabel>
-                <FormControl>
-                  <CustomInput
-                    {...field}
-                    placeholder="10 dígitos"
-                    className="form-control"
-                    tabIndex={17}
-                  />
-                </FormControl>
-                <FormMessage className="error-message" />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        {/* 9R - Campo 18: Correo electrónico */}
-        <div className="order-18 md:order-18">
-          <FormField
-            control={control}
-            name="email"
-            render={({ field }) => (
-              <FormItem className="form-item">
-                <FormLabel className="body-text required">Correo electrónico</FormLabel>
-                <FormControl>
-                  <CustomInput
-                    {...field}
-                    type="email"
-                    placeholder="correo@ejemplo.com"
-                    className="form-control"
                     tabIndex={18}
                   />
                 </FormControl>
@@ -453,14 +454,14 @@ export default function SimpleForm() {
           />
         </div>
 
-        {/* 10L - Campo 19: Nivel de estudios */}
+        {/* Campo 19: Escolaridad - Columna izquierda */}
         <div className="order-19 md:order-19">
           <FormField
             control={control}
-            name="educationLevel"
+            name="education"
             render={({ field, fieldState }) => (
               <FormItem className="form-item">
-                <FormLabel className="body-text required">Nivel de estudios</FormLabel>
+                <FormLabel className="body-text required">Escolaridad</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value || ""}>
                   <FormControl>
                     <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={19}>
@@ -481,17 +482,111 @@ export default function SimpleForm() {
           />
         </div>
 
-        {/* 10R - Campo 20: ¿Ha trabajado antes? */}
+        {/* Campo 20: Estado civil - Columna derecha */}
         <div className="order-20 md:order-20">
           <FormField
             control={control}
-            name="hasWorkedBefore"
+            name="maritalStatus"
             render={({ field, fieldState }) => (
               <FormItem className="form-item">
-                <FormLabel className="body-text required">¿Ha trabajado antes?</FormLabel>
+                <FormLabel className="body-text required">Estado civil</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value || ""}>
                   <FormControl>
                     <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={20}>
+                      <SelectValue placeholder="Seleccionar" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {maritalStatuses.map((status) => (
+                      <SelectItem key={status.value} value={status.value}>
+                        {status.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage className="error-message" />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        {/* Campo 21: Compañía Experiencia Previa - Columna izquierda */}
+        <div className="order-21 md:order-21">
+          <FormField
+            control={control}
+            name="previousCompany"
+            render={({ field }) => (
+              <FormItem className="form-item">
+                <FormLabel className="body-text required">Compañía Experiencia Previa</FormLabel>
+                <FormControl>
+                  <CustomInput
+                    {...field}
+                    placeholder="Nombre de la empresa"
+                    className="form-control"
+                    tabIndex={21}
+                  />
+                </FormControl>
+                <FormMessage className="error-message" />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        {/* Campo 22: Puesto Experiencia Previa - Columna derecha */}
+        <div className="order-22 md:order-22">
+          <FormField
+            control={control}
+            name="previousPosition"
+            render={({ field }) => (
+              <FormItem className="form-item">
+                <FormLabel className="body-text required">Puesto Experiencia Previa</FormLabel>
+                <FormControl>
+                  <CustomInput
+                    {...field}
+                    placeholder="Puesto anterior"
+                    className="form-control"
+                    tabIndex={22}
+                  />
+                </FormControl>
+                <FormMessage className="error-message" />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        {/* Campo 23: Tareas Experiencia Previa - Columna izquierda */}
+        <div className="order-23 md:order-23">
+          <FormField
+            control={control}
+            name="previousTasks"
+            render={({ field }) => (
+              <FormItem className="form-item">
+                <FormLabel className="body-text required">Tareas Experiencia Previa</FormLabel>
+                <FormControl>
+                  <CustomInput
+                    {...field}
+                    placeholder="Describa las tareas realizadas"
+                    className="form-control"
+                    tabIndex={23}
+                  />
+                </FormControl>
+                <FormMessage className="error-message" />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        {/* Campo 24: Experiencia en retail - Columna derecha */}
+        <div className="order-24 md:order-24">
+          <FormField
+            control={control}
+            name="retailExperience"
+            render={({ field, fieldState }) => (
+              <FormItem className="form-item">
+                <FormLabel className="body-text required">Experiencia en retail</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value || ""}>
+                  <FormControl>
+                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={24}>
                       <SelectValue placeholder="Seleccionar" />
                     </SelectTrigger>
                   </FormControl>
@@ -509,39 +604,17 @@ export default function SimpleForm() {
           />
         </div>
 
-        {/* 11L - Campo 21: ¿Última compañía en la que trabajó? */}
-        <div className="order-21 md:order-21">
-          <FormField
-            control={control}
-            name="lastCompany"
-            render={({ field }) => (
-              <FormItem className="form-item">
-                <FormLabel className="body-text">¿Última compañía en la que trabajó?</FormLabel>
-                <FormControl>
-                  <CustomInput
-                    {...field}
-                    placeholder="Nombre de la empresa"
-                    className="form-control"
-                    tabIndex={21}
-                  />
-                </FormControl>
-                <FormMessage className="error-message" />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        {/* 11R - Campo 22: ¿Por qué quiere trabajar con nosotros? */}
-        <div className="order-22 md:order-22">
+        {/* Campo 25: Motivación al elegir trabajo - Columna izquierda */}
+        <div className="order-25 md:order-25">
           <FormField
             control={control}
             name="motivation"
             render={({ field, fieldState }) => (
               <FormItem className="form-item">
-                <FormLabel className="body-text required">¿Por qué quiere trabajar con nosotros?</FormLabel>
+                <FormLabel className="body-text required">Motivación al elegir trabajo</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value || ""}>
                   <FormControl>
-                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={22}>
+                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={25}>
                       <SelectValue placeholder="Seleccionar" />
                     </SelectTrigger>
                   </FormControl>
@@ -559,108 +632,8 @@ export default function SimpleForm() {
           />
         </div>
 
-        {/* 12L - Campo 23: Contacto de emergencia */}
-        <div className="order-23 md:order-23">
-          <FormField
-            control={control}
-            name="emergencyContactName"
-            render={({ field }) => (
-              <FormItem className="form-item">
-                <FormLabel className="body-text required">Contacto de emergencia</FormLabel>
-                <FormControl>
-                  <CustomInput
-                    {...field}
-                    placeholder="Nombre completo"
-                    className="form-control"
-                    tabIndex={23}
-                  />
-                </FormControl>
-                <FormMessage className="error-message" />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        {/* 12R - Campo 24: Parentesco */}
-        <div className="order-24 md:order-24">
-          <FormField
-            control={control}
-            name="emergencyContactRelation"
-            render={({ field, fieldState }) => (
-              <FormItem className="form-item">
-                <FormLabel className="body-text required">Parentesco</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ""}>
-                  <FormControl>
-                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={24}>
-                      <SelectValue placeholder="Seleccionar" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {emergencyContactRelations.map((relation) => (
-                      <SelectItem key={relation.value} value={relation.value}>
-                        {relation.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage className="error-message" />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        {/* 13L - Campo 25: Teléfono del contacto */}
-        <div className="order-25 md:order-25">
-          <FormField
-            control={control}
-            name="emergencyContactPhone"
-            render={({ field }) => (
-              <FormItem className="form-item">
-                <FormLabel className="body-text required">Teléfono del contacto</FormLabel>
-                <FormControl>
-                  <CustomInput
-                    {...field}
-                    placeholder="10 dígitos"
-                    className="form-control"
-                    tabIndex={25}
-                  />
-                </FormControl>
-                <FormMessage className="error-message" />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        {/* 13R - Campo 26: ¿Tiene alguna discapacidad? */}
+        {/* Campo 26: CURP - Columna derecha */}
         <div className="order-26 md:order-26">
-          <FormField
-            control={control}
-            name="hasDisability"
-            render={({ field, fieldState }) => (
-              <FormItem className="form-item">
-                <FormLabel className="body-text required">¿Tiene alguna discapacidad?</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ""}>
-                  <FormControl>
-                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={26}>
-                      <SelectValue placeholder="Seleccionar" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {disabilityTypes.map((type) => (
-                      <SelectItem key={type.value} value={type.value}>
-                        {type.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage className="error-message" />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        {/* 14L - Campo 27: CURP */}
-        <div className="order-27 md:order-27">
           <FormField
             control={control}
             name="curp"
@@ -673,9 +646,37 @@ export default function SimpleForm() {
                     placeholder="18 caracteres"
                     className="form-control"
                     autoUppercase={true}
-                    tabIndex={27}
+                    tabIndex={26}
                   />
                 </FormControl>
+                <FormMessage className="error-message" />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        {/* Campo 27: Discapacidad - Columna izquierda */}
+        <div className="order-27 md:order-27">
+          <FormField
+            control={control}
+            name="hasDisability"
+            render={({ field, fieldState }) => (
+              <FormItem className="form-item">
+                <FormLabel className="body-text required">Discapacidad</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value || ""}>
+                  <FormControl>
+                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={27}>
+                      <SelectValue placeholder="Seleccionar" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {disabilityTypes.map((type) => (
+                      <SelectItem key={type.value} value={type.value}>
+                        {type.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage className="error-message" />
               </FormItem>
             )}
