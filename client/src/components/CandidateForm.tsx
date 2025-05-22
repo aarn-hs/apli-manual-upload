@@ -42,7 +42,11 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
     }
   });
   
-  const { handleSubmit, formState: { isSubmitting, isDirty }, reset } = methods;
+  const { handleSubmit, formState: { isSubmitting }, reset, watch } = methods;
+  
+  // Watch all form values to determine if form is empty
+  const watchedValues = watch();
+  const isFormEmpty = Object.values(watchedValues).every(value => !value || value === "");
   
   const handleFormSubmit = (data: any) => {
     onSubmit(data);
@@ -61,7 +65,7 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
           <button 
             type="submit" 
             className="btn-primary"
-            disabled={isSubmitting}
+            disabled={isSubmitting || isFormEmpty}
           >
             Enviar candidato
           </button>
@@ -70,7 +74,7 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
             type="button" 
             className="btn-secondary"
             onClick={handleClearForm}
-            disabled={!isDirty}
+            disabled={isFormEmpty}
           >
             Limpiar formulario
           </button>
