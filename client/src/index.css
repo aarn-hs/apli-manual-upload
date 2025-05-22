@@ -119,11 +119,11 @@
   }
   
   .form-control.error {
-    @apply border-red;
+    @apply border-purple;
   }
   
   .error-message {
-    @apply text-red text-xs mt-1;
+    @apply text-purple text-xs mt-1;
   }
   
   .section-title {
@@ -132,7 +132,7 @@
   
   .required::after {
     content: '*';
-    @apply text-red ml-0.5;
+    @apply text-purple ml-0.5;
   }
   
   .progress-step {
