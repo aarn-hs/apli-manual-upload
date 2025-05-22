@@ -47,7 +47,7 @@ export default function SimpleForm() {
             render={({ field, fieldState }) => (
               <FormItem className="form-item">
                 <FormLabel className="body-text required">Fuente</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
+                <Select onValueChange={field.onChange} value={field.value || ""}>
                   <FormControl>
                     <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={1}>
                       <SelectValue placeholder="Seleccionar" />
@@ -73,7 +73,7 @@ export default function SimpleForm() {
             render={({ field, fieldState }) => (
               <FormItem className="form-item">
                 <FormLabel className="body-text required">Ubicación</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
+                <Select onValueChange={field.onChange} value={field.value || ""}>
                   <FormControl>
                     <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={3}>
                       <SelectValue placeholder="Seleccionar" />
@@ -160,7 +160,7 @@ export default function SimpleForm() {
             render={({ field, fieldState }) => (
               <FormItem className="form-item">
                 <FormLabel className="body-text required">Género</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
+                <Select onValueChange={field.onChange} value={field.value || ""}>
                   <FormControl>
                     <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={11}>
                       <SelectValue placeholder="Seleccionar" />
@@ -226,7 +226,7 @@ export default function SimpleForm() {
             render={({ field, fieldState }) => (
               <FormItem className="form-item">
                 <FormLabel className="body-text required">Estado</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
+                <Select onValueChange={field.onChange} value={field.value || ""}>
                   <FormControl>
                     <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={17}>
                       <SelectValue placeholder="Seleccionar" />
@@ -252,7 +252,7 @@ export default function SimpleForm() {
             render={({ field, fieldState }) => (
               <FormItem className="form-item">
                 <FormLabel className="body-text required">Escolaridad</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
+                <Select onValueChange={field.onChange} value={field.value || ""}>
                   <FormControl>
                     <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={19}>
                       <SelectValue placeholder="Seleccionar" />
@@ -373,7 +373,7 @@ export default function SimpleForm() {
             render={({ field, fieldState }) => (
               <FormItem className="form-item">
                 <FormLabel className="body-text required">Puesto</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
+                <Select onValueChange={field.onChange} value={field.value || ""}>
                   <FormControl>
                     <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={2}>
                       <SelectValue placeholder="Seleccionar" />
@@ -479,7 +479,7 @@ export default function SimpleForm() {
             render={({ field, fieldState }) => (
               <FormItem className="form-item">
                 <FormLabel className="body-text required">Nacionalidad</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
+                <Select onValueChange={field.onChange} value={field.value || ""}>
                   <FormControl>
                     <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={12}>
                       <SelectValue placeholder="Seleccionar" />
@@ -525,7 +525,7 @@ export default function SimpleForm() {
             render={({ field, fieldState }) => (
               <FormItem className="form-item">
                 <FormLabel className="body-text required">Municipio</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value || ""} disabled={!selectedState}>
+                <Select onValueChange={field.onChange} value={field.value || ""} disabled={!selectedState}>
                   <FormControl>
                     <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={16}>
                       <SelectValue placeholder={selectedState ? "Seleccionar" : "Seleccione primero un estado"} />
