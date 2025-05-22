@@ -127,11 +127,10 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
     <FormProvider {...methods}>
       <div className="flex gap-0">
         {/* Progress Bar - exactamente como en tu sistema */}
-        <div className="w-1 flex-shrink-0">
+        <div className="w-4 flex-shrink-0">
           <ProgressBar 
             completedFields={completedFieldsCount}
             totalFields={requiredFields.length}
-            className="h-full min-h-screen"
           />
         </div>
         
