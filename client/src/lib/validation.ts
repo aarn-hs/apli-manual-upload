@@ -101,15 +101,33 @@ export function validateCURPWithBirthDate(curp: string, birthDate: string): bool
   const curpMonth = curp.substring(6, 8);
   const curpDay = curp.substring(8, 10);
   
-  // Convert birth date to comparable format
-  const birthDateObj = new Date(birthDate);
-  const birthYear = birthDateObj.getFullYear();
-  const birthMonth = birthDateObj.getMonth() + 1; // getMonth() returns 0-11
-  const birthDay = birthDateObj.getDate();
+  // Convert birth date string (YYYY-MM-DD format) to components
+  const dateParts = birthDate.split('-');
+  if (dateParts.length !== 3) return false;
+  
+  const birthYear = parseInt(dateParts[0]);
+  const birthMonth = parseInt(dateParts[1]);
+  const birthDay = parseInt(dateParts[2]);
   
   // Determine full year from CURP (considering century)
   // If year is 00-29, assume 2000s; if 30-99, assume 1900s
   const fullCurpYear = parseInt(curpYear) <= 29 ? 2000 + parseInt(curpYear) : 1900 + parseInt(curpYear);
+  
+  // Debug logging
+  console.log('CURP Validation Debug:', {
+    curp,
+    birthDate,
+    curpYear,
+    curpMonth,
+    curpDay,
+    fullCurpYear,
+    birthYear,
+    birthMonth,
+    birthDay,
+    yearMatch: fullCurpYear === birthYear,
+    monthMatch: parseInt(curpMonth) === birthMonth,
+    dayMatch: parseInt(curpDay) === birthDay
+  });
   
   // Compare dates
   return (

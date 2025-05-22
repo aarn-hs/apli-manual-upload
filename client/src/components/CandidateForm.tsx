@@ -57,21 +57,21 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
       <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8">
         <SimpleForm />
         
-        <div className="flex justify-between pt-6">
-          <button 
-            type="button" 
-            className="btn-secondary"
-            onClick={handleClearForm}
-          >
-            Limpiar formulario
-          </button>
-          
+        <div className="flex justify-start gap-4 pt-6">
           <button 
             type="submit" 
             className="btn-primary"
             disabled={isSubmitting}
           >
             Enviar candidato
+          </button>
+          
+          <button 
+            type="button" 
+            className="btn-secondary"
+            onClick={handleClearForm}
+          >
+            Limpiar formulario
           </button>
         </div>
       </form>
