@@ -29,8 +29,8 @@ export default function Home() {
     <div className="flex flex-col min-h-screen bg-white">
       <main className="container mx-auto px-4 py-6 flex-grow">
         <div className="mb-6">
-          <h1 className="title mb-2">Registro de Candidato</h1>
-          <p className="subtitle text-dark-grey">Completa el formulario con los datos del prospecto que deseas cargar. Todos los campos marcados con * son obligatorios. Una vez completado, haz clic en "Cargar Prospecto" para enviar la información.</p>
+          <h1 className="title mb-2">Carga manual de candidato</h1>
+          <p className="subtitle text-dark-grey">Completa el formulario con los datos del candidato que deseas cargar. Todos los campos marcados con * son obligatorios. Una vez completado, haz clic en "Enviar Candidato" para enviar la información.</p>
         </div>
         
         <CandidateForm onSubmit={handleFormSubmit} />
