@@ -46,7 +46,12 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
   
   // Watch all form values to determine if form is empty
   const watchedValues = watch();
-  const isFormEmpty = Object.values(watchedValues).every(value => !value || value === "");
+  const isFormEmpty = Object.values(watchedValues).every(value => 
+    value === "" || value === null || value === undefined
+  );
+  
+  // Debug log to see what's happening
+  console.log('Form values debug:', { watchedValues, isFormEmpty });
   
   const handleFormSubmit = (data: any) => {
     onSubmit(data);
