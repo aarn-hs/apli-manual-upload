@@ -1,6 +1,6 @@
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { candidateSchema } from "@/lib/schemas";
+import { simplifiedCandidateSchema } from "@/lib/simplified-schema";
 import SimpleForm from "@/components/FormSections/SimpleForm";
 
 interface CandidateFormProps {
@@ -9,7 +9,7 @@ interface CandidateFormProps {
 
 export default function CandidateForm({ onSubmit }: CandidateFormProps) {
   const methods = useForm({
-    resolver: zodResolver(candidateSchema),
+    resolver: zodResolver(simplifiedCandidateSchema),
     mode: "onChange",
     defaultValues: {
       source: "",
@@ -42,10 +42,14 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
     }
   });
   
-  const { handleSubmit, formState: { isSubmitting } } = methods;
+  const { handleSubmit, formState: { isSubmitting }, reset } = methods;
   
   const handleFormSubmit = (data: any) => {
     onSubmit(data);
+  };
+  
+  const handleClearForm = () => {
+    reset();
   };
   
   return (
@@ -53,13 +57,21 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
       <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8">
         <SimpleForm />
         
-        <div className="flex justify-end pt-6">
+        <div className="flex justify-between pt-6">
+          <button 
+            type="button" 
+            className="btn-secondary"
+            onClick={handleClearForm}
+          >
+            Limpiar formulario
+          </button>
+          
           <button 
             type="submit" 
             className="btn-primary"
             disabled={isSubmitting}
           >
-            Registrar candidato
+            Enviar candidato
           </button>
         </div>
       </form>
