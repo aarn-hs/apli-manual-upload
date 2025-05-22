@@ -76,11 +76,11 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
   const { handleSubmit, formState: { errors, isSubmitting } } = methods;
 
   const steps = [
-    { id: 1, name: "Información del puesto", component: <JobPosition /> },
-    { id: 2, name: "Información personal", component: <PersonalInfo /> },
-    { id: 3, name: "Información laboral y educativa", component: <WorkEducation /> },
-    { id: 4, name: "Información de contratación", component: <HiringInfo /> },
-    { id: 5, name: "Contacto de emergencia", component: <EmergencyContact /> },
+    { id: 1, name: "Puesto", component: <JobPosition /> },
+    { id: 2, name: "Personal", component: <PersonalInfo /> },
+    { id: 3, name: "Laboral y educativo", component: <WorkEducation /> },
+    { id: 4, name: "Contratación", component: <HiringInfo /> },
+    { id: 5, name: "Contacto", component: <EmergencyContact /> },
     { id: 6, name: "Dependientes", component: <DependentsInfo /> }
   ];
   
