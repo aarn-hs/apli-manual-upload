@@ -40,20 +40,16 @@ export function validateBirthDate(dateStr: string): boolean {
   
   const today = new Date();
   
-  // Check if date is after 1945
-  const minDate = new Date("1945-01-01");
-  if (birthDate < minDate) return false;
-  
   // Check if date is before today
   if (birthDate > today) return false;
   
-  // Check if the person is at least 18 years old
+  // Calculate age
   const age = today.getFullYear() - birthDate.getFullYear();
   const monthDiff = today.getMonth() - birthDate.getMonth();
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-    return age - 1 >= 18;
-  }
-  return age >= 18;
+  const actualAge = monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate()) ? age - 1 : age;
+  
+  // Check if the person is at least 18 years old and less than 80 years old
+  return actualAge >= 18 && actualAge < 80;
 }
 
 // CURP validation (18 alphanumeric characters)

@@ -23,7 +23,7 @@ export const simplifiedCandidateSchema = z.object({
     .refine(val => !val || validateName(val), "No se permiten caracteres especiales"),
   
   birthDate: z.string({ required_error: "Ingrese la fecha de nacimiento" })
-    .refine(validateBirthDate, "La persona debe ser mayor de edad y haber nacido después de 1945"),
+    .refine(validateBirthDate, "El candidato debe ser mayor de edad y menor a 80 años"),
   
   email: z.string({ required_error: "Ingrese el correo electrónico" })
     .email("Formato de correo electrónico inválido"),
@@ -68,5 +68,8 @@ export const simplifiedCandidateSchema = z.object({
   
   // Información legal (Obligatorio)
   curp: z.string({ required_error: "Ingrese el CURP" })
-    .refine(validateCURP, "CURP inválido, debe tener 18 caracteres en formato válido")
+    .refine(validateCURP, "CURP inválido, debe tener 18 caracteres en formato válido"),
+  
+  // Discapacidad (Obligatorio)
+  hasDisability: z.string({ required_error: "Indique si tiene alguna discapacidad" })
 });

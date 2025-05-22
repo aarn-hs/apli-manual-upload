@@ -3,12 +3,22 @@ import { cn } from "@/lib/utils";
 
 export interface CustomInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   errorSpacing?: boolean;
+  autoUppercase?: boolean;
 }
 
 export const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
-  ({ className, type, value, ...props }, ref) => {
+  ({ className, type, value, autoUppercase, onChange, ...props }, ref) => {
     // Ensure value is never undefined to avoid controlled/uncontrolled warning
     const safeValue = value === undefined ? "" : value;
+    
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (autoUppercase) {
+        e.target.value = e.target.value.toUpperCase();
+      }
+      if (onChange) {
+        onChange(e);
+      }
+    };
     
     return (
       <input
@@ -19,6 +29,7 @@ export const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
         )}
         ref={ref}
         value={safeValue}
+        onChange={handleChange}
         {...props}
       />
     );

@@ -634,6 +634,7 @@ export default function SimpleForm() {
                     {...field}
                     placeholder="18 caracteres"
                     className="form-control"
+                    autoUppercase={true}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />

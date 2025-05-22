@@ -10,7 +10,7 @@ interface CandidateFormProps {
 export default function CandidateForm({ onSubmit }: CandidateFormProps) {
   const methods = useForm({
     resolver: zodResolver(candidateSchema),
-    mode: "onBlur",
+    mode: "onChange",
     defaultValues: {
       source: "",
       position: "",
