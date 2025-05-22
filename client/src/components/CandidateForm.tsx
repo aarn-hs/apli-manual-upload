@@ -3,11 +3,13 @@ import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { candidateSchema } from "@/lib/schemas";
 import ProgressSteps from "@/components/ui/progress-steps";
-import BasicInfo from "@/components/FormSections/BasicInfo";
-import EmploymentInfo from "@/components/FormSections/EmploymentInfo";
-import PersonalInfo from "@/components/FormSections/PersonalInfo";
-import ContractInfo from "@/components/FormSections/ContractInfo";
-import EmergencyContact from "@/components/FormSections/EmergencyContact";
+import JobInfo from "@/components/FormSections/JobInfo";
+import PersonalDetails from "@/components/FormSections/PersonalDetails";
+import AddressInfo from "@/components/FormSections/AddressInfo";
+import EmploymentHistory from "@/components/FormSections/EmploymentHistory";
+import LegalInfo from "@/components/FormSections/LegalInfo";
+import ContractDetails from "@/components/FormSections/ContractDetails";
+import EmergencyInfo from "@/components/FormSections/EmergencyInfo";
 import Dependents from "@/components/FormSections/Dependents";
 
 interface CandidateFormProps {
@@ -21,6 +23,44 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
     resolver: zodResolver(candidateSchema),
     mode: "onBlur",
     defaultValues: {
+      source: "",
+      position: "",
+      location: "",
+      pmx: "",
+      firstName: "",
+      firstLastName: "",
+      secondLastName: "",
+      birthDate: "",
+      email: "",
+      phone: "",
+      gender: "",
+      nationality: "",
+      streetAndNumber: "",
+      interiorNumber: "",
+      neighborhood: "",
+      municipality: "",
+      state: "",
+      postalCode: "",
+      education: "",
+      maritalStatus: "",
+      previousCompany: "",
+      previousPosition: "",
+      previousTasks: "",
+      retailExperience: "",
+      motivation: "",
+      curp: "",
+      rfc: "",
+      nss: "",
+      clabe: "",
+      fiscalPostalCode: "",
+      contractStartDate: "",
+      contractEndDate: "",
+      hasDisability: "",
+      disabilityType: "",
+      disabilityDescription: "",
+      emergencyContactName: "",
+      emergencyContactRelation: "",
+      emergencyContactPhone: "",
       dependents: [
         {
           firstName: "",
@@ -38,12 +78,14 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
   const { handleSubmit, formState: { errors, isSubmitting } } = methods;
 
   const steps = [
-    { id: 1, name: "Información Básica", component: <BasicInfo /> },
-    { id: 2, name: "Información Laboral", component: <EmploymentInfo /> },
-    { id: 3, name: "Información Personal", component: <PersonalInfo /> },
-    { id: 4, name: "Información de Contrato", component: <ContractInfo /> },
-    { id: 5, name: "Contactos de Emergencia", component: <EmergencyContact /> },
-    { id: 6, name: "Dependientes", component: <Dependents /> }
+    { id: 1, name: "Información del Trabajo", component: <JobInfo /> },
+    { id: 2, name: "Datos Personales", component: <PersonalDetails /> },
+    { id: 3, name: "Dirección y Educación", component: <AddressInfo /> },
+    { id: 4, name: "Experiencia Laboral", component: <EmploymentHistory /> },
+    { id: 5, name: "Información Legal", component: <LegalInfo /> },
+    { id: 6, name: "Detalles de Contrato", component: <ContractDetails /> },
+    { id: 7, name: "Contacto de Emergencia", component: <EmergencyInfo /> },
+    { id: 8, name: "Dependientes", component: <Dependents /> }
   ];
   
   const goToNextStep = () => {
