@@ -72,14 +72,16 @@ export const candidateSchema = z.object({
   hasDisability: z.string({ required_error: "Indique si tiene alguna discapacidad" }),
   disabilityType: z.string().optional()
     .refine((val, ctx) => {
-      if (ctx.parent.hasDisability === "Sí" && !val) {
+      // Safely check parent context exists and hasDisability is "Sí"
+      if (ctx && ctx.parent && ctx.parent.hasDisability === "Sí" && !val) {
         return false;
       }
       return true;
     }, "Seleccione el tipo de discapacidad"),
   disabilityDescription: z.string().optional()
     .refine((val, ctx) => {
-      if (ctx.parent.hasDisability === "Sí" && !val) {
+      // Safely check parent context exists and hasDisability is "Sí"
+      if (ctx && ctx.parent && ctx.parent.hasDisability === "Sí" && !val) {
         return false;
       }
       return true;
