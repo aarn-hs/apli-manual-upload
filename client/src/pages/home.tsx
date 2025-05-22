@@ -6,23 +6,8 @@ export default function Home() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const handleFormSubmit = async (data: any) => {
-    try {
-      const response = await fetch('/api/candidates', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (response.ok) {
-        setShowSuccessModal(true);
-      } else {
-        throw new Error('Error al enviar el formulario');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
+    // Simplemente mostrar el modal de éxito sin enviar datos
+    setShowSuccessModal(true);
   };
 
   return (
