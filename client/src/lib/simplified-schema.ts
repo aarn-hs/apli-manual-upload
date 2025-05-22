@@ -6,6 +6,12 @@ export const simplifiedCandidateSchema = z.object({
   // Fuente (Obligatorio)
   source: z.string({ required_error: "Debes seleccionar una opción" }),
   
+  // Puesto (Obligatorio)
+  position: z.string({ required_error: "Debes seleccionar una opción" }),
+  
+  // Ubicación (Obligatorio)
+  location: z.string({ required_error: "Debes seleccionar una opción" }),
+  
   // PMX (Obligatorio)
   pmx: z.string({ required_error: "Ingrese el PMX" })
     .refine(validatePMX, "Formato inválido. Debe ser PMX seguido de 8 dígitos"),
@@ -44,17 +50,17 @@ export const simplifiedCandidateSchema = z.object({
   neighborhood: z.string({ required_error: "Ingrese la colonia" })
     .refine(validateAddress, "La colonia debe tener al menos 2 caracteres"),
   
-  state: z.string({ required_error: "Seleccione el estado" }),
+  state: z.string({ required_error: "Debes seleccionar una opción" }),
   
-  municipality: z.string({ required_error: "Seleccione el municipio" }),
+  municipality: z.string({ required_error: "Debes seleccionar una opción" }),
   
   postalCode: z.string({ required_error: "Ingrese el código postal" })
     .refine(validatePostalCode, "El código postal debe tener exactamente 5 dígitos"),
   
   // Información laboral y educativa (Obligatorio)
-  education: z.string({ required_error: "Seleccione el nivel de escolaridad" }),
+  education: z.string({ required_error: "Debes seleccionar una opción" }),
   
-  maritalStatus: z.string({ required_error: "Seleccione el estado civil" }),
+  maritalStatus: z.string({ required_error: "Debes seleccionar una opción" }),
   
   previousCompany: z.string({ required_error: "Ingrese la compañía de experiencia previa" }),
   
@@ -62,15 +68,15 @@ export const simplifiedCandidateSchema = z.object({
   
   previousTasks: z.string({ required_error: "Describa las tareas de experiencia previa" }),
   
-  retailExperience: z.string({ required_error: "Indique si tiene experiencia en retail" }),
+  retailExperience: z.string({ required_error: "Debes seleccionar una opción" }),
   
-  motivation: z.string({ required_error: "Seleccione la motivación" }),
+  motivation: z.string({ required_error: "Debes seleccionar una opción" }),
   
   // Información legal (Obligatorio)
   curp: z.string({ required_error: "Ingrese el CURP" }),
   
   // Discapacidad (Obligatorio)
-  hasDisability: z.string({ required_error: "Indique si tiene alguna discapacidad" })
+  hasDisability: z.string({ required_error: "Debes seleccionar una opción" })
 }).refine(
   (data) => validateCURPWithBirthDate(data.curp, data.birthDate),
   {
