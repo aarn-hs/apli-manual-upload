@@ -46,9 +46,15 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
   
   // Watch all form values to determine if form is empty
   const watchedValues = watch();
-  const isFormEmpty = Object.values(watchedValues).every(value => 
-    value === "" || value === null || value === undefined
-  );
+  const isFormEmpty = Object.entries(watchedValues).every(([key, value]) => {
+    // Special handling for date fields that might have default values
+    if (key === 'birthDate' && value) {
+      // Check if it's a valid date string and not just empty
+      const dateValue = value.toString().trim();
+      return dateValue === "" || dateValue === "Invalid Date";
+    }
+    return value === "" || value === null || value === undefined;
+  });
   
   // Debug log to see what's happening
   console.log('Form values debug:', { watchedValues, isFormEmpty });
