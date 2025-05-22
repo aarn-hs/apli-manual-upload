@@ -1,0 +1,78 @@
+Field,Mandatory,Type,Values,Validation
+Fuente,Yes,Drop down,"agencia_cygnus
+agencia_bbn
+agencia_peoplecare
+agencia_hq
+agencia_stoneway",
+Puesto,Yes,Drop down,"Auxiliar de Administración
+Auxiliar General
+Auxiliar General de Perecederos
+Chofer Repartidor
+Mecánico
+Operador de Equipos de Carga
+Recibidor de Mercancía
+Jefatura Administrativa
+Jefatura de Calidad
+Jefatura de Operaciones de Logística
+Jefatura de Seguridad
+Jefatura de Transportes
+Jefatura de trato con proveedores
+Subgerencia en Entrenamiento",
+Ubicación,Yes,Drop down,"Cedis ecommerce Walmart México
+Cedis Walmart BAE Sur - VESTA
+Cedis Walmart Chalco
+Cedis Walmart Chihuahua
+Cedis Walmart Cuautitlán
+Cedis Walmart ecommerce Guadalajara
+Cedis Walmart Guadalajara
+Cedis Walmart Merida
+Cedis Walmart Mexicali
+Cedis Walmart San Martin Obispo
+Cedis Walmart Santa Bárbara
+Centro de Distribucion Walmart Villahermosa
+Planta de Carnes Walmart Cuautitlán
+Walmart - CEDIS Monterrey
+Walmart Culiacan Cedis
+Walmart eCommerce MTY",
+PMX,Yes,Free text,Alphanumeric identifier,REGEX pattern for alphanumeric format: PMX + 8 digits
+Nombre(s),Yes,Free text,"Letters, spaces and accents","Blocks special characters like &""|?'"
+Apellido paterno,Yes,Free text,"Letters, spaces and accents","Blocks special characters like &""|?'"
+Apellido materno,No,Free text,"Letters, spaces and accents","Blocks special characters like &""|?'"
+Fecha de nacimiento,Yes,Date,"DD/MM/AAAA, D/M/AAAA or similar format","Date format validation, after 1945, before today. Checks if candidate is not a minor"
+Correo electrónico,Yes,Email,ejemplo@dominio.com,Email format validation
+Número de teléfono,Yes,Phone number,10 digits,REGEX validation of exactly 10 digits
+Género,Yes,Drop down,"H, M, X",
+Nacionalidad,Yes,Drop down,,
+Calle y número de la vivienda,Yes,Free text,,"REGEX, min 2 letters or numbers with some special characteres such as '´"
+Número interior,No,Free text,,
+Colonia,Yes,Free text,,"REGEX, min 2 letters or numbers with some special characteres such as '´"
+Municipio,Yes,Drop down,,
+Estado,Yes,Drop down,,
+Código postal,Yes,Numeric (must support zipcodes starting with 0),,REGEX validation of exactly 5 digits
+Escolaridad,Yes,Drop down,"Primaria
+Secundaria
+Preparatoria
+Carrera Técnica
+Universidad
+Posgrado",
+Estado civil,Yes,Drop down,"Soltera/o
+Casada/o
+Viudo
+Divorciado/a
+Separado
+Unión libre",
+Compañía Experiencia Previa,Yes,Free text,,
+Puesto Experiencia Previa,Yes,Free text,,
+Tareas Experiencia Previa,Yes,Free text,,
+Experiencia en retail,Yes,Drop down,"Sí,No",
+Motivación al elegir trabajo,Yes,Drop down,"Cultura
+Compañía
+Líder
+Posición
+Sueldo
+Prestaciones
+Crecimiento
+Flexibilidad
+Ambiente",
+CURP,Yes,Free text,,REGEX validation according to official format plus verification digit review and cross-comparison with date of birth
+Discapacidad,Yes,Drop down,"Sí, No",Check against list of allowed values

@@ -5,13 +5,91 @@ export function validatePMX(pmx: string): boolean {
   return /^[Pp][Mm][Xx]\d{8}$/i.test(pmx);
 }
 
+// Validate name (letters, spaces, accents, no special chars)
+export function validateName(name: string): boolean {
+  if (!name) return false;
+  // Only allows letters, spaces and accents, blocks special characters
+  return /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/.test(name);
+}
+
+// Phone validation (exactly 10 digits)
+export function validatePhone(phone: string): boolean {
+  if (!phone) return false;
+  return /^\d{10}$/.test(phone);
+}
+
+// Postal code validation (exactly 5 digits)
+export function validatePostalCode(postalCode: string): boolean {
+  if (!postalCode) return false;
+  return /^\d{5}$/.test(postalCode);
+}
+
+// Address validation
+export function validateAddress(address: string): boolean {
+  if (!address) return false;
+  // Min 2 chars, allows letters, numbers, spaces and some special chars
+  return /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s\.\-\#\']{2,}$/.test(address);
+}
+
+// Birth date validation
+export function validateBirthDate(dateStr: string): boolean {
+  if (!dateStr) return false;
+  
+  const birthDate = new Date(dateStr);
+  if (isNaN(birthDate.getTime())) return false;
+  
+  const today = new Date();
+  
+  // Check if date is after 1945
+  const minDate = new Date("1945-01-01");
+  if (birthDate < minDate) return false;
+  
+  // Check if date is before today
+  if (birthDate > today) return false;
+  
+  // Check if the person is at least 18 years old
+  const age = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    return age - 1 >= 18;
+  }
+  return age >= 18;
+}
+
 // CURP validation (18 alphanumeric characters)
 export function validateCURP(curp: string): boolean {
   if (curp.length !== 18) return false;
   
   // Basic CURP format: 4 letters + 6 digits + 8 alphanumeric
   const curpRegex = /^[A-Z]{4}\d{6}[HM][A-Z]{5}[0-9A-Z]\d$/;
-  return curpRegex.test(curp);
+  
+  if (!curpRegex.test(curp)) {
+    return false;
+  }
+  
+  // Extraer fecha de nacimiento de CURP
+  const yearPart = curp.substring(4, 6);
+  const monthPart = curp.substring(6, 8);
+  const dayPart = curp.substring(8, 10);
+  
+  // Convertir a fecha completa (asumiendo siglo XX para años >= 30 y siglo XXI para años < 30)
+  const century = parseInt(yearPart) >= 30 ? "19" : "20";
+  const birthYear = century + yearPart;
+  
+  // Verificar que la fecha sea válida
+  const birthDate = new Date(`${birthYear}-${monthPart}-${dayPart}`);
+  if (isNaN(birthDate.getTime())) {
+    return false;
+  }
+  
+  // Verificar que la persona sea mayor de edad
+  const today = new Date();
+  const age = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    return age - 1 >= 18;
+  }
+  return age >= 18;
 }
 
 // RFC validation (13 alphanumeric characters)

@@ -1,5 +1,17 @@
 import { z } from "zod";
-import { validatePMX, validateCURP, validateRFC, validateNSS, validateCLABE, isWorkingDay } from "./validation";
+import { 
+  validatePMX, 
+  validateCURP, 
+  validateName, 
+  validatePhone, 
+  validateAddress, 
+  validatePostalCode,
+  validateBirthDate,
+  validateRFC,
+  validateNSS,
+  validateCLABE,
+  isWorkingDay
+} from "./validation";
 
 export const dependentSchema = z.object({
   firstName: z.string().optional(),

@@ -35,33 +35,7 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
       previousTasks: "",
       retailExperience: "",
       motivation: "",
-      curp: "",
-      // Campos eliminados
-      // position: "",
-      // location: "",
-      // rfc: "",
-      // nss: "",
-      // clabe: "",
-      // fiscalPostalCode: "",
-      // contractStartDate: "",
-      // contractEndDate: "",
-      // hasDisability: "",
-      // disabilityType: "",
-      // disabilityDescription: "",
-      // emergencyContactName: "",
-      // emergencyContactRelation: "",
-      // emergencyContactPhone: "",
-      // dependents: [
-      //   {
-      //     firstName: "",
-      //     lastName: "",
-      //     relation: "",
-      //     birthDate: "",
-      //     isBeneficiary: false,
-      //     isStudent: false,
-      //     livesWithAssociate: false
-      //   }
-      // ]
+      curp: ""
     }
   });
   
