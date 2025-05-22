@@ -128,7 +128,7 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
       <div className="flex gap-3">
         {/* Progress Bar - pegada al formulario */}
         <div className="w-2 flex-shrink-0">
-          <div className="sticky top-6 h-screen max-h-[600px]">
+          <div className="sticky top-6 h-[500px]">
             <ProgressBar 
               completedFields={completedFieldsCount}
               totalFields={requiredFields.length}
