@@ -37,7 +37,8 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
       previousTasks: "",
       retailExperience: "",
       motivation: "",
-      curp: ""
+      curp: "",
+      hasDisability: ""
     }
   });
   
