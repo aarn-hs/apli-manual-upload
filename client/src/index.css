@@ -133,7 +133,7 @@
 
   .required::after {
     content: '*';
-    @apply text-purple ml-0.5;
+    @apply text-red ml-0.5;
   }
 
   .progress-step {
