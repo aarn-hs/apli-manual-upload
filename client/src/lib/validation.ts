@@ -1,6 +1,8 @@
 // PMX validation (format: PMX + 8 digits)
 export function validatePMX(pmx: string): boolean {
-  return /^PMX\d{8}$/.test(pmx);
+  if (!pmx) return false;
+  // Allow case insensitive "PMX" prefix followed by 8 digits
+  return /^[Pp][Mm][Xx]\d{8}$/i.test(pmx);
 }
 
 // CURP validation (18 alphanumeric characters)
