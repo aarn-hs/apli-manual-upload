@@ -49,7 +49,7 @@ export default function SimpleForm() {
                 <FormLabel className="body-text required">Fuente</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
                   <FormControl>
-                    <SelectTrigger className="form-control">
+                    <SelectTrigger className="form-control" tabIndex={1}>
                       <SelectValue placeholder="Seleccionar" />
                     </SelectTrigger>
                   </FormControl>
@@ -75,7 +75,7 @@ export default function SimpleForm() {
                 <FormLabel className="body-text required">Ubicación</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
                   <FormControl>
-                    <SelectTrigger className="form-control">
+                    <SelectTrigger className="form-control" tabIndex={3}>
                       <SelectValue placeholder="Seleccionar" />
                     </SelectTrigger>
                   </FormControl>
@@ -104,6 +104,7 @@ export default function SimpleForm() {
                     {...field}
                     placeholder="Nombre(s)"
                     className="form-control"
+                    tabIndex={5}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -123,6 +124,7 @@ export default function SimpleForm() {
                     {...field}
                     placeholder="Apellido materno"
                     className="form-control"
+                    tabIndex={7}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -143,6 +145,7 @@ export default function SimpleForm() {
                     type="email"
                     placeholder="ejemplo@dominio.com"
                     className="form-control"
+                    tabIndex={9}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -159,7 +162,7 @@ export default function SimpleForm() {
                 <FormLabel className="body-text required">Género</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
                   <FormControl>
-                    <SelectTrigger className="form-control">
+                    <SelectTrigger className="form-control" tabIndex={11}>
                       <SelectValue placeholder="Seleccionar" />
                     </SelectTrigger>
                   </FormControl>
@@ -188,6 +191,7 @@ export default function SimpleForm() {
                     {...field}
                     placeholder="Calle y número"
                     className="form-control"
+                    tabIndex={13}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -207,6 +211,7 @@ export default function SimpleForm() {
                     {...field}
                     placeholder="Colonia"
                     className="form-control"
+                    tabIndex={15}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -223,7 +228,7 @@ export default function SimpleForm() {
                 <FormLabel className="body-text required">Estado</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
                   <FormControl>
-                    <SelectTrigger className="form-control">
+                    <SelectTrigger className="form-control" tabIndex={17}>
                       <SelectValue placeholder="Seleccionar" />
                     </SelectTrigger>
                   </FormControl>
@@ -249,7 +254,7 @@ export default function SimpleForm() {
                 <FormLabel className="body-text required">Escolaridad</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
                   <FormControl>
-                    <SelectTrigger className="form-control">
+                    <SelectTrigger className="form-control" tabIndex={19}>
                       <SelectValue placeholder="Seleccionar" />
                     </SelectTrigger>
                   </FormControl>
@@ -278,6 +283,7 @@ export default function SimpleForm() {
                     {...field}
                     placeholder="Compañía donde trabajó anteriormente"
                     className="form-control"
+                    tabIndex={21}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -298,6 +304,7 @@ export default function SimpleForm() {
                     placeholder="Describa sus responsabilidades anteriores"
                     className="form-control"
                     rows={3}
+                    tabIndex={23}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -314,7 +321,7 @@ export default function SimpleForm() {
                 <FormLabel className="body-text required">Motivación al elegir trabajo</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
                   <FormControl>
-                    <SelectTrigger className="form-control">
+                    <SelectTrigger className="form-control" tabIndex={25}>
                       <SelectValue placeholder="Seleccionar" />
                     </SelectTrigger>
                   </FormControl>
@@ -340,7 +347,7 @@ export default function SimpleForm() {
                 <FormLabel className="body-text required">Discapacidad</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
                   <FormControl>
-                    <SelectTrigger className="form-control">
+                    <SelectTrigger className="form-control" tabIndex={27}>
                       <SelectValue placeholder="Seleccionar" />
                     </SelectTrigger>
                   </FormControl>
@@ -368,7 +375,7 @@ export default function SimpleForm() {
                 <FormLabel className="body-text required">Puesto</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
                   <FormControl>
-                    <SelectTrigger className="form-control">
+                    <SelectTrigger className="form-control" tabIndex={2}>
                       <SelectValue placeholder="Seleccionar" />
                     </SelectTrigger>
                   </FormControl>
@@ -397,6 +404,7 @@ export default function SimpleForm() {
                     {...field}
                     placeholder="PMX12345678"
                     className="form-control"
+                    tabIndex={4}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -416,6 +424,7 @@ export default function SimpleForm() {
                     {...field}
                     placeholder="Apellido paterno"
                     className="form-control"
+                    tabIndex={6}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -435,6 +444,7 @@ export default function SimpleForm() {
                     {...field}
                     type="date"
                     className="form-control"
+                    tabIndex={8}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -454,6 +464,7 @@ export default function SimpleForm() {
                     {...field}
                     placeholder="10 dígitos"
                     className="form-control"
+                    tabIndex={10}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -470,7 +481,7 @@ export default function SimpleForm() {
                 <FormLabel className="body-text required">Nacionalidad</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
                   <FormControl>
-                    <SelectTrigger className="form-control">
+                    <SelectTrigger className="form-control" tabIndex={12}>
                       <SelectValue placeholder="Seleccionar" />
                     </SelectTrigger>
                   </FormControl>
@@ -499,6 +510,7 @@ export default function SimpleForm() {
                     {...field}
                     placeholder="Número interior (opcional)"
                     className="form-control"
+                    tabIndex={14}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -515,7 +527,7 @@ export default function SimpleForm() {
                 <FormLabel className="body-text required">Municipio</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value || ""} disabled={!selectedState}>
                   <FormControl>
-                    <SelectTrigger className="form-control">
+                    <SelectTrigger className="form-control" tabIndex={16}>
                       <SelectValue placeholder={selectedState ? "Seleccionar" : "Seleccione primero un estado"} />
                     </SelectTrigger>
                   </FormControl>
@@ -544,6 +556,7 @@ export default function SimpleForm() {
                     {...field}
                     placeholder="5 dígitos"
                     className="form-control"
+                    tabIndex={18}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -560,7 +573,7 @@ export default function SimpleForm() {
                 <FormLabel className="body-text required">Estado civil</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
                   <FormControl>
-                    <SelectTrigger className="form-control">
+                    <SelectTrigger className="form-control" tabIndex={20}>
                       <SelectValue placeholder="Seleccionar" />
                     </SelectTrigger>
                   </FormControl>
@@ -589,6 +602,7 @@ export default function SimpleForm() {
                     {...field}
                     placeholder="Puesto que ocupó anteriormente"
                     className="form-control"
+                    tabIndex={22}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -605,7 +619,7 @@ export default function SimpleForm() {
                 <FormLabel className="body-text required">Experiencia en retail</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
                   <FormControl>
-                    <SelectTrigger className="form-control">
+                    <SelectTrigger className="form-control" tabIndex={24}>
                       <SelectValue placeholder="Seleccionar" />
                     </SelectTrigger>
                   </FormControl>
@@ -635,6 +649,7 @@ export default function SimpleForm() {
                     placeholder="18 caracteres"
                     className="form-control"
                     autoUppercase={true}
+                    tabIndex={26}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
