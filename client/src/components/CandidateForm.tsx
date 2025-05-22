@@ -57,7 +57,12 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
   });
   
   // Debug log to see what's happening
-  console.log('Form values debug:', { watchedValues, isFormEmpty });
+  console.log('Form values debug:', { 
+    watchedValues, 
+    isFormEmpty, 
+    isSubmitting,
+    buttonShouldBeDisabled: isSubmitting || isFormEmpty 
+  });
   
   const handleFormSubmit = (data: any) => {
     onSubmit(data);

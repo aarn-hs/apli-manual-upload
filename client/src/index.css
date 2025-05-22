@@ -107,8 +107,16 @@
     @apply bg-black text-white border border-black px-4 py-2 hover:bg-dark-grey transition-colors;
   }
 
+  .btn-primary:disabled {
+    @apply bg-gray-400 text-gray-200 border-gray-400 cursor-not-allowed;
+  }
+
   .btn-secondary {
     @apply bg-white text-black border border-black px-4 py-2 hover:bg-light-grey transition-colors;
+  }
+
+  .btn-secondary:disabled {
+    @apply bg-gray-100 text-gray-400 border-gray-300 cursor-not-allowed;
   }
 
   .btn-tertiary {
