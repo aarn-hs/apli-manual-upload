@@ -13,6 +13,8 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
     mode: "onBlur",
     defaultValues: {
       source: "",
+      position: "",
+      location: "",
       pmx: "",
       firstName: "",
       firstLastName: "",

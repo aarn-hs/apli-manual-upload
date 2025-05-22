@@ -6,6 +6,8 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/comp
 import { Textarea } from "@/components/ui/textarea";
 import {
   agencySources,
+  positions,
+  locations,
   genders,
   nationalities,
   mexicanStates,
@@ -54,6 +56,56 @@ export default function SimpleForm() {
                     {agencySources.map((source) => (
                       <SelectItem key={source.value} value={source.value}>
                         {source.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage className="error-message" />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={control}
+            name="position"
+            render={({ field }) => (
+              <FormItem className="form-item">
+                <FormLabel className="body-text required">Puesto</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
+                  <FormControl>
+                    <SelectTrigger className="form-control">
+                      <SelectValue placeholder="Seleccionar" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {positions.map((position) => (
+                      <SelectItem key={position} value={position}>
+                        {position}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage className="error-message" />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={control}
+            name="location"
+            render={({ field }) => (
+              <FormItem className="form-item">
+                <FormLabel className="body-text required">Ubicación</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
+                  <FormControl>
+                    <SelectTrigger className="form-control">
+                      <SelectValue placeholder="Seleccionar" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {locations.map((location) => (
+                      <SelectItem key={location} value={location}>
+                        {location}
                       </SelectItem>
                     ))}
                   </SelectContent>
