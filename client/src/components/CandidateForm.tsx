@@ -3,14 +3,12 @@ import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { candidateSchema } from "@/lib/schemas";
 import ProgressSteps from "@/components/ui/progress-steps";
-import JobInfo from "@/components/FormSections/JobInfo";
-import PersonalDetails from "@/components/FormSections/PersonalDetails";
-import AddressInfo from "@/components/FormSections/AddressInfo";
-import EmploymentHistory from "@/components/FormSections/EmploymentHistory";
-import LegalInfo from "@/components/FormSections/LegalInfo";
-import ContractDetails from "@/components/FormSections/ContractDetails";
-import EmergencyInfo from "@/components/FormSections/EmergencyInfo";
-import Dependents from "@/components/FormSections/Dependents";
+import JobPosition from "@/components/FormSections/JobPosition";
+import PersonalInfo from "@/components/FormSections/PersonalInfo";
+import WorkEducation from "@/components/FormSections/WorkEducation";
+import HiringInfo from "@/components/FormSections/HiringInfo";
+import EmergencyContact from "@/components/FormSections/EmergencyContact";
+import DependentsInfo from "@/components/FormSections/DependentsInfo";
 
 interface CandidateFormProps {
   onSubmit: (data: any) => void;
@@ -78,14 +76,12 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
   const { handleSubmit, formState: { errors, isSubmitting } } = methods;
 
   const steps = [
-    { id: 1, name: "Información del Trabajo", component: <JobInfo /> },
-    { id: 2, name: "Datos Personales", component: <PersonalDetails /> },
-    { id: 3, name: "Dirección y Educación", component: <AddressInfo /> },
-    { id: 4, name: "Experiencia Laboral", component: <EmploymentHistory /> },
-    { id: 5, name: "Información Legal", component: <LegalInfo /> },
-    { id: 6, name: "Detalles de Contrato", component: <ContractDetails /> },
-    { id: 7, name: "Contacto de Emergencia", component: <EmergencyInfo /> },
-    { id: 8, name: "Dependientes", component: <Dependents /> }
+    { id: 1, name: "Información del puesto", component: <JobPosition /> },
+    { id: 2, name: "Información personal", component: <PersonalInfo /> },
+    { id: 3, name: "Información laboral y educativa", component: <WorkEducation /> },
+    { id: 4, name: "Información de contratación", component: <HiringInfo /> },
+    { id: 5, name: "Contacto de emergencia", component: <EmergencyContact /> },
+    { id: 6, name: "Dependientes", component: <DependentsInfo /> }
   ];
   
   const goToNextStep = () => {
@@ -113,8 +109,8 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8">
         <ProgressSteps 
-          steps={steps.slice(0, 4).map(step => step.name)} 
-          currentStep={currentStep <= 4 ? currentStep : 4} 
+          steps={steps.map(step => step.name)} 
+          currentStep={currentStep} 
         />
         
         {steps[currentStep - 1].component}
@@ -157,6 +153,19 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
             )}
           </div>
         </div>
+        
+        {Object.keys(errors).length > 0 && (
+          <div className="bg-red bg-opacity-10 p-4 border border-red">
+            <p className="text-red important">Por favor corrija los errores antes de continuar:</p>
+            <ul className="list-disc list-inside">
+              {Object.entries(errors).map(([key, error]) => (
+                <li key={key} className="text-red">
+                  {error?.message?.toString()}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </form>
     </FormProvider>
   );
