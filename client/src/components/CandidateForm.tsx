@@ -41,9 +41,9 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
       hasDisability: ""
     }
   });
-  
+
   const { handleSubmit, formState: { isSubmitting }, reset, watch } = methods;
-  
+
   // Watch all form values to determine if form is empty
   const watchedValues = watch();
   const isFormEmpty = Object.entries(watchedValues).every(([key, value]) => {
@@ -64,7 +64,7 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
     'education', 'maritalStatus', 'previousCompany', 'previousPosition', 
     'previousTasks', 'retailExperience', 'motivation', 'curp', 'hasDisability'
   ];
-  
+
   const areAllRequiredFieldsCompleted = requiredFields.every(field => {
     const value = (watchedValues as any)[field];
     if (field === 'birthDate' && value) {
@@ -73,13 +73,13 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
     }
     return value !== "" && value !== null && value !== undefined;
   });
-  
 
-  
+
+
   const handleFormSubmit = (data: any) => {
     onSubmit(data);
   };
-  
+
   const handleClearForm = () => {
     reset({
       source: "",
@@ -111,12 +111,12 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
       hasDisability: ""
     });
   };
-  
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8">
         <SimpleForm />
-        
+
         <div className="flex justify-start gap-4 pt-6">
           <button 
             type="submit" 
@@ -125,7 +125,7 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
           >
             Enviar candidato
           </button>
-          
+
           <button 
             type="button" 
             className="btn-secondary"
@@ -135,6 +135,9 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
             Limpiar formulario
           </button>
         </div>
+        <p className="text-sm text-gray-500">
+          Asegúrate de llenar todos los campos obligatorios para poder continuar.
+        </p>
       </form>
     </FormProvider>
   );
