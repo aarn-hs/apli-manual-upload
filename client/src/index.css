@@ -1,0 +1,145 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 0 0% 0%;
+  --muted: 0 0% 96%;
+  --muted-foreground: 0 0% 40%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 0%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 0%;
+  --border: 0 0% 80%;
+  --input: 0 0% 80%;
+  --primary: 240 100% 60%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 0 0% 100%;
+  --secondary-foreground: 0 0% 0%;
+  --accent: 175 100% 60%;
+  --accent-foreground: 0 0% 0%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --ring: 240 100% 60%;
+  --radius: 0rem;
+  
+  /* Apli color palette */
+  --black: 0 0% 0%;
+  --dark-grey: 0 0% 40%;
+  --grey: 0 0% 80%;
+  --light-grey: 0 0% 95%;
+  --white: 0 0% 100%;
+  --turquoise: 175 100% 60%;
+  --blue: 200 100% 60%;
+  --azure: 240 100% 60%;
+  --purple: 270 100% 60%;
+  --green: 150 100% 60%;
+  --red: 350 100% 60%;
+  --magenta: 300 100% 60%;
+  --pink: 330 100% 60%;
+  
+  /* Chart colors */
+  --chart-1: 175 100% 60%;
+  --chart-2: 200 100% 60%;
+  --chart-3: 240 100% 60%;
+  --chart-4: 270 100% 60%;
+  --chart-5: 300 100% 60%;
+}
+
+.dark {
+  --background: 0 0% 10%;
+  --foreground: 0 0% 100%;
+  --muted: 0 0% 20%;
+  --muted-foreground: 0 0% 80%;
+  --popover: 0 0% 10%;
+  --popover-foreground: 0 0% 100%;
+  --card: 0 0% 10%;
+  --card-foreground: 0 0% 100%;
+  --border: 0 0% 30%;
+  --input: 0 0% 30%;
+  --primary: 240 100% 60%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 0 0% 20%;
+  --secondary-foreground: 0 0% 100%;
+  --accent: 175 100% 60%;
+  --accent-foreground: 0 0% 0%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --ring: 240 100% 60%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    @apply rounded-none;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Nunito Sans', sans-serif;
+  }
+  
+  .title {
+    @apply font-bold text-4xl leading-[48px];
+  }
+  
+  .subtitle {
+    @apply font-normal text-xl leading-6;
+  }
+  
+  .important {
+    @apply font-bold text-base leading-6;
+  }
+  
+  .body-text {
+    @apply font-normal text-base leading-6;
+  }
+  
+  .small-text {
+    @apply font-normal text-xs leading-6;
+  }
+  
+  .btn-primary {
+    @apply bg-black text-white border border-black px-4 py-2 hover:bg-dark-grey transition-colors;
+  }
+  
+  .btn-secondary {
+    @apply bg-white text-black border border-black px-4 py-2 hover:bg-light-grey transition-colors;
+  }
+  
+  .btn-tertiary {
+    @apply bg-transparent text-black border-none px-4 py-2 hover:text-dark-grey transition-colors;
+  }
+  
+  .form-control {
+    @apply border border-grey p-2 w-full transition-colors focus:outline-none focus:border-azure;
+  }
+  
+  .form-control.error {
+    @apply border-red;
+  }
+  
+  .error-message {
+    @apply text-red text-xs mt-1;
+  }
+  
+  .section-title {
+    @apply border-b-2 border-black pb-2 mb-4;
+  }
+  
+  .required::after {
+    content: '*';
+    @apply text-red ml-0.5;
+  }
+  
+  .progress-step {
+    @apply h-2 bg-light-grey mr-1;
+  }
+  
+  .progress-step.active {
+    @apply bg-turquoise;
+  }
+}

@@ -1,0 +1,203 @@
+// Source agencies
+export const agencySources = [
+  { value: "agencia_cygnus", label: "Agencia Cygnus" },
+  { value: "agencia_bbn", label: "Agencia BBN" },
+  { value: "agencia_peoplecare", label: "Agencia PeopleCare" },
+  { value: "agencia_hq", label: "Agencia HQ" },
+  { value: "agencia_stoneway", label: "Agencia Stoneway" }
+];
+
+// Genders
+export const genders = [
+  { value: "H", label: "H" },
+  { value: "M", label: "M" },
+  { value: "X", label: "X" }
+];
+
+// Nationalities
+export const nationalities = [
+  "México",
+  "Guatemala",
+  "Venezuela",
+  "Colombia",
+  "Honduras",
+  "Cuba",
+  "El Salvador",
+  "Argentina",
+  "Haití",
+  "Nicaragua",
+  "Perú",
+  "Ecuador",
+  "República Dominicana",
+  "Brasil",
+  "España",
+  "Estados Unidos",
+  "China",
+  "India",
+  "Egipto",
+  "Irán",
+  "Turquía",
+  "Canadá"
+];
+
+// Positions
+export const positions = [
+  "Auxiliar de Administración",
+  "Auxiliar General",
+  "Auxiliar General de Perecederos",
+  "Chofer Repartidor",
+  "Mecánico",
+  "Operador de Equipos de Carga",
+  "Recibidor de Mercancía",
+  "Jefatura Administrativa",
+  "Jefatura de Calidad",
+  "Jefatura de Operaciones de Logística",
+  "Jefatura de Seguridad",
+  "Jefatura de Transportes",
+  "Jefatura de trato con proveedores",
+  "Subgerencia en Entrenamiento"
+];
+
+// Locations
+export const locations = [
+  "Cedis ecommerce Walmart México",
+  "Cedis Walmart BAE Sur - VESTA",
+  "Cedis Walmart Chalco",
+  "Cedis Walmart Chihuahua",
+  "Cedis Walmart Cuautitlán",
+  "Cedis Walmart ecommerce Guadalajara",
+  "Cedis Walmart Guadalajara",
+  "Cedis Walmart Merida",
+  "Cedis Walmart Mexicali",
+  "Cedis Walmart San Martin Obispo",
+  "Cedis Walmart Santa Bárbara",
+  "Centro de Distribucion Walmart Villahermosa",
+  "Planta de Carnes Walmart Cuautitlán",
+  "Walmart - CEDIS Monterrey",
+  "Walmart Culiacan Cedis",
+  "Walmart eCommerce MTY"
+];
+
+// Education levels
+export const educationLevels = [
+  "Primaria",
+  "Secundaria",
+  "Preparatoria",
+  "Carrera Técnica",
+  "Universidad",
+  "Posgrado"
+];
+
+// Yes/No options
+export const yesNoOptions = [
+  { value: "Sí", label: "Sí" },
+  { value: "No", label: "No" }
+];
+
+// Motivations
+export const motivations = [
+  "Cultura",
+  "Compañía",
+  "Líder",
+  "Posición",
+  "Sueldo",
+  "Prestaciones",
+  "Crecimiento",
+  "Flexibilidad",
+  "Ambiente"
+];
+
+// Mexican states
+export const mexicanStates = [
+  "Aguascalientes",
+  "Baja California",
+  "Baja California Sur",
+  "Campeche",
+  "Chiapas",
+  "Chihuahua",
+  "Ciudad de México",
+  "Coahuila",
+  "Colima",
+  "Durango",
+  "Estado de México",
+  "Guanajuato",
+  "Guerrero",
+  "Hidalgo",
+  "Jalisco",
+  "Michoacán",
+  "Morelos",
+  "Nayarit",
+  "Nuevo León",
+  "Oaxaca",
+  "Puebla",
+  "Querétaro",
+  "Quintana Roo",
+  "San Luis Potosí",
+  "Sinaloa",
+  "Sonora",
+  "Tabasco",
+  "Tamaulipas",
+  "Tlaxcala",
+  "Veracruz",
+  "Yucatán",
+  "Zacatecas"
+];
+
+// Municipalities by state (10 for each state)
+const municipalitiesByState: Record<string, string[]> = {};
+
+mexicanStates.forEach((state) => {
+  municipalitiesByState[state] = Array.from({ length: 10 }, (_, i) => `Municipio ${i + 1} de ${state}`);
+});
+
+export function getMunicipalitiesForState(state: string): string[] {
+  return municipalitiesByState[state] || [];
+}
+
+// Marital statuses
+export const maritalStatuses = [
+  "Soltera/o",
+  "Casada/o",
+  "Viudo",
+  "Divorciado/a",
+  "Separado",
+  "Unión libre"
+];
+
+// Disability types
+export const disabilityTypes = [
+  "DISCAPACIDAD LENGUAJE O HABLA",
+  "DISCAPACIDAD MOTRIZ",
+  "DISCAPACIDAD VISUAL",
+  "DISCAPACIDAD AUDITIVA",
+  "DISCAPACIDAD INTELECTUAL"
+];
+
+// Emergency contact relations
+export const emergencyContactRelations = [
+  "Cónyuge",
+  "Cónyuge divorciado",
+  "Hijo",
+  "Padres",
+  "Hermanos",
+  "Otros",
+  "Otros parientes"
+];
+
+// Dependent relations
+export const dependentRelations = [
+  "Cónyuge",
+  "Cónyuge divorciado",
+  "Padre",
+  "Madre",
+  "Pareja en unión libre",
+  "Hijo de pareja en unión libre",
+  "Hermano",
+  "Hermana",
+  "Pareja en unión libre registrada",
+  "Hijo",
+  "Tutor legal",
+  "Tutor",
+  "Hijastro",
+  "Personas emparentadas"
+];
