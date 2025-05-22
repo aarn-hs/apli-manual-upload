@@ -143,4 +143,9 @@
   .progress-step.active {
     @apply bg-turquoise;
   }
+  
+  /* Add consistent spacing for form fields */
+  .form-item {
+    @apply min-h-[105px] mb-2 flex flex-col;
+  }
 }

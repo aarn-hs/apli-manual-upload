@@ -17,7 +17,7 @@ export default function JobPosition() {
             control={control}
             name="source"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="form-item">
                 <FormLabel className="body-text required">Fuente</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
                   <FormControl>
@@ -42,7 +42,7 @@ export default function JobPosition() {
             control={control}
             name="position"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="form-item">
                 <FormLabel className="body-text required">Puesto</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
                   <FormControl>
@@ -69,7 +69,7 @@ export default function JobPosition() {
             control={control}
             name="location"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="form-item">
                 <FormLabel className="body-text required">Ubicación</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
                   <FormControl>
@@ -94,7 +94,7 @@ export default function JobPosition() {
             control={control}
             name="pmx"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="form-item">
                 <FormLabel className="body-text required">PMX</FormLabel>
                 <FormControl>
                   <CustomInput
