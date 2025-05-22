@@ -115,7 +115,7 @@
   }
   
   .form-control {
-    @apply border border-grey p-2 w-full transition-colors focus:outline-none focus:border-azure;
+    @apply border border-grey p-2 w-full transition-colors focus:outline-none focus:border-blue;
   }
   
   .form-control.error {
@@ -140,6 +140,6 @@
   }
   
   .progress-step.active {
-    @apply bg-turquoise;
+    @apply bg-blue;
   }
 }
