@@ -344,7 +344,7 @@ export default function SimpleForm() {
             name="hasDisability"
             render={({ field }) => (
               <FormItem className="form-item">
-                <FormLabel className="body-text required">Discapacidad</FormLabel>
+                <FormLabel className="body-text required">Requiere algun ajuste durante el proceso debido a una discapacidad?</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
                   <FormControl>
                     <SelectTrigger className="form-control" tabIndex={27}>
