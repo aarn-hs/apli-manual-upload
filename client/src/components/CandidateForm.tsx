@@ -81,7 +81,35 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
   };
   
   const handleClearForm = () => {
-    reset();
+    reset({
+      source: "",
+      position: "",
+      location: "",
+      pmx: "",
+      firstName: "",
+      firstLastName: "",
+      secondLastName: "",
+      birthDate: "",
+      email: "",
+      phone: "",
+      gender: "",
+      nationality: "",
+      streetAndNumber: "",
+      interiorNumber: "",
+      neighborhood: "",
+      municipality: "",
+      state: "",
+      postalCode: "",
+      education: "",
+      maritalStatus: "",
+      previousCompany: "",
+      previousPosition: "",
+      previousTasks: "",
+      retailExperience: "",
+      motivation: "",
+      curp: "",
+      hasDisability: ""
+    });
   };
   
   return (
