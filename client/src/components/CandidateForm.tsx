@@ -1,29 +1,18 @@
-import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { candidateSchema } from "@/lib/schemas";
-import ProgressSteps from "@/components/ui/progress-steps";
-import JobPosition from "@/components/FormSections/JobPosition";
-import PersonalInfo from "@/components/FormSections/PersonalInfo";
-import WorkEducation from "@/components/FormSections/WorkEducation";
-import HiringInfo from "@/components/FormSections/HiringInfo";
-import EmergencyContact from "@/components/FormSections/EmergencyContact";
-import DependentsInfo from "@/components/FormSections/DependentsInfo";
+import SimpleForm from "@/components/FormSections/SimpleForm";
 
 interface CandidateFormProps {
   onSubmit: (data: any) => void;
 }
 
 export default function CandidateForm({ onSubmit }: CandidateFormProps) {
-  const [currentStep, setCurrentStep] = useState(1);
-  
   const methods = useForm({
     resolver: zodResolver(candidateSchema),
     mode: "onBlur",
     defaultValues: {
       source: "",
-      position: "",
-      location: "",
       pmx: "",
       firstName: "",
       firstLastName: "",
@@ -47,103 +36,54 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
       retailExperience: "",
       motivation: "",
       curp: "",
-      rfc: "",
-      nss: "",
-      clabe: "",
-      fiscalPostalCode: "",
-      contractStartDate: "",
-      contractEndDate: "",
-      hasDisability: "",
-      disabilityType: "",
-      disabilityDescription: "",
-      emergencyContactName: "",
-      emergencyContactRelation: "",
-      emergencyContactPhone: "",
-      dependents: [
-        {
-          firstName: "",
-          lastName: "",
-          relation: "",
-          birthDate: "",
-          isBeneficiary: false,
-          isStudent: false,
-          livesWithAssociate: false
-        }
-      ]
+      // Campos eliminados
+      // position: "",
+      // location: "",
+      // rfc: "",
+      // nss: "",
+      // clabe: "",
+      // fiscalPostalCode: "",
+      // contractStartDate: "",
+      // contractEndDate: "",
+      // hasDisability: "",
+      // disabilityType: "",
+      // disabilityDescription: "",
+      // emergencyContactName: "",
+      // emergencyContactRelation: "",
+      // emergencyContactPhone: "",
+      // dependents: [
+      //   {
+      //     firstName: "",
+      //     lastName: "",
+      //     relation: "",
+      //     birthDate: "",
+      //     isBeneficiary: false,
+      //     isStudent: false,
+      //     livesWithAssociate: false
+      //   }
+      // ]
     }
   });
   
-  const { handleSubmit, formState: { errors, isSubmitting } } = methods;
-
-  const steps = [
-    { id: 1, name: "Puesto", component: <JobPosition /> },
-    { id: 2, name: "Personal", component: <PersonalInfo /> },
-    { id: 3, name: "Laboral y educativo", component: <WorkEducation /> },
-    { id: 4, name: "Contratación", component: <HiringInfo /> },
-    { id: 5, name: "Contacto", component: <EmergencyContact /> },
-    { id: 6, name: "Dependientes", component: <DependentsInfo /> }
-  ];
-  
-  const goToNextStep = () => {
-    if (currentStep < steps.length) {
-      setCurrentStep(currentStep + 1);
-    }
-  };
-  
-  const goToPreviousStep = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
+  const { handleSubmit, formState: { isSubmitting } } = methods;
   
   const handleFormSubmit = (data: any) => {
     onSubmit(data);
   };
   
-  const handleSaveDraft = () => {
-    // Implementation for saving as draft
-    console.log("Draft saved:", methods.getValues());
-  };
-  
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8">
-        <ProgressSteps 
-          steps={steps.map(step => step.name)} 
-          currentStep={currentStep} 
-        />
+        <SimpleForm />
         
-        {steps[currentStep - 1].component}
-        
-        <div className="flex justify-between pt-6">
+        <div className="flex justify-end pt-6">
           <button 
-            type="button" 
-            className="btn-tertiary"
-            onClick={goToPreviousStep}
-            disabled={currentStep === 1}
+            type="submit" 
+            className="btn-primary"
+            disabled={isSubmitting}
           >
-            {currentStep === 1 ? "Cancelar" : "Anterior"}
+            Registrar candidato
           </button>
-          
-          <div className="space-x-4">
-            {currentStep < steps.length ? (
-              <button 
-                type="button" 
-                className="btn-primary"
-                onClick={goToNextStep}
-              >
-                Siguiente
-              </button>
-            ) : (
-              <button 
-                type="submit" 
-                className="btn-primary"
-                disabled={isSubmitting}
-              >
-                Registrar candidato
-              </button>
-            )}
-          </div>
         </div>
       </form>
     </FormProvider>
