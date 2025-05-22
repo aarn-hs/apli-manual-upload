@@ -2,6 +2,7 @@ import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { simplifiedCandidateSchema } from "@/lib/simplified-schema";
 import SimpleForm from "@/components/FormSections/SimpleForm";
+import ProgressBar from "@/components/ui/progress-bar";
 
 interface CandidateFormProps {
   onSubmit: (data: any) => void;
@@ -73,6 +74,16 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
     }
     return value !== "" && value !== null && value !== undefined;
   });
+
+  // Count completed fields for progress bar
+  const completedFieldsCount = requiredFields.filter(field => {
+    const value = (watchedValues as any)[field];
+    if (field === 'birthDate' && value) {
+      const dateValue = value.toString().trim();
+      return dateValue !== "" && dateValue !== "Invalid Date";
+    }
+    return value !== "" && value !== null && value !== undefined;
+  }).length;
   
 
   
@@ -114,28 +125,44 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
   
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8">
-        <SimpleForm />
-        
-        <div className="flex justify-start gap-4 pt-6">
-          <button 
-            type="submit" 
-            className="btn-primary"
-            disabled={isSubmitting || !areAllRequiredFieldsCompleted}
-          >
-            Enviar candidato
-          </button>
-          
-          <button 
-            type="button" 
-            className="btn-secondary"
-            onClick={handleClearForm}
-            disabled={isFormEmpty}
-          >
-            Limpiar formulario
-          </button>
+      <div className="flex gap-8">
+        {/* Main Form */}
+        <div className="flex-1">
+          <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8">
+            <SimpleForm />
+            
+            <div className="flex justify-start gap-4 pt-6">
+              <button 
+                type="submit" 
+                className="btn-primary"
+                disabled={isSubmitting || !areAllRequiredFieldsCompleted}
+              >
+                Enviar candidato
+              </button>
+              
+              <button 
+                type="button" 
+                className="btn-secondary"
+                onClick={handleClearForm}
+                disabled={isFormEmpty}
+              >
+                Limpiar formulario
+              </button>
+            </div>
+          </form>
         </div>
-      </form>
+        
+        {/* Progress Bar Sidebar */}
+        <div className="w-48 flex-shrink-0">
+          <div className="sticky top-6">
+            <ProgressBar 
+              completedFields={completedFieldsCount}
+              totalFields={requiredFields.length}
+              className="bg-white p-4 rounded-lg shadow-sm border border-gray-200"
+            />
+          </div>
+        </div>
+      </div>
     </FormProvider>
   );
 }
