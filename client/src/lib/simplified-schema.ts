@@ -4,7 +4,7 @@ import { validatePMX, validateName, validatePhone, validatePostalCode, validateA
 // Esquema simplificado del candidato según los campos obligatorios
 export const simplifiedCandidateSchema = z.object({
   // Fuente (Obligatorio)
-  source: z.string({ required_error: "Seleccione una fuente" }),
+  source: z.string({ required_error: "Debes seleccionar una opción" }),
   
   // PMX (Obligatorio)
   pmx: z.string({ required_error: "Ingrese el PMX" })
@@ -31,9 +31,9 @@ export const simplifiedCandidateSchema = z.object({
   phone: z.string({ required_error: "Ingrese el número de teléfono" })
     .refine(validatePhone, "El número debe tener exactamente 10 dígitos"),
   
-  gender: z.string({ required_error: "Seleccione el género" }),
+  gender: z.string({ required_error: "Debes seleccionar una opción" }),
   
-  nationality: z.string({ required_error: "Seleccione la nacionalidad" }),
+  nationality: z.string({ required_error: "Debes seleccionar una opción" }),
   
   // Información de dirección (Obligatorio)
   streetAndNumber: z.string({ required_error: "Ingrese la calle y número" })

@@ -277,7 +277,7 @@ export default function SimpleForm() {
             name="previousCompany"
             render={({ field }) => (
               <FormItem className="form-item">
-                <FormLabel className="body-text required">Compañía Experiencia Previa</FormLabel>
+                <FormLabel className="body-text required">¿Última compañía en la que trabajó?</FormLabel>
                 <FormControl>
                   <CustomInput
                     {...field}
@@ -297,7 +297,7 @@ export default function SimpleForm() {
             name="previousTasks"
             render={({ field }) => (
               <FormItem className="form-item">
-                <FormLabel className="body-text required">Tareas Experiencia Previa</FormLabel>
+                <FormLabel className="body-text required">¿Qué tareas tenía en ese puesto?</FormLabel>
                 <FormControl>
                   <Textarea
                     {...field}
@@ -596,7 +596,7 @@ export default function SimpleForm() {
             name="previousPosition"
             render={({ field }) => (
               <FormItem className="form-item">
-                <FormLabel className="body-text required">Puesto Experiencia Previa</FormLabel>
+                <FormLabel className="body-text required">¿Cuál era su puesto?</FormLabel>
                 <FormControl>
                   <CustomInput
                     {...field}

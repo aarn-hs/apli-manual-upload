@@ -127,8 +127,8 @@
     @apply border border-grey p-2 w-full transition-colors focus:outline-none focus:border-azure;
   }
 
-  .form-control.error {
-    @apply border-purple;
+  .form-control[aria-invalid="true"], .form-control.error {
+    border-color: #8b5cf6 !important;
   }
 
   .error-message {
