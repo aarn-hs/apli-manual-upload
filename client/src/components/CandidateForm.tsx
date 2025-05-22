@@ -157,19 +157,6 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
             )}
           </div>
         </div>
-        
-        {Object.keys(errors).length > 0 && (
-          <div className="bg-purple bg-opacity-10 p-4 border border-purple">
-            <p className="text-purple important">Por favor corrija los errores antes de continuar:</p>
-            <ul className="list-disc list-inside">
-              {Object.entries(errors).map(([key, error]) => (
-                <li key={key} className="text-purple">
-                  {error?.message?.toString()}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
       </form>
     </FormProvider>
   );
