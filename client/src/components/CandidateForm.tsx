@@ -55,6 +55,24 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
     }
     return value === "" || value === null || value === undefined;
   });
+
+  // Check if all required fields are completed
+  const requiredFields = [
+    'source', 'position', 'location', 'pmx', 'firstName', 'firstLastName', 
+    'secondLastName', 'birthDate', 'email', 'phone', 'gender', 'nationality',
+    'streetAndNumber', 'neighborhood', 'state', 'municipality', 'postalCode',
+    'education', 'maritalStatus', 'previousCompany', 'previousPosition', 
+    'previousTasks', 'retailExperience', 'motivation', 'curp', 'hasDisability'
+  ];
+  
+  const areAllRequiredFieldsCompleted = requiredFields.every(field => {
+    const value = (watchedValues as any)[field];
+    if (field === 'birthDate' && value) {
+      const dateValue = value.toString().trim();
+      return dateValue !== "" && dateValue !== "Invalid Date";
+    }
+    return value !== "" && value !== null && value !== undefined;
+  });
   
 
   
@@ -75,7 +93,7 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
           <button 
             type="submit" 
             className="btn-primary"
-            disabled={isSubmitting || isFormEmpty}
+            disabled={isSubmitting || !areAllRequiredFieldsCompleted}
           >
             Enviar candidato
           </button>
