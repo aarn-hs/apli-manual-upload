@@ -126,14 +126,6 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
           </button>
           
           <div className="space-x-4">
-            <button 
-              type="button" 
-              className="btn-secondary"
-              onClick={handleSaveDraft}
-            >
-              Guardar borrador
-            </button>
-            
             {currentStep < steps.length ? (
               <button 
                 type="button" 
