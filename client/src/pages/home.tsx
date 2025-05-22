@@ -1,6 +1,4 @@
 import { useState } from "react";
-import Header from "@/components/layout/header";
-import Footer from "@/components/layout/footer";
 import CandidateForm from "@/components/CandidateForm";
 import SuccessModal from "@/components/ui/success-modal";
 
@@ -28,18 +26,15 @@ export default function Home() {
   };
   
   return (
-    <div className="flex flex-col min-h-screen">
-      <Header />
-      <main className="container mx-auto px-4 py-8 flex-grow">
-        <div className="mb-8">
+    <div className="flex flex-col min-h-screen bg-white">
+      <main className="container mx-auto px-4 py-6 flex-grow">
+        <div className="mb-6">
           <h1 className="title mb-2">Registro de Candidato</h1>
           <p className="subtitle text-dark-grey">Complete el formulario con la información del candidato</p>
         </div>
         
         <CandidateForm onSubmit={handleFormSubmit} />
       </main>
-      
-      <Footer />
       
       <SuccessModal 
         isOpen={showSuccessModal} 
