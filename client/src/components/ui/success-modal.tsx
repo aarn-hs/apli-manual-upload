@@ -24,8 +24,9 @@ export default function SuccessModal({ isOpen, onClose }: SuccessModalProps) {
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button 
-            className="btn-primary" 
+          <Button
+            variant="default"
+            className="btn-primary"
             onClick={onClose}
           >
             Aceptar
