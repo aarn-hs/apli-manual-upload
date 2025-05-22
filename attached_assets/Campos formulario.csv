@@ -1,0 +1,140 @@
+Field,Is Mandatory,Type,Values,Validation,,,,,,,,,,,,,,,,,,,,,
+Fuente,Yes,Drop down,"agencia_cygnus
+agencia_bbn
+agencia_peoplecare
+agencia_hq
+agencia_stoneway",,,,,,,,,,,,,,,,,,,,,,
+Puesto,Yes,Drop down,"Auxiliar de Administración
+Auxiliar General
+Auxiliar General de Perecederos
+Chofer Repartidor
+Mecánico
+Operador de Equipos de Carga
+Recibidor de Mercancía
+Jefatura Administrativa
+Jefatura de Calidad
+Jefatura de Operaciones de Logística
+Jefatura de Seguridad
+Jefatura de Transportes
+Jefatura de trato con proveedores
+Subgerencia en Entrenamiento",,,,,,,,,,,,,,,,,,,,,,
+Ubicación,Yes,Drop down,"Cedis ecommerce Walmart México
+Cedis Walmart BAE Sur - VESTA
+Cedis Walmart Chalco
+Cedis Walmart Chihuahua
+Cedis Walmart Cuautitlán
+Cedis Walmart ecommerce Guadalajara
+Cedis Walmart Guadalajara
+Cedis Walmart Merida
+Cedis Walmart Mexicali
+Cedis Walmart San Martin Obispo
+Cedis Walmart Santa Bárbara
+Centro de Distribucion Walmart Villahermosa
+Planta de Carnes Walmart Cuautitlán
+Walmart - CEDIS Monterrey
+Walmart Culiacan Cedis
+Walmart eCommerce MTY",,,,,,,,,,,,,,,,,,,,,,
+PMX,Yes,Free text,Alphanumeric identifier,REGEX pattern for alphanumeric format: PMX + 8 digits,,,,,,,,,,,,,,,,,,,,,
+Nombre(s),Yes,Free text,"Letters, spaces and accents","Blocks special characters like &""|?'",,,,,,,,,,,,,,,,,,,,,
+Apellido paterno,Yes,Free text,"Letters, spaces and accents","Blocks special characters like &""|?'",,,,,,,,,,,,,,,,,,,,,
+Apellido materno,No,Free text,"Letters, spaces and accents","Blocks special characters like &""|?'",,,,,,,,,,,,,,,,,,,,,
+Fecha de nacimiento,Yes,Date,"DD/MM/AAAA, D/M/AAAA or similar format","Date format validation, after 1945, before today. Checks if candidate is not a minor",,,,,,,,,,,,,,,,,,,,,
+Correo electrónico,Yes,Email,ejemplo@dominio.com,Email format validation,,,,,,,,,,,,,,,,,,,,,
+Número de teléfono,Yes,Phone number,10 digits,REGEX validation of exactly 10 digits,,,,,,,,,,,,,,,,,,,,,
+Género,Yes,Drop down,"H, M, X",,,,,,,,,,,,,,,,,,,,,,
+Nacionalidad,Yes,Drop down,"México
+Guatemala
+Venezuela
+Colombia
+Honduras
+Cuba
+El Salvador
+Argentina
+Haití
+Nicaragua
+Perú
+Ecuador
+República Dominicana
+Brasil
+España
+Estados Unidos
+China
+India
+Egipto
+Irán
+Turquía
+Canadá",,,,,,,,,,,,,,,,,,,,,,
+Calle y número de la vivienda,Yes,Free text,"Letters, numbers and symbols like #, -, /.","REGEX pattern, minimum 5 characters",,,,,,,,,,,,,,,,,,,,,
+Número interior,No,Free text,"Letters, numbers and symbols like #, -, /.",,,,,,,,,,,,,,,,,,,,,,
+Colonia,Yes,Free text,"Letters, numbers and symbols like #, -, /.","REGEX pattern, minimum 3 characters",,,,,,,,,,,,,,,,,,,,,
+Municipio,Yes,Drop down,List of municipalities,,,,,,,,,,,,,,,,,,,,,,
+Estado,Yes,Drop down,32 mexican states,,,,,,,,,,,,,,,,,,,,,,
+Código postal,Yes,Numeric (supports codes starting with 0),5 digits,REGEX validation of exactly 5 digits,,,,,,,,,,,,,,,,,,,,,
+Escolaridad,Yes,Drop down,"Primaria
+Secundaria
+Preparatoria
+Carrera Técnica
+Universidad
+Posgrado",,,,,,,,,,,,,,,,,,,,,,
+Estado civil,Yes,Drop down,"Soltera/o
+Casada/o
+Viudo
+Divorciado/a
+Separado
+Unión libre",,,,,,,,,,,,,,,,,,,,,,
+Compañía Experiencia Previa,Yes,Free text,Cualquier texto,,,,,,,,,,,,,,,,,,,,,,
+Puesto Experiencia Previa,Yes,Free text,Cualquier texto,,,,,,,,,,,,,,,,,,,,,,
+Tareas Experiencia Previa,Yes,Free text,Cualquier texto,,,,,,,,,,,,,,,,,,,,,,
+Experiencia en retail,Yes,Drop down,"Sí, No",,,,,,,,,,,,,,,,,,,,,,
+Motivación al elegir trabajo,Yes,Drop down,"Cultura
+Compañía
+Líder
+Posición
+Sueldo
+Prestaciones
+Crecimiento
+Flexibilidad
+Ambiente",,,,,,,,,,,,,,,,,,,,,,
+CURP,Yes,Free text,18 alphanumeric characters,REGEX validation according to official format plus verification digit review and cross-comparison with date of birth,,,,,,,,,,,,,,,,,,,,,
+RFC,Yes,Free text,13 alphanumeric characters,REGEX validation according to official format and cross-comparison with date of birth,,,,,,,,,,,,,,,,,,,,,
+NSS,Yes,Free text,10-11 digits,REGEX validation of length (10-11 digits) and birth year/ affiliation year verification (1945-2015),,,,,,,,,,,,,,,,,,,,,
+CLABE,No,Numeric (supports numbers starting with 0),18 digits,"Length (18 digits), verification digit and bank code (BBVA, HSBC, Inbursa, Banamex) validation",,,,,,,,,,,,,,,,,,,,,
+Código postal fiscal,No,Numeric (supports codes starting with 0),5 digits,REGEX validation of exactly 5 digits,,,,,,,,,,,,,,,,,,,,,
+Fecha de inicio de contrato,Yes,Date,"DD/MM/AAAA, D/M/AAAA or similar format","Business day validation: no weekends, no holidays, no more than 5 business days in the future, not today nor in the past",,,,,,,,,,,,,,,,,,,,,
+Fecha de fin de contrato (Solo eventual o maternidad),No,Date,"DD/MM/AAAA, D/M/AAAA or similar format","If provided, it must be after the start date",,,,,,,,,,,,,,,,,,,,,
+Discapacidad,Yes,Drop down,"Sí, No",,,,,,,,,,,,,,,,,,,,,,
+Tipo de discapacidad,Conditional,Drop down,"DISCAPACIDAD LENGUAJE O HABLA
+DISCAPACIDAD MOTRIZ
+DISCAPACIDAD VISUAL
+DISCAPACIDAD AUDITIVA
+DISCAPACIDAD INTELECTUAL","Required and validated only if ""Disability"" is ""Yes""",,,,,,,,,,,,,,,,,,,,,
+Descripción de discapacidad,Conditional,Free text,Any text,"Required and validated only if ""Disability"" is ""Yes""",,,,,,,,,,,,,,,,,,,,,
+Nombre de contacto de emergencia,Yes,Free text,"Letters, spaces and accents","REGEX pattern, minimum 5 characters",,,,,,,,,,,,,,,,,,,,,
+Relación con contacto de emergencia,Yes,Drop down,"Cónyuge
+Cónyuge divorciado
+Hijo
+Padres
+Hermanos
+Otros
+Otros parientes",,,,,,,,,,,,,,,,,,,,,,
+Teléfono de contacto de emergencia,Yes,Phone number,10 digits,Numeric validation of exactly 10 digits,,,,,,,,,,,,,,,,,,,,,
+Nombre(s) Dependiente,No,Free text,"Letters, spaces and accents","Blocking special characters like &""|?'",,,,,,,,,,,,,,,,,,,,,
+Primer Apellido Dependiente,No,Free text,"Letters, spaces and accents","Blocking special characters like &""|?'",,,,,,,,,,,,,,,,,,,,,
+Relación con dependiente,No,Drop down,"Cónyuge
+Cónyuge divorciado
+Padre
+Madre
+Pareja en unión libre
+Hijo de pareja en unión libre
+Hermano
+Hermana
+Pareja en unión libre registrada
+Hijo
+Tutor legal
+Tutor
+Hijastro
+Personas emparentadas",,,,,,,,,,,,,,,,,,,,,,
+Es beneficiario,No,Drop down,"Sí, No",,,,,,,,,,,,,,,,,,,,,,
+Es estudiante,No,Drop down,"Sí, No",,,,,,,,,,,,,,,,,,,,,,
+Vive con el asociado,No,Drop down,"Sí, No",,,,,,,,,,,,,,,,,,,,,,
+Fecha de nacimiento del dependiente,No,Date,"DD/MM/AAAA, D/M/AAAA or similar format",,,,,,,,,,,,,,,,,,,,,,
