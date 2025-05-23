@@ -277,7 +277,7 @@ export default function SimpleForm() {
             name="previousCompany"
             render={({ field }) => (
               <FormItem className="form-item">
-                <FormLabel className="body-text required">¿Última compañía en la que trabajó?</FormLabel>
+                <FormLabel className="body-text required">Último empleador o compañía en la que trabajó</FormLabel>
                 <FormControl>
                   <CustomInput
                     {...field}
@@ -344,7 +344,7 @@ export default function SimpleForm() {
             name="hasDisability"
             render={({ field, fieldState }) => (
               <FormItem className="form-item">
-                <FormLabel className="body-text required">Requiere algun ajuste durante el proceso debido a una discapacidad?</FormLabel>
+                <FormLabel className="body-text required">¿Requiere algún ajuste durante el proceso debido a una discapacidad?</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value || ""}>
                   <FormControl>
                     <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={27}>
@@ -616,7 +616,7 @@ export default function SimpleForm() {
             name="retailExperience"
             render={({ field, fieldState }) => (
               <FormItem className="form-item">
-                <FormLabel className="body-text required">Experiencia en retail</FormLabel>
+                <FormLabel className="body-text required">¿Tiene experiencia en retail?</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value || ""}>
                   <FormControl>
                     <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={24}>
