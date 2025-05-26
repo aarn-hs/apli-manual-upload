@@ -143,11 +143,22 @@ export const mexicanStates = [
   "Zacatecas"
 ];
 
-// Municipalities by state (10 for each state)
+// Import complete municipalities data
+import { allMunicipalities } from './municipalities-data';
+
+// Create municipality lookup by state
 const municipalitiesByState: Record<string, string[]> = {};
 
-mexicanStates.forEach((state) => {
-  municipalitiesByState[state] = Array.from({ length: 10 }, (_, i) => `Municipio ${i + 1} de ${state}`);
+// Process all municipalities and group by state
+allMunicipalities.forEach((municipality: string) => {
+  const parts = municipality.split(', ');
+  if (parts.length === 2) {
+    const [municipalityName, stateName] = parts;
+    if (!municipalitiesByState[stateName]) {
+      municipalitiesByState[stateName] = [];
+    }
+    municipalitiesByState[stateName].push(municipalityName);
+  }
 });
 
 export function getMunicipalitiesForState(state: string): string[] {
