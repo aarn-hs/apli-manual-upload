@@ -166,7 +166,13 @@ export default function Home() {
       });
 
       if (!response.ok) {
-        throw new Error(`Error del servidor: ${response.status}`);
+        const errorData = await response.json().catch(() => null);
+        
+        if (response.status === 404 && errorData?.message?.includes('not registered')) {
+          throw new Error('El webhook no está activo. Por favor activa el webhook en la plataforma y vuelve a intentar.');
+        }
+        
+        throw new Error(`Error del servidor: ${response.status} - ${errorData?.message || 'Error desconocido'}`);
       }
 
       // Mostrar modal de éxito
