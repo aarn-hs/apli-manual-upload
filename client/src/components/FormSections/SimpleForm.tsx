@@ -182,18 +182,24 @@ export default function SimpleForm() {
           {/* Campo 13 - Columna izquierda */}
           <FormField
             control={control}
-            name="streetAndNumber"
-            render={({ field }) => (
+            name="state"
+            render={({ field, fieldState }) => (
               <FormItem className="form-item">
-                <FormLabel className="body-text required">Calle y número de la vivienda</FormLabel>
-                <FormControl>
-                  <CustomInput
-                    {...field}
-                    placeholder="Calle y número"
-                    className="form-control"
-                    tabIndex={13}
-                  />
-                </FormControl>
+                <FormLabel className="body-text required">Estado</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value || ""}>
+                  <FormControl>
+                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={13}>
+                      <SelectValue placeholder="Seleccionar" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {mexicanStates.map((state) => (
+                      <SelectItem key={state} value={state}>
+                        {state}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage className="error-message" />
               </FormItem>
             )}
@@ -222,24 +228,18 @@ export default function SimpleForm() {
           {/* Campo 17 - Columna izquierda */}
           <FormField
             control={control}
-            name="state"
-            render={({ field, fieldState }) => (
+            name="streetAndNumber"
+            render={({ field }) => (
               <FormItem className="form-item">
-                <FormLabel className="body-text required">Estado</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ""}>
-                  <FormControl>
-                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={17}>
-                      <SelectValue placeholder="Seleccionar" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {mexicanStates.map((state) => (
-                      <SelectItem key={state} value={state}>
-                        {state}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <FormLabel className="body-text required">Calle y número de la vivienda</FormLabel>
+                <FormControl>
+                  <CustomInput
+                    {...field}
+                    placeholder="Calle y número"
+                    className="form-control"
+                    tabIndex={17}
+                  />
+                </FormControl>
                 <FormMessage className="error-message" />
               </FormItem>
             )}
@@ -501,33 +501,13 @@ export default function SimpleForm() {
           {/* Campo 14 - Columna derecha */}
           <FormField
             control={control}
-            name="interiorNumber"
-            render={({ field }) => (
-              <FormItem className="form-item">
-                <FormLabel className="body-text">Número interior</FormLabel>
-                <FormControl>
-                  <CustomInput
-                    {...field}
-                    placeholder="Número interior (opcional)"
-                    className="form-control"
-                    tabIndex={14}
-                  />
-                </FormControl>
-                <FormMessage className="error-message" />
-              </FormItem>
-            )}
-          />
-          
-          {/* Campo 16 - Columna derecha */}
-          <FormField
-            control={control}
             name="municipality"
             render={({ field, fieldState }) => (
               <FormItem className="form-item">
                 <FormLabel className="body-text required">Municipio</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value || ""} disabled={!selectedState}>
                   <FormControl>
-                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={16}>
+                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={14}>
                       <SelectValue placeholder={selectedState ? "Seleccionar" : "Seleccione primero un estado"} />
                     </SelectTrigger>
                   </FormControl>
@@ -544,7 +524,7 @@ export default function SimpleForm() {
             )}
           />
           
-          {/* Campo 18 - Columna derecha */}
+          {/* Campo 16 - Columna derecha */}
           <FormField
             control={control}
             name="postalCode"
@@ -555,6 +535,27 @@ export default function SimpleForm() {
                   <CustomInput
                     {...field}
                     placeholder="5 dígitos"
+                    className="form-control"
+                    tabIndex={16}
+                  />
+                </FormControl>
+                <FormMessage className="error-message" />
+              </FormItem>
+            )}
+          />
+          
+          
+          {/* Campo 18 - Columna derecha */}
+          <FormField
+            control={control}
+            name="interiorNumber"
+            render={({ field }) => (
+              <FormItem className="form-item">
+                <FormLabel className="body-text">Número interior</FormLabel>
+                <FormControl>
+                  <CustomInput
+                    {...field}
+                    placeholder="Número interior (opcional)"
                     className="form-control"
                     tabIndex={18}
                   />
