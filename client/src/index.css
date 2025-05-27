@@ -81,6 +81,20 @@
   body {
     @apply bg-background text-foreground;
     font-family: 'Nunito Sans', sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: auto;
+  }
+
+  /* Optimizaciones para iframe */
+  html, body {
+    height: 100%;
+    box-sizing: border-box;
+  }
+
+  #root {
+    height: 100%;
+    min-height: 100vh;
   }
 
   .title {

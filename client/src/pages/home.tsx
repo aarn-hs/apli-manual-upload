@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CandidateForm from "@/components/CandidateForm";
 import SuccessModal from "@/components/ui/success-modal";
 import { useToast } from "@/hooks/use-toast";
@@ -7,6 +7,31 @@ export default function Home() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+
+  // Función para comunicar con el iframe padre (ajustar altura)
+  const notifyParentOfHeightChange = () => {
+    if (window.parent !== window) {
+      const height = document.documentElement.scrollHeight;
+      window.parent.postMessage({
+        type: 'iframe-height-change',
+        height: height
+      }, '*');
+    }
+  };
+
+  // Notificar cambios de altura al iframe padre
+  useEffect(() => {
+    notifyParentOfHeightChange();
+    
+    // Observer para detectar cambios en el contenido
+    const observer = new ResizeObserver(() => {
+      notifyParentOfHeightChange();
+    });
+    
+    observer.observe(document.body);
+    
+    return () => observer.disconnect();
+  }, [showSuccessModal]);
 
   // Función para transformar la fecha de dd/mm/aaaa a aaaa-mm-dd
   const transformDate = (dateStr: string): string => {
@@ -113,8 +138,8 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-white">
-      <main className="container mx-auto px-4 py-6 flex-grow">
+    <div className="flex flex-col min-h-full bg-white">
+      <main className="w-full px-4 py-6 flex-grow">
         <div className="mb-6">
           <h1 className="title mb-2">Carga manual de candidato</h1>
           <p className="subtitle text-dark-grey">Completa el formulario con los datos del candidato que deseas cargar. Todos los campos marcados con <span className="text-red">*</span> son obligatorios. Una vez completado, haz clic en "Enviar Candidato" para mandar la información.</p>

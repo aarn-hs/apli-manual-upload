@@ -6,6 +6,20 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Configurar cabeceras para permitir iframe embedding
+app.use((req, res, next) => {
+  // Permitir que la app sea embebida en iframes
+  res.removeHeader('X-Frame-Options');
+  res.setHeader('X-Frame-Options', 'ALLOWALL');
+  
+  // Configurar CORS para iframe
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  
+  next();
+});
+
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
