@@ -33,6 +33,34 @@ export default function Home() {
     return () => observer.disconnect();
   }, [showSuccessModal]);
 
+  // Función para generar UUID personalizado
+  const generateCustomUUID = (prefix: string): string => {
+    // Generar UUID v4 estándar
+    const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+    
+    // Obtener timestamp actual
+    const timestamp = Math.floor(Date.now() / 1000);
+    
+    // Para submission_request_id: REQ-c5d69fb5-1748308098
+    if (prefix === 'REQ') {
+      const shortUuid = uuid.split('-')[0]; // Primeros 8 caracteres
+      return `REQ-${shortUuid}-${timestamp}`;
+    }
+    
+    // Para candidate_submission_id: CAN-451a3cf4-8e1
+    if (prefix === 'CAN') {
+      const shortUuid = uuid.split('-')[0]; // Primeros 8 caracteres
+      const shortTimestamp = timestamp.toString().slice(-3); // Últimos 3 dígitos del timestamp
+      return `CAN-${shortUuid}-${shortTimestamp}`;
+    }
+    
+    return uuid;
+  };
+
   // Función para transformar la fecha de dd/mm/aaaa a aaaa-mm-dd
   const transformDate = (dateStr: string): string => {
     if (!dateStr) return "";
@@ -54,7 +82,13 @@ export default function Home() {
 
   // Función para transformar los datos del formulario al formato del webhook
   const transformFormDataToWebhook = (formData: any) => {
+    // Generar los UUIDs únicos para esta solicitud
+    const submissionRequestId = generateCustomUUID('REQ');
+    const candidateSubmissionId = generateCustomUUID('CAN');
+    
     return {
+      "submission_request_id": submissionRequestId,
+      "candidate_submission_id": candidateSubmissionId,
       "Fuente": "agencia_cygnus", // Valor fijo como en tu ejemplo
       "Puesto": formData.position || "",
       "Ubicación": formData.location || "",
