@@ -5,9 +5,10 @@ import SimpleForm from "@/components/FormSections/SimpleForm";
 
 interface CandidateFormProps {
   onSubmit: (data: any) => void;
+  isSubmitting?: boolean;
 }
 
-export default function CandidateForm({ onSubmit }: CandidateFormProps) {
+export default function CandidateForm({ onSubmit, isSubmitting = false }: CandidateFormProps) {
   const methods = useForm({
     resolver: zodResolver(simplifiedCandidateSchema),
     mode: "onChange",
@@ -42,7 +43,7 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
     }
   });
 
-  const { handleSubmit, formState: { isSubmitting }, reset, watch } = methods;
+  const { handleSubmit, formState: { isSubmitting: isFormSubmitting }, reset, watch } = methods;
 
   // Watch all form values to determine if form is empty
   const watchedValues = watch();
@@ -121,9 +122,9 @@ export default function CandidateForm({ onSubmit }: CandidateFormProps) {
           <button 
             type="submit" 
             className="btn-primary"
-            disabled={isSubmitting || !areAllRequiredFieldsCompleted}
+            disabled={isSubmitting || isFormSubmitting || !areAllRequiredFieldsCompleted}
           >
-            Enviar candidato
+            {(isSubmitting || isFormSubmitting) ? "Enviando..." : "Enviar candidato"}
           </button>
 
           <button 
