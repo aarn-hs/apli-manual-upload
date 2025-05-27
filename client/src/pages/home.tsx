@@ -8,6 +8,18 @@ export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
+  // Función para obtener parámetros de URL
+  const getUrlParams = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // Por ahora usar datos de prueba, después se utilizarán los parámetros reales
+    return {
+      name: urlParams.get('name') || 'Aarón',
+      lastName: urlParams.get('lastName') || 'Hernández', 
+      email: urlParams.get('email') || 'aaron.hernandez@apli.jobs'
+    };
+  };
+
   // Función para comunicar con el iframe padre (ajustar altura)
   const notifyParentOfHeightChange = () => {
     if (window.parent !== window) {
@@ -86,9 +98,15 @@ export default function Home() {
     const submissionRequestId = generateCustomUUID('REQ');
     const candidateSubmissionId = generateCustomUUID('CAN');
     
+    // Obtener información del usuario solicitante
+    const userParams = getUrlParams();
+    
     return {
       "submission_request_id": submissionRequestId,
       "candidate_submission_id": candidateSubmissionId,
+      "requesting_user_name": userParams.name,
+      "requesting_user_lastname": userParams.lastName,
+      "requesting_user_email": userParams.email,
       "Fuente": "agencia_cygnus", // Valor fijo como en tu ejemplo
       "Puesto": formData.position || "",
       "Ubicación": formData.location || "",
