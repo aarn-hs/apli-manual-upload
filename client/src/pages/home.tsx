@@ -175,6 +175,14 @@ export default function Home() {
         throw new Error(`Error del servidor: ${response.status} - ${errorData?.message || 'Error desconocido'}`);
       }
 
+      // Verificar que la respuesta sea válida
+      const responseData = await response.json().catch(() => null);
+      
+      // El webhook responde con {"status": "finished"} cuando es exitoso
+      if (!responseData || responseData.status !== 'finished') {
+        console.warn('Respuesta inesperada del webhook:', responseData);
+      }
+
       // Mostrar modal de éxito
       setShowSuccessModal(true);
       
