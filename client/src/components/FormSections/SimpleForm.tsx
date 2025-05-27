@@ -35,7 +35,7 @@ export default function SimpleForm() {
   }, [selectedState, setValue]);
   
   return (
-    <section id="simple-form" className="bg-white p-6 shadow-md">
+    <section id="simple-form" className="bg-white p-6">
       <h2 className="important section-title">Registro de candidato</h2>
       
       <div className="space-y-4 md:grid md:grid-cols-2 md:gap-6 md:space-y-0">
