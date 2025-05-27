@@ -60,7 +60,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false }: Candid
   // Check if all required fields are completed
   const requiredFields = [
     'source', 'position', 'location', 'pmx', 'firstName', 'firstLastName', 
-    'secondLastName', 'birthDate', 'email', 'phone', 'gender', 'nationality',
+    'birthDate', 'email', 'phone', 'gender', 'nationality',
     'streetAndNumber', 'neighborhood', 'state', 'municipality', 'postalCode',
     'education', 'maritalStatus', 'previousCompany', 'previousPosition', 
     'previousTasks', 'retailExperience', 'motivation', 'curp', 'hasDisability'
