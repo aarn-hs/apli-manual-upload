@@ -31,12 +31,32 @@ export function validateAddress(address: string): boolean {
   return /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s\.\-\#\']{2,}$/.test(address);
 }
 
-// Birth date validation
+// Birth date validation for dd/mm/yyyy format
 export function validateBirthDate(dateStr: string): boolean {
   if (!dateStr) return false;
   
-  const birthDate = new Date(dateStr);
-  if (isNaN(birthDate.getTime())) return false;
+  // Check format dd/mm/yyyy
+  const dateRegex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+  const match = dateStr.match(dateRegex);
+  
+  if (!match) return false;
+  
+  const day = parseInt(match[1], 10);
+  const month = parseInt(match[2], 10);
+  const year = parseInt(match[3], 10);
+  
+  // Basic range checks
+  if (month < 1 || month > 12) return false;
+  if (day < 1 || day > 31) return false;
+  if (year < 1940 || year > new Date().getFullYear()) return false;
+  
+  // Create date object (month is 0-indexed in Date constructor)
+  const birthDate = new Date(year, month - 1, day);
+  
+  // Check if the date is valid (handles leap years, etc.)
+  if (birthDate.getDate() !== day || birthDate.getMonth() !== month - 1 || birthDate.getFullYear() !== year) {
+    return false;
+  }
   
   const today = new Date();
   
@@ -101,13 +121,13 @@ export function validateCURPWithBirthDate(curp: string, birthDate: string): bool
   const curpMonth = curp.substring(6, 8);
   const curpDay = curp.substring(8, 10);
   
-  // Convert birth date string (YYYY-MM-DD format) to components
-  const dateParts = birthDate.split('-');
+  // Convert birth date string (DD/MM/YYYY format) to components
+  const dateParts = birthDate.split('/');
   if (dateParts.length !== 3) return false;
   
-  const birthYear = parseInt(dateParts[0]);
+  const birthDay = parseInt(dateParts[0]);
   const birthMonth = parseInt(dateParts[1]);
-  const birthDay = parseInt(dateParts[2]);
+  const birthYear = parseInt(dateParts[2]);
   
   // Determine full year from CURP (considering century)
   // If year is 00-29, assume 2000s; if 30-99, assume 1900s
