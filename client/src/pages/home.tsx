@@ -67,10 +67,10 @@ export default function Home() {
       // Transformar los datos al formato del webhook
       const webhookData = transformFormDataToWebhook(data);
       
-      // TODO: Aquí necesitamos la URL del webhook
-      const webhookUrl = process.env.VITE_WEBHOOK_URL || 'YOUR_WEBHOOK_URL_HERE';
+      // Obtener la URL del webhook de las variables de entorno
+      const webhookUrl = import.meta.env.VITE_WEBHOOK_URL;
       
-      if (!webhookUrl || webhookUrl === 'YOUR_WEBHOOK_URL_HERE') {
+      if (!webhookUrl) {
         toast({
           title: "Error de configuración",
           description: "La URL del webhook no está configurada. Por favor contacta al administrador.",
