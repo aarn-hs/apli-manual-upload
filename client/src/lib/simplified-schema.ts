@@ -76,7 +76,7 @@ export const simplifiedCandidateSchema = z.object({
   curp: z.string({ required_error: "Ingrese el CURP" }),
   
   // Discapacidad (Obligatorio)
-  hasDisability: z.string({ required_error: "Debes seleccionar una opción" })
+  hasDisability: z.string({ required_error: "Este campo es obligatorio" }).max(80, "Máximo 80 caracteres")
 }).refine(
   (data) => validateCURPWithBirthDate(data.curp, data.birthDate),
   {

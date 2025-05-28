@@ -39,7 +39,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false }: Candid
       retailExperience: "",
       motivation: "",
       curp: "",
-      hasDisability: ""
+      hasDisability: "No requiere"
     }
   });
 

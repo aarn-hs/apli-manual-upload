@@ -345,20 +345,15 @@ export default function SimpleForm() {
             render={({ field, fieldState }) => (
               <FormItem className="form-item">
                 <FormLabel className="body-text required">¿Requiere algún ajuste durante el proceso debido a una discapacidad?</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ""}>
-                  <FormControl>
-                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={27}>
-                      <SelectValue placeholder="Seleccionar" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {yesNoOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <FormControl>
+                  <CustomInput
+                    {...field}
+                    placeholder="No requiere"
+                    maxLength={80}
+                    className={`form-control ${fieldState.error ? 'error' : ''}`}
+                    tabIndex={27}
+                  />
+                </FormControl>
                 <FormMessage className="error-message" />
               </FormItem>
             )}
