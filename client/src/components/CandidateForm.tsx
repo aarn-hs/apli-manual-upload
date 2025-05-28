@@ -129,7 +129,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false }: Candid
             className="btn-primary"
             disabled={isSubmitting || isFormSubmitting || !areAllRequiredFieldsCompleted}
           >
-            {(isSubmitting || isFormSubmitting) ? "Enviando..." : "Enviar candidato"}
+            {(isSubmitting || isFormSubmitting) ? "Cargando..." : "Cargar candidato"}
           </button>
 
           <button 
