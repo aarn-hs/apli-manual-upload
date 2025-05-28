@@ -348,10 +348,20 @@ export default function SimpleForm() {
                 <FormControl>
                   <CustomInput
                     {...field}
-                    placeholder="No requiere"
+                    placeholder=""
                     maxLength={80}
                     className={`form-control ${fieldState.error ? 'error' : ''}`}
                     tabIndex={27}
+                    onFocus={(e) => {
+                      if (e.target.value === "No requiere") {
+                        field.onChange("");
+                      }
+                    }}
+                    onBlur={(e) => {
+                      if (e.target.value.trim() === "") {
+                        field.onChange("No requiere");
+                      }
+                    }}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
