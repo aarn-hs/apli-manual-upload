@@ -6,13 +6,9 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Lista de dominios permitidos para iframe (configurable)
-const ALLOWED_DOMAINS = [
-  'https://tudominio.com',
-  'https://www.tudominio.com',
-  'https://app.tudominio.com',
-  // Agregar más dominios según sea necesario
-];
+// Importar configuración de seguridad
+const securityConfig = require('../security-config.js');
+const ALLOWED_DOMAINS = securityConfig.allowedDomains;
 
 // Middleware de seguridad para bloquear dominios no autorizados
 app.use((req, res, next) => {
