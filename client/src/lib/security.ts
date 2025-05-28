@@ -9,15 +9,31 @@ const ALLOWED_DOMAINS = [
 export function validateDomain(): boolean {
   const currentOrigin = window.location.origin;
   
-  // Bloquear localhost y IPs locales
-  if (currentOrigin.includes('localhost') || 
-      currentOrigin.includes('127.0.0.1') ||
-      currentOrigin.includes('0.0.0.0')) {
+  // Permitir Replit durante desarrollo
+  if (currentOrigin.includes('.replit.') || 
+      currentOrigin.includes('.repl.co') ||
+      currentOrigin.includes('.replit.app') ||
+      currentOrigin.includes('.replit.dev')) {
+    return true;
+  }
+  
+  // Bloquear localhost y IPs locales solo en producción
+  if (process.env.NODE_ENV === 'production' && 
+      (currentOrigin.includes('localhost') || 
+       currentOrigin.includes('127.0.0.1') ||
+       currentOrigin.includes('0.0.0.0'))) {
     return false;
   }
   
   // Verificar si está en la lista de dominios permitidos
-  return ALLOWED_DOMAINS.some(domain => currentOrigin.startsWith(domain));
+  return ALLOWED_DOMAINS.some(domain => {
+    if (domain.includes('*')) {
+      const pattern = domain.replace(/\*/g, '.*');
+      const regex = new RegExp(`^${pattern}$`);
+      return regex.test(currentOrigin);
+    }
+    return currentOrigin.startsWith(domain);
+  });
 }
 
 // Verificar si está siendo usado en iframe no autorizado
