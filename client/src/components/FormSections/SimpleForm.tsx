@@ -344,24 +344,14 @@ export default function SimpleForm() {
             name="hasDisability"
             render={({ field, fieldState }) => (
               <FormItem className="form-item">
-                <FormLabel className="body-text required">¿Requiere algún ajuste durante el proceso debido a una discapacidad?</FormLabel>
+                <FormLabel className="body-text">¿Requiere algún ajuste durante el proceso debido a una discapacidad?</FormLabel>
                 <FormControl>
                   <CustomInput
                     {...field}
-                    placeholder=""
+                    placeholder="No requiere"
                     maxLength={80}
                     className={`form-control ${fieldState.error ? 'error' : ''}`}
                     tabIndex={27}
-                    onFocus={(e) => {
-                      if (e.target.value === "No requiere") {
-                        field.onChange("");
-                      }
-                    }}
-                    onBlur={(e) => {
-                      if (e.target.value.trim() === "") {
-                        field.onChange("No requiere");
-                      }
-                    }}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />

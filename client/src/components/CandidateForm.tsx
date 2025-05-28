@@ -39,7 +39,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false }: Candid
       retailExperience: "",
       motivation: "",
       curp: "",
-      hasDisability: "No requiere"
+      hasDisability: ""
     }
   });
 
@@ -78,7 +78,12 @@ export default function CandidateForm({ onSubmit, isSubmitting = false }: Candid
 
 
   const handleFormSubmit = (data: any) => {
-    onSubmit(data);
+    // Si hasDisability está vacío, enviamos "No requiere" al webhook
+    const processedData = {
+      ...data,
+      hasDisability: data.hasDisability?.trim() || "No requiere"
+    };
+    onSubmit(processedData);
   };
 
   const handleClearForm = () => {
@@ -109,7 +114,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false }: Candid
       retailExperience: "",
       motivation: "",
       curp: "",
-      hasDisability: "No requiere"
+      hasDisability: ""
     });
   };
 
