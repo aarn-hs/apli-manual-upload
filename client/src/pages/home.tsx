@@ -132,8 +132,7 @@ export default function Home() {
       "Tareas Experiencia Previa": formData.previousTasks || "",
       "Experiencia en retail": formData.retailExperience || "",
       "Motivación al elegir trabajo": formData.motivation || "",
-      "CURP": formData.curp || "",
-      "Discapacidad": formData.hasDisability || ""
+      "CURP": formData.curp || ""
     };
   };
 
