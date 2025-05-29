@@ -75,6 +75,11 @@ export const simplifiedCandidateSchema = z.object({
   // Información legal (Obligatorio)
   curp: z.string({ required_error: "Ingrese el CURP" }),
   
+  // Información laboral adicional (Obligatorio)
+  jobsLast24Months: z.string({ required_error: "Debes seleccionar una opción" }),
+  previousJobStartDate: z.string({ required_error: "Ingrese la fecha de inicio" }),
+  previousJobEndDate: z.string({ required_error: "Ingrese la fecha de fin" }),
+  
 
 }).refine(
   (data) => validateCURPWithBirthDate(data.curp, data.birthDate),

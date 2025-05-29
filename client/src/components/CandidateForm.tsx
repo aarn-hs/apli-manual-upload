@@ -38,7 +38,10 @@ export default function CandidateForm({ onSubmit, isSubmitting = false }: Candid
       previousTasks: "",
       retailExperience: "",
       motivation: "",
-      curp: ""
+      curp: "",
+      jobsLast24Months: "",
+      previousJobStartDate: "",
+      previousJobEndDate: ""
     }
   });
 
@@ -62,7 +65,8 @@ export default function CandidateForm({ onSubmit, isSubmitting = false }: Candid
     'birthDate', 'email', 'phone', 'gender', 'nationality',
     'streetAndNumber', 'neighborhood', 'state', 'municipality', 'postalCode',
     'education', 'maritalStatus', 'previousCompany', 'previousPosition', 
-    'previousTasks', 'retailExperience', 'motivation', 'curp'
+    'previousTasks', 'retailExperience', 'motivation', 'curp',
+    'jobsLast24Months', 'previousJobStartDate', 'previousJobEndDate'
   ];
 
   const areAllRequiredFieldsCompleted = requiredFields.every(field => {
@@ -107,7 +111,10 @@ export default function CandidateForm({ onSubmit, isSubmitting = false }: Candid
       previousTasks: "",
       retailExperience: "",
       motivation: "",
-      curp: ""
+      curp: "",
+      jobsLast24Months: "",
+      previousJobStartDate: "",
+      previousJobEndDate: ""
     });
   };
 

@@ -94,6 +94,19 @@ export const yesNoOptions = [
   { value: "No", label: "No" }
 ];
 
+// Jobs in last 24 months options
+export const jobsLast24MonthsOptions = [
+  { value: "Ninguno", label: "Ninguno" },
+  { value: "1", label: "1" },
+  { value: "2", label: "2" },
+  { value: "3", label: "3" },
+  { value: "4", label: "4" },
+  { value: "5", label: "5" },
+  { value: "6-10", label: "6-10" },
+  { value: "11-15", label: "11-15" },
+  { value: "16-20", label: "16-20" }
+];
+
 // Motivations
 export const motivations = [
   "Cultura",
