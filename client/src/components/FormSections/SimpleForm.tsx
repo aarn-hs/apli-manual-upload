@@ -633,7 +633,7 @@ export default function SimpleForm() {
                     {...field}
                     placeholder="Puesto que ocupó anteriormente"
                     className="form-control"
-                    tabIndex={23}
+                    tabIndex={24}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -653,7 +653,7 @@ export default function SimpleForm() {
                     {...field}
                     placeholder="dd/mm/aaaa"
                     className={`form-control ${fieldState.error ? 'error' : ''}`}
-                    tabIndex={25}
+                    tabIndex={26}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -673,7 +673,7 @@ export default function SimpleForm() {
                     {...field}
                     placeholder="dd/mm/aaaa"
                     className={`form-control ${fieldState.error ? 'error' : ''}`}
-                    tabIndex={26}
+                    tabIndex={27}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -690,7 +690,7 @@ export default function SimpleForm() {
                 <FormLabel className="body-text required">¿Tiene experiencia en retail?</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value || ""}>
                   <FormControl>
-                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={27}>
+                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={28}>
                       <SelectValue placeholder="Seleccionar" />
                     </SelectTrigger>
                   </FormControl>
