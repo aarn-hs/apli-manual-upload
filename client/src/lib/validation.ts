@@ -244,3 +244,25 @@ export function isWorkingDay(dateStr: string): boolean {
   // Check if date is not in the past and not more than 5 business days in the future
   return differenceInDays >= 0 && businessDays <= 5;
 }
+
+// Validate that a date is in the past (not today or future)
+export function validatePastDate(dateStr: string): boolean {
+  if (!dateStr) return false;
+  
+  const [day, month, year] = dateStr.split('/').map(Number);
+  if (!day || !month || !year) return false;
+  
+  const date = new Date(year, month - 1, day);
+  const today = new Date();
+  
+  // Set today to start of day for comparison
+  today.setHours(0, 0, 0, 0);
+  
+  // Check if date is valid
+  if (isNaN(date.getTime())) return false;
+  
+  // Check if date is before today (not today or future)
+  if (date >= today) return false;
+  
+  return true;
+}

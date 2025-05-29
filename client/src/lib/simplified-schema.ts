@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { validatePMX, validateName, validatePhone, validatePostalCode, validateAddress, validateBirthDate, validateCURPWithBirthDate } from "./validation";
+import { validatePMX, validateName, validatePhone, validatePostalCode, validateAddress, validateBirthDate, validateCURPWithBirthDate, validatePastDate } from "./validation";
 
 // Esquema simplificado del candidato según los campos obligatorios
 export const simplifiedCandidateSchema = z.object({
@@ -77,8 +77,10 @@ export const simplifiedCandidateSchema = z.object({
   
   // Información laboral adicional (Obligatorio)
   jobsLast24Months: z.string({ required_error: "Debes seleccionar una opción" }),
-  previousJobStartDate: z.string({ required_error: "Ingrese la fecha de inicio" }),
-  previousJobEndDate: z.string({ required_error: "Ingrese la fecha de fin" }),
+  previousJobStartDate: z.string({ required_error: "Ingrese la fecha de inicio" })
+    .refine((date) => validatePastDate(date), { message: "La fecha debe ser anterior al día de hoy" }),
+  previousJobEndDate: z.string({ required_error: "Ingrese la fecha de fin" })
+    .refine((date) => validatePastDate(date), { message: "La fecha debe ser anterior al día de hoy" }),
   
 
 }).refine(
