@@ -313,31 +313,7 @@ export default function SimpleForm() {
             )}
           />
           
-          {/* Campo 25 - Columna izquierda */}
-          <FormField
-            control={control}
-            name="motivation"
-            render={({ field, fieldState }) => (
-              <FormItem className="form-item">
-                <FormLabel className="body-text required">Motivación al elegir trabajo</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ""}>
-                  <FormControl>
-                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={28}>
-                      <SelectValue placeholder="Seleccionar" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {motivations.map((motivation) => (
-                      <SelectItem key={motivation} value={motivation}>
-                        {motivation}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage className="error-message" />
-              </FormItem>
-            )}
-          />
+
           
 
         </div>
@@ -681,7 +657,33 @@ export default function SimpleForm() {
             )}
           />
           
-          {/* Campo 24 - Columna derecha */}
+          {/* Campo - Motivación al elegir trabajo */}
+          <FormField
+            control={control}
+            name="motivation"
+            render={({ field, fieldState }) => (
+              <FormItem className="form-item">
+                <FormLabel className="body-text required">Motivación al elegir trabajo</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value || ""}>
+                  <FormControl>
+                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={28}>
+                      <SelectValue placeholder="Seleccionar" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {motivations.map((motivation) => (
+                      <SelectItem key={motivation} value={motivation}>
+                        {motivation}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage className="error-message" />
+              </FormItem>
+            )}
+          />
+          
+          {/* Campo - ¿Tiene experiencia en retail? */}
           <FormField
             control={control}
             name="retailExperience"
@@ -690,7 +692,7 @@ export default function SimpleForm() {
                 <FormLabel className="body-text required">¿Tiene experiencia en retail?</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value || ""}>
                   <FormControl>
-                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={28}>
+                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={29}>
                       <SelectValue placeholder="Seleccionar" />
                     </SelectTrigger>
                   </FormControl>
@@ -707,7 +709,7 @@ export default function SimpleForm() {
             )}
           />
           
-          {/* Campo 26 - Columna derecha */}
+          {/* Campo - CURP */}
           <FormField
             control={control}
             name="curp"
@@ -720,7 +722,7 @@ export default function SimpleForm() {
                     placeholder="18 caracteres"
                     className="form-control"
                     autoUppercase={true}
-                    tabIndex={29}
+                    tabIndex={30}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />

@@ -70,6 +70,8 @@ export const simplifiedCandidateSchema = z.object({
   
   retailExperience: z.string({ required_error: "Debes seleccionar una opción" }),
   
+  motivation: z.string({ required_error: "Debes seleccionar una opción" }),
+  
   // Información legal (Obligatorio)
   curp: z.string({ required_error: "Ingrese el CURP" }),
   
