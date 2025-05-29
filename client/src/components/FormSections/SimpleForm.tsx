@@ -302,7 +302,7 @@ export default function SimpleForm() {
                 <FormControl>
                   <Textarea
                     {...field}
-                    placeholder="Describa sus responsabilidades anteriores"
+                    placeholder="Describe sus responsabilidades anteriores"
                     className="form-control"
                     rows={3}
                     tabIndex={24}
