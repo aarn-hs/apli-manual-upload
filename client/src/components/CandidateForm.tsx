@@ -38,8 +38,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false }: Candid
       previousTasks: "",
       retailExperience: "",
       motivation: "",
-      curp: "",
-      hasDisability: ""
+      curp: ""
     }
   });
 
@@ -63,7 +62,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false }: Candid
     'birthDate', 'email', 'phone', 'gender', 'nationality',
     'streetAndNumber', 'neighborhood', 'state', 'municipality', 'postalCode',
     'education', 'maritalStatus', 'previousCompany', 'previousPosition', 
-    'previousTasks', 'retailExperience', 'motivation', 'curp', 'hasDisability'
+    'previousTasks', 'retailExperience', 'motivation', 'curp'
   ];
 
   const areAllRequiredFieldsCompleted = requiredFields.every(field => {
@@ -78,12 +77,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false }: Candid
 
 
   const handleFormSubmit = (data: any) => {
-    // Si hasDisability está vacío, enviamos "No requiere" al webhook
-    const processedData = {
-      ...data,
-      hasDisability: data.hasDisability?.trim() || "No requiere"
-    };
-    onSubmit(processedData);
+    onSubmit(data);
   };
 
   const handleClearForm = () => {
@@ -113,8 +107,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false }: Candid
       previousTasks: "",
       retailExperience: "",
       motivation: "",
-      curp: "",
-      hasDisability: ""
+      curp: ""
     });
   };
 
