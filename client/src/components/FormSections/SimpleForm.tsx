@@ -316,6 +316,74 @@ export default function SimpleForm() {
 
           
 
+          
+          {/* Campo - Fecha de inicio de experiencia previa (izquierda) */}
+          <FormField
+            control={control}
+            name="previousJobStartDate"
+            render={({ field, fieldState }) => (
+              <FormItem className="form-item">
+                <FormLabel className="body-text required">Fecha de inicio de experiencia previa</FormLabel>
+                <FormControl>
+                  <CustomInput
+                    {...field}
+                    placeholder="dd/mm/aaaa"
+                    className={`form-control ${fieldState.error ? 'error' : ''}`}
+                    tabIndex={26}
+                  />
+                </FormControl>
+                <FormMessage className="error-message" />
+              </FormItem>
+            )}
+          />
+          
+          {/* Campo - Motivación al elegir trabajo (izquierda) */}
+          <FormField
+            control={control}
+            name="motivation"
+            render={({ field, fieldState }) => (
+              <FormItem className="form-item">
+                <FormLabel className="body-text required">Motivación al elegir trabajo</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value || ""}>
+                  <FormControl>
+                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={28}>
+                      <SelectValue placeholder="Seleccionar" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {motivations.map((motivation) => (
+                      <SelectItem key={motivation} value={motivation}>
+                        {motivation}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage className="error-message" />
+              </FormItem>
+            )}
+          />
+          
+          {/* Campo - CURP (izquierda) */}
+          <FormField
+            control={control}
+            name="curp"
+            render={({ field }) => (
+              <FormItem className="form-item">
+                <FormLabel className="body-text required">CURP</FormLabel>
+                <FormControl>
+                  <CustomInput
+                    {...field}
+                    placeholder="18 caracteres"
+                    className="form-control"
+                    autoUppercase={true}
+                    tabIndex={30}
+                  />
+                </FormControl>
+                <FormMessage className="error-message" />
+              </FormItem>
+            )}
+          />
+
         </div>
         
         <div className="space-y-4">
@@ -571,32 +639,6 @@ export default function SimpleForm() {
             )}
           />
           
-          {/* Campo - Cantidad de trabajos en los últimos 24 meses */}
-          <FormField
-            control={control}
-            name="jobsLast24Months"
-            render={({ field, fieldState }) => (
-              <FormItem className="form-item">
-                <FormLabel className="body-text required">Cantidad de trabajos en los últimos 24 meses</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ""}>
-                  <FormControl>
-                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={21}>
-                      <SelectValue placeholder="Seleccionar" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {jobsLast24MonthsOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage className="error-message" />
-              </FormItem>
-            )}
-          />
-          
           {/* Campo 22 - Columna derecha */}
           <FormField
             control={control}
@@ -609,29 +651,35 @@ export default function SimpleForm() {
                     {...field}
                     placeholder="Puesto que ocupó anteriormente"
                     className="form-control"
-                    tabIndex={24}
+                    tabIndex={23}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
               </FormItem>
             )}
           />
-
-          {/* Campo - Fecha de inicio de experiencia previa */}
+          
+          {/* Campo - ¿Tiene experiencia en retail? */}
           <FormField
             control={control}
-            name="previousJobStartDate"
+            name="retailExperience"
             render={({ field, fieldState }) => (
               <FormItem className="form-item">
-                <FormLabel className="body-text required">Fecha de inicio de experiencia previa</FormLabel>
-                <FormControl>
-                  <CustomInput
-                    {...field}
-                    placeholder="dd/mm/aaaa"
-                    className={`form-control ${fieldState.error ? 'error' : ''}`}
-                    tabIndex={26}
-                  />
-                </FormControl>
+                <FormLabel className="body-text required">¿Tiene experiencia en retail?</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value || ""}>
+                  <FormControl>
+                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={25}>
+                      <SelectValue placeholder="Seleccionar" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {yesNoOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage className="error-message" />
               </FormItem>
             )}
@@ -657,39 +705,13 @@ export default function SimpleForm() {
             )}
           />
           
-          {/* Campo - Motivación al elegir trabajo */}
+          {/* Campo - Cantidad de trabajos en los últimos 24 meses */}
           <FormField
             control={control}
-            name="motivation"
+            name="jobsLast24Months"
             render={({ field, fieldState }) => (
               <FormItem className="form-item">
-                <FormLabel className="body-text required">Motivación al elegir trabajo</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ""}>
-                  <FormControl>
-                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={28}>
-                      <SelectValue placeholder="Seleccionar" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {motivations.map((motivation) => (
-                      <SelectItem key={motivation} value={motivation}>
-                        {motivation}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage className="error-message" />
-              </FormItem>
-            )}
-          />
-          
-          {/* Campo - ¿Tiene experiencia en retail? */}
-          <FormField
-            control={control}
-            name="retailExperience"
-            render={({ field, fieldState }) => (
-              <FormItem className="form-item">
-                <FormLabel className="body-text required">¿Tiene experiencia en retail?</FormLabel>
+                <FormLabel className="body-text required">Cantidad de trabajos en los últimos 24 meses</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value || ""}>
                   <FormControl>
                     <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={29}>
@@ -697,34 +719,13 @@ export default function SimpleForm() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {yesNoOptions.map((option) => (
+                    {jobsLast24MonthsOptions.map((option) => (
                       <SelectItem key={option.value} value={option.value}>
                         {option.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-                <FormMessage className="error-message" />
-              </FormItem>
-            )}
-          />
-          
-          {/* Campo - CURP */}
-          <FormField
-            control={control}
-            name="curp"
-            render={({ field }) => (
-              <FormItem className="form-item">
-                <FormLabel className="body-text required">CURP</FormLabel>
-                <FormControl>
-                  <CustomInput
-                    {...field}
-                    placeholder="18 caracteres"
-                    className="form-control"
-                    autoUppercase={true}
-                    tabIndex={30}
-                  />
-                </FormControl>
                 <FormMessage className="error-message" />
               </FormItem>
             )}
