@@ -284,7 +284,7 @@ export default function SimpleForm() {
                     {...field}
                     placeholder="Compañía donde trabajó anteriormente"
                     className="form-control"
-                    tabIndex={21}
+                    tabIndex={22}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -305,7 +305,7 @@ export default function SimpleForm() {
                     placeholder="Describa sus responsabilidades anteriores"
                     className="form-control"
                     rows={3}
-                    tabIndex={23}
+                    tabIndex={24}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -322,7 +322,7 @@ export default function SimpleForm() {
                 <FormLabel className="body-text required">Motivación al elegir trabajo</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value || ""}>
                   <FormControl>
-                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={25}>
+                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={28}>
                       <SelectValue placeholder="Seleccionar" />
                     </SelectTrigger>
                   </FormControl>
@@ -595,6 +595,32 @@ export default function SimpleForm() {
             )}
           />
           
+          {/* Campo - Cantidad de trabajos en los últimos 24 meses */}
+          <FormField
+            control={control}
+            name="jobsLast24Months"
+            render={({ field, fieldState }) => (
+              <FormItem className="form-item">
+                <FormLabel className="body-text required">Cantidad de trabajos en los últimos 24 meses</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value || ""}>
+                  <FormControl>
+                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={21}>
+                      <SelectValue placeholder="Seleccionar" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {jobsLast24MonthsOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage className="error-message" />
+              </FormItem>
+            )}
+          />
+          
           {/* Campo 22 - Columna derecha */}
           <FormField
             control={control}
@@ -607,7 +633,47 @@ export default function SimpleForm() {
                     {...field}
                     placeholder="Puesto que ocupó anteriormente"
                     className="form-control"
-                    tabIndex={22}
+                    tabIndex={23}
+                  />
+                </FormControl>
+                <FormMessage className="error-message" />
+              </FormItem>
+            )}
+          />
+
+          {/* Campo - Fecha de inicio de experiencia previa */}
+          <FormField
+            control={control}
+            name="previousJobStartDate"
+            render={({ field, fieldState }) => (
+              <FormItem className="form-item">
+                <FormLabel className="body-text required">Fecha de inicio de experiencia previa</FormLabel>
+                <FormControl>
+                  <CustomInput
+                    {...field}
+                    placeholder="dd/mm/aaaa"
+                    className={`form-control ${fieldState.error ? 'error' : ''}`}
+                    tabIndex={25}
+                  />
+                </FormControl>
+                <FormMessage className="error-message" />
+              </FormItem>
+            )}
+          />
+
+          {/* Campo - Fecha de fin de experiencia previa */}
+          <FormField
+            control={control}
+            name="previousJobEndDate"
+            render={({ field, fieldState }) => (
+              <FormItem className="form-item">
+                <FormLabel className="body-text required">Fecha de fin de experiencia previa</FormLabel>
+                <FormControl>
+                  <CustomInput
+                    {...field}
+                    placeholder="dd/mm/aaaa"
+                    className={`form-control ${fieldState.error ? 'error' : ''}`}
+                    tabIndex={26}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -624,7 +690,7 @@ export default function SimpleForm() {
                 <FormLabel className="body-text required">¿Tiene experiencia en retail?</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value || ""}>
                   <FormControl>
-                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={24}>
+                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={27}>
                       <SelectValue placeholder="Seleccionar" />
                     </SelectTrigger>
                   </FormControl>
@@ -654,72 +720,6 @@ export default function SimpleForm() {
                     placeholder="18 caracteres"
                     className="form-control"
                     autoUppercase={true}
-                    tabIndex={26}
-                  />
-                </FormControl>
-                <FormMessage className="error-message" />
-              </FormItem>
-            )}
-          />
-          
-          {/* Campo - Cantidad de trabajos en los últimos 24 meses */}
-          <FormField
-            control={control}
-            name="jobsLast24Months"
-            render={({ field, fieldState }) => (
-              <FormItem className="form-item">
-                <FormLabel className="body-text required">Cantidad de trabajos en los últimos 24 meses</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ""}>
-                  <FormControl>
-                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={27}>
-                      <SelectValue placeholder="Seleccionar" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {jobsLast24MonthsOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage className="error-message" />
-              </FormItem>
-            )}
-          />
-
-          {/* Campo - Fecha de inicio de experiencia previa */}
-          <FormField
-            control={control}
-            name="previousJobStartDate"
-            render={({ field, fieldState }) => (
-              <FormItem className="form-item">
-                <FormLabel className="body-text required">Fecha de inicio de experiencia previa</FormLabel>
-                <FormControl>
-                  <CustomInput
-                    {...field}
-                    placeholder="DD/MM/AAAA"
-                    className={`form-control ${fieldState.error ? 'error' : ''}`}
-                    tabIndex={28}
-                  />
-                </FormControl>
-                <FormMessage className="error-message" />
-              </FormItem>
-            )}
-          />
-
-          {/* Campo - Fecha de fin de experiencia previa */}
-          <FormField
-            control={control}
-            name="previousJobEndDate"
-            render={({ field, fieldState }) => (
-              <FormItem className="form-item">
-                <FormLabel className="body-text required">Fecha de fin de experiencia previa</FormLabel>
-                <FormControl>
-                  <CustomInput
-                    {...field}
-                    placeholder="DD/MM/AAAA"
-                    className={`form-control ${fieldState.error ? 'error' : ''}`}
                     tabIndex={29}
                   />
                 </FormControl>
