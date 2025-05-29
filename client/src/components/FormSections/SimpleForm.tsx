@@ -327,9 +327,36 @@ export default function SimpleForm() {
                 <FormControl>
                   <CustomInput
                     {...field}
+                    type="text"
                     placeholder="dd/mm/aaaa"
                     className={`form-control ${fieldState.error ? 'error' : ''}`}
                     tabIndex={26}
+                    maxLength={10}
+                    onChange={(e) => {
+                      let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                      if (value.length >= 2) {
+                        value = value.slice(0, 2) + '/' + value.slice(2);
+                      }
+                      if (value.length >= 5) {
+                        value = value.slice(0, 5) + '/' + value.slice(5, 9);
+                      }
+                      field.onChange(value);
+                    }}
+                    onKeyDown={(e) => {
+                      // Allow: backspace, delete, tab, escape, enter
+                      if ([8, 9, 27, 13, 46].indexOf(e.keyCode) !== -1 ||
+                          // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                          (e.keyCode === 65 && e.ctrlKey === true) ||
+                          (e.keyCode === 67 && e.ctrlKey === true) ||
+                          (e.keyCode === 86 && e.ctrlKey === true) ||
+                          (e.keyCode === 88 && e.ctrlKey === true)) {
+                        return;
+                      }
+                      // Ensure that it is a number and stop the keypress
+                      if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                        e.preventDefault();
+                      }
+                    }}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -695,9 +722,36 @@ export default function SimpleForm() {
                 <FormControl>
                   <CustomInput
                     {...field}
+                    type="text"
                     placeholder="dd/mm/aaaa"
                     className={`form-control ${fieldState.error ? 'error' : ''}`}
                     tabIndex={27}
+                    maxLength={10}
+                    onChange={(e) => {
+                      let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                      if (value.length >= 2) {
+                        value = value.slice(0, 2) + '/' + value.slice(2);
+                      }
+                      if (value.length >= 5) {
+                        value = value.slice(0, 5) + '/' + value.slice(5, 9);
+                      }
+                      field.onChange(value);
+                    }}
+                    onKeyDown={(e) => {
+                      // Allow: backspace, delete, tab, escape, enter
+                      if ([8, 9, 27, 13, 46].indexOf(e.keyCode) !== -1 ||
+                          // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                          (e.keyCode === 65 && e.ctrlKey === true) ||
+                          (e.keyCode === 67 && e.ctrlKey === true) ||
+                          (e.keyCode === 86 && e.ctrlKey === true) ||
+                          (e.keyCode === 88 && e.ctrlKey === true)) {
+                        return;
+                      }
+                      // Ensure that it is a number and stop the keypress
+                      if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                        e.preventDefault();
+                      }
+                    }}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
