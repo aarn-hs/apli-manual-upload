@@ -39,9 +39,9 @@ export default function SimpleForm() {
     <section id="simple-form" className="bg-white p-6">
       <h2 className="important section-title">Registro de candidato</h2>
       
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 form-grid">
-          {/* Campo 1 - Fuente */}
-          <FormField
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
+        {/* Campo 1 - Fuente */}
+        <FormField
             control={control}
             name="source"
             render={({ field, fieldState }) => (
@@ -811,7 +811,6 @@ export default function SimpleForm() {
               </FormItem>
             )}
           />
-        </div>
       </div>
     </section>
   );
