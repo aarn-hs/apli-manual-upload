@@ -166,7 +166,7 @@ export default function Home() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => {
         controller.abort();
-      }, 45000); // 45 segundos timeout
+      }, 90000); // 90 segundos timeout
 
       const response = await fetch(webhookUrl, {
         method: 'POST',
@@ -221,7 +221,7 @@ export default function Home() {
       
       if (error instanceof Error) {
         if (error.name === 'AbortError') {
-          errorMessage = "El webhook está tardando demasiado en procesar la información (más de 45 segundos). Esto puede indicar que el webhook está sobrecargado o procesando muchas solicitudes.";
+          errorMessage = "El webhook está tardando demasiado en procesar la información (más de 90 segundos). El proceso puede estar sobrecargado o tener alta demanda.";
         } else if (error.message.includes('Failed to fetch')) {
           errorMessage = "No se pudo conectar con el webhook. Esto puede deberse a problemas de red, CORS, o que el webhook no esté disponible.";
         } else {
