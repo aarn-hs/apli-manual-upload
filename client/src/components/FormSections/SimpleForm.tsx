@@ -39,13 +39,14 @@ export default function SimpleForm() {
     <section id="simple-form" className="bg-white p-6">
       <h2 className="important section-title">Registro de candidato</h2>
       
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
-        {/* Campo 1 - Fuente */}
-        <FormField
+      <div className="space-y-4 md:grid md:grid-cols-2 md:gap-6 md:space-y-0">
+        <div className="md:space-y-4">
+          {/* Campo 1 - Fuente */}
+          <FormField
             control={control}
             name="source"
             render={({ field, fieldState }) => (
-              <FormItem className="form-item order-1 md:order-none">
+              <FormItem className="form-item order-1">
                 <FormLabel className="body-text required">Fuente</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value || ""}>
                   <FormControl>
@@ -428,8 +429,8 @@ export default function SimpleForm() {
                   </FormControl>
                   <SelectContent>
                     {positions.map((position) => (
-                      <SelectItem key={position.value} value={position.value}>
-                        {position.label}
+                      <SelectItem key={position} value={position}>
+                        {position}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -784,33 +785,6 @@ export default function SimpleForm() {
             )}
           />
         </div>
-        
-        <div className="md:space-y-4">
-          {/* Columna derecha - Campo 2 */}
-          <FormField
-            control={control}
-            name="position"
-            render={({ field, fieldState }) => (
-              <FormItem className="form-item order-2 md:order-none">
-                <FormLabel className="body-text required">Puesto</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ""}>
-                  <FormControl>
-                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={2}>
-                      <SelectValue placeholder="Seleccionar" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {positions.map((position) => (
-                      <SelectItem key={position.value} value={position.value}>
-                        {position.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage className="error-message" />
-              </FormItem>
-            )}
-          />
       </div>
     </section>
   );

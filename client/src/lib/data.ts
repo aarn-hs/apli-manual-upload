@@ -42,40 +42,40 @@ export const nationalities = [
 
 // Positions
 export const positions = [
-  { value: "auxiliar-administracion", label: "Auxiliar de Administración" },
-  { value: "auxiliar-general", label: "Auxiliar General" },
-  { value: "auxiliar-general-perecederos", label: "Auxiliar General de Perecederos" },
-  { value: "chofer-repartidor", label: "Chofer Repartidor" },
-  { value: "mecanico", label: "Mecánico" },
-  { value: "operador-equipos-carga", label: "Operador de Equipos de Carga" },
-  { value: "recibidor-mercancia", label: "Recibidor de Mercancía" },
-  { value: "jefatura-administrativa", label: "Jefatura Administrativa" },
-  { value: "jefatura-calidad", label: "Jefatura de Calidad" },
-  { value: "jefatura-operaciones-logistica", label: "Jefatura de Operaciones de Logística" },
-  { value: "jefatura-seguridad", label: "Jefatura de Seguridad" },
-  { value: "jefatura-transportes", label: "Jefatura de Transportes" },
-  { value: "jefatura-proveedores", label: "Jefatura de trato con proveedores" },
-  { value: "subgerencia-entrenamiento", label: "Subgerencia en Entrenamiento" }
+  "Auxiliar de Administración",
+  "Auxiliar General",
+  "Auxiliar General de Perecederos",
+  "Chofer Repartidor",
+  "Mecánico",
+  "Operador de Equipos de Carga",
+  "Recibidor de Mercancía",
+  "Jefatura Administrativa",
+  "Jefatura de Calidad",
+  "Jefatura de Operaciones de Logística",
+  "Jefatura de Seguridad",
+  "Jefatura de Transportes",
+  "Jefatura de trato con proveedores",
+  "Subgerencia en Entrenamiento"
 ];
 
 // Locations
 export const locations = [
-  { value: "cedis-ecommerce-walmart-mexico", label: "Cedis ecommerce Walmart México" },
-  { value: "cedis-walmart-bae-sur-vesta", label: "Cedis Walmart BAE Sur - VESTA" },
-  { value: "cedis-walmart-chalco", label: "Cedis Walmart Chalco" },
-  { value: "cedis-walmart-chihuahua", label: "Cedis Walmart Chihuahua" },
-  { value: "cedis-walmart-cuautitlan", label: "Cedis Walmart Cuautitlán" },
-  { value: "cedis-walmart-ecommerce-guadalajara", label: "Cedis Walmart ecommerce Guadalajara" },
-  { value: "cedis-walmart-guadalajara", label: "Cedis Walmart Guadalajara" },
-  { value: "cedis-walmart-merida", label: "Cedis Walmart Merida" },
-  { value: "cedis-walmart-mexicali", label: "Cedis Walmart Mexicali" },
-  { value: "cedis-walmart-san-martin-obispo", label: "Cedis Walmart San Martin Obispo" },
-  { value: "cedis-walmart-santa-barbara", label: "Cedis Walmart Santa Bárbara" },
-  { value: "centro-distribucion-walmart-villahermosa", label: "Centro de Distribucion Walmart Villahermosa" },
-  { value: "planta-carnes-walmart-cuautitlan", label: "Planta de Carnes Walmart Cuautitlán" },
-  { value: "walmart-cedis-monterrey", label: "Walmart - CEDIS Monterrey" },
-  { value: "walmart-culiacan-cedis", label: "Walmart Culiacan Cedis" },
-  { value: "walmart-ecommerce-mty", label: "Walmart eCommerce MTY" }
+  "Cedis ecommerce Walmart México",
+  "Cedis Walmart BAE Sur - VESTA",
+  "Cedis Walmart Chalco",
+  "Cedis Walmart Chihuahua",
+  "Cedis Walmart Cuautitlán",
+  "Cedis Walmart ecommerce Guadalajara",
+  "Cedis Walmart Guadalajara",
+  "Cedis Walmart Merida",
+  "Cedis Walmart Mexicali",
+  "Cedis Walmart San Martin Obispo",
+  "Cedis Walmart Santa Bárbara",
+  "Centro de Distribucion Walmart Villahermosa",
+  "Planta de Carnes Walmart Cuautitlán",
+  "Walmart - CEDIS Monterrey",
+  "Walmart Culiacan Cedis",
+  "Walmart eCommerce MTY"
 ];
 
 // Education levels
