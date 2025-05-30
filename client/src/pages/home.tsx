@@ -130,6 +130,9 @@ export default function Home() {
       "Compañía Experiencia Previa": formData.previousCompany || "",
       "Puesto Experiencia Previa": formData.previousPosition || "",
       "Tareas Experiencia Previa": formData.previousTasks || "",
+      "Fecha de inicio de experiencia previa": transformDate(formData.previousJobStartDate),
+      "Fecha de fin de experiencia previa": transformDate(formData.previousJobEndDate),
+      "Cantidad de trabajos en los últimos 24 meses": formData.jobsLast24Months || "",
       "Experiencia en retail": formData.retailExperience || "",
       "Motivación al elegir trabajo": formData.motivation || "",
       "CURP": formData.curp || ""
@@ -155,6 +158,10 @@ export default function Home() {
         return;
       }
 
+      // Log de los datos que se envían
+      console.log('Enviando datos al webhook:', webhookData);
+      console.log('URL del webhook:', webhookUrl);
+
       // Enviar datos al webhook
       const response = await fetch(webhookUrl, {
         method: 'POST',
@@ -164,8 +171,11 @@ export default function Home() {
         body: JSON.stringify(webhookData),
       });
 
+      console.log('Respuesta del webhook:', response.status, response.statusText);
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => null);
+        console.log('Error data:', errorData);
         
         if (response.status === 404 && errorData?.message?.includes('not registered')) {
           throw new Error('El webhook no está activo. Por favor activa el webhook en la plataforma y vuelve a intentar.');
