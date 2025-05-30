@@ -186,19 +186,25 @@ export default function Home() {
 
       // Verificar que la respuesta sea válida
       const responseData = await response.json().catch(() => null);
+      console.log('Datos de respuesta del webhook:', responseData);
       
-      // El webhook responde con {"status": "finished"} cuando es exitoso
-      if (!responseData || responseData.status !== 'finished') {
-        console.warn('Respuesta inesperada del webhook:', responseData);
+      // El webhook responde con {"status": "success"} cuando es exitoso
+      if (responseData && responseData.status === 'success') {
+        const applicationId = responseData.data?.application_id || 'N/A';
+        const resultMessage = responseData.data?.result || 'Postulación procesada';
+        
+        // Mostrar modal de éxito
+        setShowSuccessModal(true);
+        
+        toast({
+          title: "¡Candidato enviado exitosamente!",
+          description: `${resultMessage}. ID: ${applicationId}`,
+        });
+      } else {
+        // Si no es exitoso, manejar como error
+        const errorMessage = responseData?.message || 'Respuesta inesperada del webhook';
+        throw new Error(errorMessage);
       }
-
-      // Mostrar modal de éxito
-      setShowSuccessModal(true);
-      
-      toast({
-        title: "¡Candidato enviado exitosamente!",
-        description: "La información del candidato ha sido procesada correctamente.",
-      });
 
     } catch (error) {
       console.error('Error al enviar datos al webhook:', error);
