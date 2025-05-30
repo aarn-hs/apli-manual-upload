@@ -42,20 +42,20 @@ export const nationalities = [
 
 // Positions
 export const positions = [
-  "Auxiliar de Administración",
-  "Auxiliar General",
-  "Auxiliar General de Perecederos",
-  "Chofer Repartidor",
-  "Mecánico",
-  "Operador de Equipos de Carga",
-  "Recibidor de Mercancía",
-  "Jefatura Administrativa",
-  "Jefatura de Calidad",
-  "Jefatura de Operaciones de Logística",
-  "Jefatura de Seguridad",
-  "Jefatura de Transportes",
-  "Jefatura de trato con proveedores",
-  "Subgerencia en Entrenamiento"
+  { value: "auxiliar-administracion", label: "Auxiliar de Administración" },
+  { value: "auxiliar-general", label: "Auxiliar General" },
+  { value: "auxiliar-general-perecederos", label: "Auxiliar General de Perecederos" },
+  { value: "chofer-repartidor", label: "Chofer Repartidor" },
+  { value: "mecanico", label: "Mecánico" },
+  { value: "operador-equipos-carga", label: "Operador de Equipos de Carga" },
+  { value: "recibidor-mercancia", label: "Recibidor de Mercancía" },
+  { value: "jefatura-administrativa", label: "Jefatura Administrativa" },
+  { value: "jefatura-calidad", label: "Jefatura de Calidad" },
+  { value: "jefatura-operaciones-logistica", label: "Jefatura de Operaciones de Logística" },
+  { value: "jefatura-seguridad", label: "Jefatura de Seguridad" },
+  { value: "jefatura-transportes", label: "Jefatura de Transportes" },
+  { value: "jefatura-proveedores", label: "Jefatura de trato con proveedores" },
+  { value: "subgerencia-entrenamiento", label: "Subgerencia en Entrenamiento" }
 ];
 
 // Locations
