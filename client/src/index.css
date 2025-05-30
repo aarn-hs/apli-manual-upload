@@ -170,4 +170,33 @@
   .form-item {
     @apply min-h-[105px] mb-2 flex flex-col;
   }
+  
+  /* Mobile order for alternating fields */
+  @media (max-width: 767px) {
+    .mobile-order-1 { order: 1; }
+    .mobile-order-2 { order: 2; }
+    .mobile-order-3 { order: 3; }
+    .mobile-order-4 { order: 4; }
+    .mobile-order-5 { order: 5; }
+    .mobile-order-6 { order: 6; }
+    .mobile-order-7 { order: 7; }
+    .mobile-order-8 { order: 8; }
+    .mobile-order-9 { order: 9; }
+    .mobile-order-10 { order: 10; }
+    .mobile-order-11 { order: 11; }
+    .mobile-order-12 { order: 12; }
+    .mobile-order-13 { order: 13; }
+    .mobile-order-14 { order: 14; }
+    .mobile-order-15 { order: 15; }
+    .mobile-order-16 { order: 16; }
+    .mobile-order-17 { order: 17; }
+    .mobile-order-18 { order: 18; }
+    .mobile-order-19 { order: 19; }
+    .mobile-order-20 { order: 20; }
+    .mobile-order-21 { order: 21; }
+    .mobile-order-22 { order: 22; }
+    .mobile-order-23 { order: 23; }
+    .mobile-order-24 { order: 24; }
+    .mobile-order-25 { order: 25; }
+  }
 }

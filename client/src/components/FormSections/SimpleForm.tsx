@@ -39,8 +39,7 @@ export default function SimpleForm() {
     <section id="simple-form" className="bg-white p-6">
       <h2 className="important section-title">Registro de candidato</h2>
       
-      <div className="flex flex-col space-y-4 md:grid md:grid-cols-2 md:gap-6 md:space-y-0">
-        <div className="md:space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           {/* Campo 1 - Fuente */}
           <FormField
             control={control}
