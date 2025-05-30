@@ -123,7 +123,7 @@ export const motivations = [
 // Mexican states
 export const mexicanStates = [
   "Aguascalientes",
-  "Baja California",
+  "Baja California Norte",
   "Baja California Sur",
   "Campeche",
   "Chiapas",
