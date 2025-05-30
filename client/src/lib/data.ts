@@ -1,6 +1,6 @@
 // Source agencies
 export const agencySources = [
-  { value: "walk-ins", label: "Walk In" },
+  { value: "walk-ins", label: "Walk-In" },
   { value: "offline", label: "Candidato Análogo" }
 ];
 
