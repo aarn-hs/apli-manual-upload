@@ -208,9 +208,20 @@ export default function Home() {
 
     } catch (error) {
       console.error('Error al enviar datos al webhook:', error);
+      
+      let errorMessage = "Hubo un problema al procesar la información. Por favor intenta nuevamente.";
+      
+      if (error instanceof Error) {
+        if (error.message.includes('Failed to fetch')) {
+          errorMessage = "No se pudo conectar con el webhook. Verifica tu conexión a internet.";
+        } else {
+          errorMessage = error.message;
+        }
+      }
+      
       toast({
         title: "Error al enviar candidato",
-        description: "Hubo un problema al procesar la información. Por favor intenta nuevamente.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
