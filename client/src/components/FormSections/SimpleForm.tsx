@@ -428,8 +428,8 @@ export default function SimpleForm() {
                   </FormControl>
                   <SelectContent>
                     {positions.map((position) => (
-                      <SelectItem key={position} value={position}>
-                        {position}
+                      <SelectItem key={position.value} value={position.value}>
+                        {position.label}
                       </SelectItem>
                     ))}
                   </SelectContent>

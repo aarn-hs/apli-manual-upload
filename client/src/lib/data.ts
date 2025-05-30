@@ -60,22 +60,22 @@ export const positions = [
 
 // Locations
 export const locations = [
-  "Cedis ecommerce Walmart México",
-  "Cedis Walmart BAE Sur - VESTA",
-  "Cedis Walmart Chalco",
-  "Cedis Walmart Chihuahua",
-  "Cedis Walmart Cuautitlán",
-  "Cedis Walmart ecommerce Guadalajara",
-  "Cedis Walmart Guadalajara",
-  "Cedis Walmart Merida",
-  "Cedis Walmart Mexicali",
-  "Cedis Walmart San Martin Obispo",
-  "Cedis Walmart Santa Bárbara",
-  "Centro de Distribucion Walmart Villahermosa",
-  "Planta de Carnes Walmart Cuautitlán",
-  "Walmart - CEDIS Monterrey",
-  "Walmart Culiacan Cedis",
-  "Walmart eCommerce MTY"
+  { value: "cedis-ecommerce-walmart-mexico", label: "Cedis ecommerce Walmart México" },
+  { value: "cedis-walmart-bae-sur-vesta", label: "Cedis Walmart BAE Sur - VESTA" },
+  { value: "cedis-walmart-chalco", label: "Cedis Walmart Chalco" },
+  { value: "cedis-walmart-chihuahua", label: "Cedis Walmart Chihuahua" },
+  { value: "cedis-walmart-cuautitlan", label: "Cedis Walmart Cuautitlán" },
+  { value: "cedis-walmart-ecommerce-guadalajara", label: "Cedis Walmart ecommerce Guadalajara" },
+  { value: "cedis-walmart-guadalajara", label: "Cedis Walmart Guadalajara" },
+  { value: "cedis-walmart-merida", label: "Cedis Walmart Merida" },
+  { value: "cedis-walmart-mexicali", label: "Cedis Walmart Mexicali" },
+  { value: "cedis-walmart-san-martin-obispo", label: "Cedis Walmart San Martin Obispo" },
+  { value: "cedis-walmart-santa-barbara", label: "Cedis Walmart Santa Bárbara" },
+  { value: "centro-distribucion-walmart-villahermosa", label: "Centro de Distribucion Walmart Villahermosa" },
+  { value: "planta-carnes-walmart-cuautitlan", label: "Planta de Carnes Walmart Cuautitlán" },
+  { value: "walmart-cedis-monterrey", label: "Walmart - CEDIS Monterrey" },
+  { value: "walmart-culiacan-cedis", label: "Walmart Culiacan Cedis" },
+  { value: "walmart-ecommerce-mty", label: "Walmart eCommerce MTY" }
 ];
 
 // Education levels
