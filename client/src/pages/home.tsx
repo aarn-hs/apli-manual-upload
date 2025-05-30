@@ -162,14 +162,22 @@ export default function Home() {
       console.log('Enviando datos al webhook:', webhookData);
       console.log('URL del webhook:', webhookUrl);
 
-      // Enviar datos al webhook
+      // Enviar datos al webhook con timeout personalizado
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => {
+        controller.abort();
+      }, 45000); // 45 segundos timeout
+
       const response = await fetch(webhookUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(webhookData),
+        signal: controller.signal
       });
+
+      clearTimeout(timeoutId);
 
       console.log('Respuesta del webhook:', response.status, response.statusText);
 
@@ -212,8 +220,10 @@ export default function Home() {
       let errorMessage = "Hubo un problema al procesar la información. Por favor intenta nuevamente.";
       
       if (error instanceof Error) {
-        if (error.message.includes('Failed to fetch')) {
-          errorMessage = "No se pudo conectar con el webhook. Verifica tu conexión a internet.";
+        if (error.name === 'AbortError') {
+          errorMessage = "El webhook está tardando demasiado en procesar la información (más de 45 segundos). Esto puede indicar que el webhook está sobrecargado o procesando muchas solicitudes.";
+        } else if (error.message.includes('Failed to fetch')) {
+          errorMessage = "No se pudo conectar con el webhook. Esto puede deberse a problemas de red, CORS, o que el webhook no esté disponible.";
         } else {
           errorMessage = error.message;
         }
