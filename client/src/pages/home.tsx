@@ -175,6 +175,16 @@ export default function Home() {
         },
         body: JSON.stringify(webhookData),
         signal: controller.signal
+      }).catch((fetchError) => {
+        clearTimeout(timeoutId);
+        console.error('Error inmediato al hacer fetch:', fetchError);
+        
+        if (fetchError.name === 'AbortError') {
+          throw new Error('TIMEOUT: El webhook tardó más de 90 segundos en responder.');
+        }
+        
+        // Error inmediato - probablemente bloqueo de red o CORS
+        throw new Error('NETWORK_ERROR: No se pudo establecer conexión con el webhook. Esto puede deberse a restricciones de red del entorno de desarrollo.');
       });
 
       clearTimeout(timeoutId);
@@ -220,10 +230,12 @@ export default function Home() {
       let errorMessage = "Hubo un problema al procesar la información. Por favor intenta nuevamente.";
       
       if (error instanceof Error) {
-        if (error.name === 'AbortError') {
-          errorMessage = "El webhook está tardando demasiado en procesar la información (más de 90 segundos). El proceso puede estar sobrecargado o tener alta demanda.";
+        if (error.message.startsWith('TIMEOUT:')) {
+          errorMessage = error.message.replace('TIMEOUT: ', '');
+        } else if (error.message.startsWith('NETWORK_ERROR:')) {
+          errorMessage = error.message.replace('NETWORK_ERROR: ', '');
         } else if (error.message.includes('Failed to fetch')) {
-          errorMessage = "No se pudo conectar con el webhook. Esto puede deberse a problemas de red, CORS, o que el webhook no esté disponible.";
+          errorMessage = "No se pudo conectar con el webhook. Esto puede deberse a restricciones de red del entorno de desarrollo o problemas de conectividad.";
         } else {
           errorMessage = error.message;
         }
