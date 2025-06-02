@@ -266,3 +266,66 @@ export function validatePastDate(dateStr: string): boolean {
   
   return true;
 }
+
+// Detailed date validation with specific error messages
+export function validateDateWithDetails(dateStr: string): { isValid: boolean; error?: string } {
+  if (!dateStr) return { isValid: false, error: "La fecha es requerida" };
+  
+  // Check format dd/mm/yyyy
+  const dateRegex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+  const match = dateStr.match(dateRegex);
+  
+  if (!match) return { isValid: false, error: "El formato debe ser dd/mm/aaaa" };
+  
+  const day = parseInt(match[1], 10);
+  const month = parseInt(match[2], 10);
+  const year = parseInt(match[3], 10);
+  
+  // Validate day
+  if (day < 1 || day > 31) return { isValid: false, error: "El día ingresado no es válido" };
+  
+  // Validate month
+  if (month < 1 || month > 12) return { isValid: false, error: "El mes ingresado no es válido" };
+  
+  // Validate year
+  if (year < 1945) return { isValid: false, error: "El año debe ser posterior a 1945" };
+  if (year > new Date().getFullYear()) return { isValid: false, error: "El año ingresado no es válido" };
+  
+  // Create date object (month is 0-indexed in Date constructor)
+  const date = new Date(year, month - 1, day);
+  
+  // Check if the date is valid (handles leap years, days in month, etc.)
+  if (date.getDate() !== day || date.getMonth() !== month - 1 || date.getFullYear() !== year) {
+    return { isValid: false, error: "La fecha ingresada no es válida" };
+  }
+  
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  // Check if date is not in the future
+  if (date >= today) return { isValid: false, error: "La fecha debe ser anterior al día de hoy" };
+  
+  return { isValid: true };
+}
+
+// Birth date validation with age check
+export function validateBirthDateWithDetails(dateStr: string): { isValid: boolean; error?: string } {
+  const basicValidation = validateDateWithDetails(dateStr);
+  if (!basicValidation.isValid) return basicValidation;
+  
+  const [day, month, year] = dateStr.split('/').map(Number);
+  const birthDate = new Date(year, month - 1, day);
+  const today = new Date();
+  
+  // Calculate age
+  const age = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+  const actualAge = monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate()) ? age - 1 : age;
+  
+  // Check if the person is at least 18 years old and less than 80 years old
+  if (actualAge < 18 || actualAge >= 80) {
+    return { isValid: false, error: "El candidato debe ser mayor de edad y menor a 80 años" };
+  }
+  
+  return { isValid: true };
+}

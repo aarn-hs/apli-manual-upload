@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { validatePMX, validateName, validatePhone, validatePostalCode, validateAddress, validateBirthDate, validateCURPWithBirthDate, validatePastDate } from "./validation";
+import { validatePMX, validateName, validatePhone, validatePostalCode, validateAddress, validateBirthDate, validateCURPWithBirthDate, validatePastDate, validateDateWithDetails, validateBirthDateWithDetails } from "./validation";
 
 // Esquema simplificado del candidato según los campos obligatorios
 export const simplifiedCandidateSchema = z.object({
@@ -29,7 +29,13 @@ export const simplifiedCandidateSchema = z.object({
     .refine(val => !val || validateName(val), "No se permiten caracteres especiales"),
   
   birthDate: z.string({ required_error: "Ingrese la fecha de nacimiento" })
-    .refine(validateBirthDate, "El candidato debe ser mayor de edad y menor a 80 años"),
+    .refine((date) => {
+      const validation = validateBirthDateWithDetails(date);
+      return validation.isValid;
+    }, (date) => {
+      const validation = validateBirthDateWithDetails(date);
+      return { message: validation.error || "Fecha de nacimiento inválida" };
+    }),
   
   email: z.string({ required_error: "Ingrese el correo electrónico" })
     .email("Formato de correo electrónico inválido"),
@@ -78,9 +84,21 @@ export const simplifiedCandidateSchema = z.object({
   // Información laboral adicional (Obligatorio)
   jobsLast24Months: z.string({ required_error: "Debes seleccionar una opción" }),
   previousJobStartDate: z.string({ required_error: "Ingrese la fecha de inicio" })
-    .refine((date) => validatePastDate(date), { message: "La fecha debe ser anterior al día de hoy" }),
+    .refine((date) => {
+      const validation = validateDateWithDetails(date);
+      return validation.isValid;
+    }, (date) => {
+      const validation = validateDateWithDetails(date);
+      return { message: validation.error || "Fecha de inicio inválida" };
+    }),
   previousJobEndDate: z.string({ required_error: "Ingrese la fecha de fin" })
-    .refine((date) => validatePastDate(date), { message: "La fecha debe ser anterior al día de hoy" }),
+    .refine((date) => {
+      const validation = validateDateWithDetails(date);
+      return validation.isValid;
+    }, (date) => {
+      const validation = validateDateWithDetails(date);
+      return { message: validation.error || "Fecha de fin inválida" };
+    }),
   
 
 }).refine(
