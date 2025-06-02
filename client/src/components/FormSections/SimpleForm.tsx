@@ -284,7 +284,7 @@ export default function SimpleForm() {
                     {...field}
                     placeholder="Compañía donde trabajó anteriormente"
                     className="form-control"
-                    tabIndex={22}
+                    tabIndex={21}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -306,7 +306,7 @@ export default function SimpleForm() {
                     type="text"
                     placeholder="dd/mm/aaaa"
                     className={`form-control ${fieldState.error ? 'error' : ''}`}
-                    tabIndex={26}
+                    tabIndex={23}
                     maxLength={10}
                     onChange={(e) => {
                       let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
@@ -349,7 +349,7 @@ export default function SimpleForm() {
                 <FormLabel className="body-text required">Motivación al elegir trabajo</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value || ""}>
                   <FormControl>
-                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={28}>
+                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={25}>
                       <SelectValue placeholder="Seleccionar" />
                     </SelectTrigger>
                   </FormControl>
@@ -369,19 +369,24 @@ export default function SimpleForm() {
           {/* Campo - CURP (izquierda) */}
           <FormField
             control={control}
-            name="curp"
-            render={({ field }) => (
+            name="jobsLast24Months"
+            render={({ field, fieldState }) => (
               <FormItem className="form-item">
-                <FormLabel className="body-text required">CURP</FormLabel>
-                <FormControl>
-                  <CustomInput
-                    {...field}
-                    placeholder="18 caracteres"
-                    className="form-control"
-                    autoUppercase={true}
-                    tabIndex={30}
-                  />
-                </FormControl>
+                <FormLabel className="body-text required">Cantidad de trabajos en los últimos 24 meses</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value || ""}>
+                  <FormControl>
+                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={27}>
+                      <SelectValue placeholder="Seleccionar" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {jobsLast24MonthsOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage className="error-message" />
               </FormItem>
             )}
@@ -654,7 +659,7 @@ export default function SimpleForm() {
                     {...field}
                     placeholder="Puesto que ocupó anteriormente"
                     className="form-control"
-                    tabIndex={23}
+                    tabIndex={22}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -675,7 +680,7 @@ export default function SimpleForm() {
                     type="text"
                     placeholder="dd/mm/aaaa"
                     className={`form-control ${fieldState.error ? 'error' : ''}`}
-                    tabIndex={25}
+                    tabIndex={24}
                     maxLength={10}
                     onChange={(e) => {
                       let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
@@ -718,7 +723,7 @@ export default function SimpleForm() {
                 <FormLabel className="body-text required">¿Tiene experiencia en retail?</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value || ""}>
                   <FormControl>
-                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={27}>
+                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={26}>
                       <SelectValue placeholder="Seleccionar" />
                     </SelectTrigger>
                   </FormControl>
@@ -738,24 +743,19 @@ export default function SimpleForm() {
           {/* Campo - Cantidad de trabajos en los últimos 24 meses */}
           <FormField
             control={control}
-            name="jobsLast24Months"
-            render={({ field, fieldState }) => (
+            name="curp"
+            render={({ field }) => (
               <FormItem className="form-item">
-                <FormLabel className="body-text required">Cantidad de trabajos en los últimos 24 meses</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ""}>
-                  <FormControl>
-                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={29}>
-                      <SelectValue placeholder="Seleccionar" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {jobsLast24MonthsOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <FormLabel className="body-text required">CURP</FormLabel>
+                <FormControl>
+                  <CustomInput
+                    {...field}
+                    placeholder="18 caracteres"
+                    className="form-control"
+                    autoUppercase={true}
+                    tabIndex={28}
+                  />
+                </FormControl>
                 <FormMessage className="error-message" />
               </FormItem>
             )}
