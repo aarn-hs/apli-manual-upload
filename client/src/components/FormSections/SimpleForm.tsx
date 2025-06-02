@@ -34,6 +34,26 @@ export default function SimpleForm() {
       setValue("municipality", "");
     }
   }, [selectedState, setValue]);
+
+  // Función para manejar el formateo de fechas con soporte para borrado
+  const handleDateChange = (fieldOnChange: any, currentValue: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target.value;
+    
+    // Si el usuario está borrando, permitir el borrado completo
+    if (input.length < (currentValue?.length || 0)) {
+      fieldOnChange(input);
+      return;
+    }
+    
+    let value = input.replace(/\D/g, ''); // Remove non-digits
+    if (value.length >= 2) {
+      value = value.slice(0, 2) + '/' + value.slice(2);
+    }
+    if (value.length >= 5) {
+      value = value.slice(0, 5) + '/' + value.slice(5, 9);
+    }
+    fieldOnChange(value);
+  };
   
   return (
     <section id="simple-form" className="bg-white p-6">
@@ -308,16 +328,7 @@ export default function SimpleForm() {
                     className={`form-control ${fieldState.error ? 'error' : ''}`}
                     tabIndex={23}
                     maxLength={10}
-                    onChange={(e) => {
-                      let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
-                      if (value.length >= 2) {
-                        value = value.slice(0, 2) + '/' + value.slice(2);
-                      }
-                      if (value.length >= 5) {
-                        value = value.slice(0, 5) + '/' + value.slice(5, 9);
-                      }
-                      field.onChange(value);
-                    }}
+                    onChange={handleDateChange(field.onChange, field.value)}
                     onKeyDown={(e) => {
                       // Allow: backspace, delete, tab, escape, enter
                       if ([8, 9, 27, 13, 46].indexOf(e.keyCode) !== -1 ||
