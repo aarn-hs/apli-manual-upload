@@ -35,31 +35,49 @@ export default function SimpleForm() {
     }
   }, [selectedState, setValue]);
 
-  // Función simplificada para formateo de fechas que permite edición natural
-  const handleDateInput = (fieldOnChange: any) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+  // Función mejorada para formateo de fechas en tiempo real
+  const handleDateInput = (fieldOnChange: any, currentValue: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target;
+    const newValue = input.value;
+    const currentVal = currentValue || '';
     
-    // Permitir cualquier edición, incluyendo borrado de barras
-    fieldOnChange(value);
+    // Si está borrando (valor nuevo es más corto), permitir borrado libre
+    if (newValue.length < currentVal.length) {
+      fieldOnChange(newValue);
+      return;
+    }
+    
+    // Extraer solo números del input
+    const numbers = newValue.replace(/\D/g, '');
+    
+    // Formatear automáticamente mientras escribe
+    let formatted = numbers;
+    if (numbers.length >= 3) {
+      formatted = numbers.slice(0, 2) + '/' + numbers.slice(2);
+    }
+    if (numbers.length >= 5) {
+      formatted = numbers.slice(0, 2) + '/' + numbers.slice(2, 4) + '/' + numbers.slice(4, 8);
+    }
+    
+    fieldOnChange(formatted);
   };
 
-  // Función para formatear fecha al salir del campo (onBlur)
+  // Función simple para formatear al salir (en caso de que quede mal formateado)
   const formatDateOnBlur = (fieldOnChange: any, currentValue: string) => () => {
     if (!currentValue) return;
     
-    // Extraer solo números
     const numbers = currentValue.replace(/\D/g, '');
+    if (numbers.length === 0) {
+      fieldOnChange('');
+      return;
+    }
     
-    // Formatear solo si hay números suficientes
     let formatted = numbers;
-    if (numbers.length >= 2) {
-      formatted = numbers.slice(0, 2);
-      if (numbers.length >= 4) {
-        formatted += '/' + numbers.slice(2, 4);
-        if (numbers.length >= 6) {
-          formatted += '/' + numbers.slice(4, 8);
-        }
-      }
+    if (numbers.length >= 3) {
+      formatted = numbers.slice(0, 2) + '/' + numbers.slice(2);
+    }
+    if (numbers.length >= 5) {
+      formatted = numbers.slice(0, 2) + '/' + numbers.slice(2, 4) + '/' + numbers.slice(4, 8);
     }
     
     fieldOnChange(formatted);
@@ -338,7 +356,7 @@ export default function SimpleForm() {
                     className={`form-control ${fieldState.error ? 'error' : ''}`}
                     tabIndex={23}
                     maxLength={10}
-                    onChange={handleDateInput(field.onChange)}
+                    onChange={handleDateInput(field.onChange, field.value)}
                     onBlur={formatDateOnBlur(field.onChange, field.value)}
                     onKeyDown={(e) => {
                       // Allow: backspace, delete, tab, escape, enter
@@ -498,7 +516,7 @@ export default function SimpleForm() {
                     className="form-control"
                     tabIndex={8}
                     maxLength={10}
-                    onChange={handleDateInput(field.onChange)}
+                    onChange={handleDateInput(field.onChange, field.value)}
                     onBlur={formatDateOnBlur(field.onChange, field.value)}
                     onKeyDown={(e) => {
                       // Allow: backspace, delete, tab, escape, enter
@@ -696,7 +714,7 @@ export default function SimpleForm() {
                     className={`form-control ${fieldState.error ? 'error' : ''}`}
                     tabIndex={24}
                     maxLength={10}
-                    onChange={handleDateInput(field.onChange)}
+                    onChange={handleDateInput(field.onChange, field.value)}
                     onBlur={formatDateOnBlur(field.onChange, field.value)}
                     onKeyDown={(e) => {
                       // Allow: backspace, delete, tab, escape, enter
