@@ -35,7 +35,6 @@ export default function CandidateForm({ onSubmit, isSubmitting = false }: Candid
       maritalStatus: "",
       previousCompany: "",
       previousPosition: "",
-      previousTasks: "",
       retailExperience: "",
       motivation: "",
       curp: "",
@@ -65,7 +64,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false }: Candid
     'birthDate', 'email', 'phone', 'gender', 'nationality',
     'streetAndNumber', 'neighborhood', 'state', 'municipality', 'postalCode',
     'education', 'maritalStatus', 'previousCompany', 'previousPosition', 
-    'previousTasks', 'retailExperience', 'motivation', 'curp',
+    'retailExperience', 'motivation', 'curp',
     'jobsLast24Months', 'previousJobStartDate', 'previousJobEndDate'
   ];
 
@@ -108,7 +107,6 @@ export default function CandidateForm({ onSubmit, isSubmitting = false }: Candid
       maritalStatus: "",
       previousCompany: "",
       previousPosition: "",
-      previousTasks: "",
       retailExperience: "",
       motivation: "",
       curp: "",
