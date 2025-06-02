@@ -292,30 +292,6 @@ export default function SimpleForm() {
             )}
           />
           
-          {/* Campo 23 - Columna izquierda */}
-          <FormField
-            control={control}
-            name="previousTasks"
-            render={({ field }) => (
-              <FormItem className="form-item">
-                <FormLabel className="body-text required">¿Qué tareas tenía en ese puesto?</FormLabel>
-                <FormControl>
-                  <Textarea
-                    {...field}
-                    placeholder="Describe sus responsabilidades anteriores"
-                    className="form-control"
-                    rows={3}
-                    tabIndex={24}
-                  />
-                </FormControl>
-                <FormMessage className="error-message" />
-              </FormItem>
-            )}
-          />
-          
-
-          
-
           
           {/* Campo - Fecha de inicio de experiencia previa (izquierda) */}
           <FormField

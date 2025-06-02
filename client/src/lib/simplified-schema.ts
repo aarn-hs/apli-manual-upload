@@ -66,7 +66,7 @@ export const simplifiedCandidateSchema = z.object({
   
   previousPosition: z.string({ required_error: "Ingrese el puesto de experiencia previa" }),
   
-  previousTasks: z.string({ required_error: "Describa las tareas de experiencia previa" }),
+
   
   retailExperience: z.string({ required_error: "Debes seleccionar una opción" }),
   

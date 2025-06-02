@@ -129,7 +129,7 @@ export default function Home() {
       "Estado civil": formData.maritalStatus || "",
       "Compañía Experiencia Previa": formData.previousCompany || "",
       "Puesto Experiencia Previa": formData.previousPosition || "",
-      "Tareas Experiencia Previa": formData.previousTasks || "",
+
       "Fecha de inicio de experiencia previa": transformDate(formData.previousJobStartDate),
       "Fecha de fin de experiencia previa": transformDate(formData.previousJobEndDate),
       "Cantidad de trabajos en los últimos 24 meses": formData.jobsLast24Months || "",
