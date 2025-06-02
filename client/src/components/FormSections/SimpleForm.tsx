@@ -498,16 +498,8 @@ export default function SimpleForm() {
                     className="form-control"
                     tabIndex={8}
                     maxLength={10}
-                    onChange={(e) => {
-                      let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
-                      if (value.length >= 2) {
-                        value = value.slice(0, 2) + '/' + value.slice(2);
-                      }
-                      if (value.length >= 5) {
-                        value = value.slice(0, 5) + '/' + value.slice(5, 9);
-                      }
-                      field.onChange(value);
-                    }}
+                    onChange={handleDateInput(field.onChange)}
+                    onBlur={formatDateOnBlur(field.onChange, field.value)}
                     onKeyDown={(e) => {
                       // Allow: backspace, delete, tab, escape, enter
                       if ([8, 9, 27, 13, 46].indexOf(e.keyCode) !== -1 ||
@@ -704,16 +696,8 @@ export default function SimpleForm() {
                     className={`form-control ${fieldState.error ? 'error' : ''}`}
                     tabIndex={24}
                     maxLength={10}
-                    onChange={(e) => {
-                      let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
-                      if (value.length >= 2) {
-                        value = value.slice(0, 2) + '/' + value.slice(2);
-                      }
-                      if (value.length >= 5) {
-                        value = value.slice(0, 5) + '/' + value.slice(5, 9);
-                      }
-                      field.onChange(value);
-                    }}
+                    onChange={handleDateInput(field.onChange)}
+                    onBlur={formatDateOnBlur(field.onChange, field.value)}
                     onKeyDown={(e) => {
                       // Allow: backspace, delete, tab, escape, enter
                       if ([8, 9, 27, 13, 46].indexOf(e.keyCode) !== -1 ||
