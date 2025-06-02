@@ -665,32 +665,6 @@ export default function SimpleForm() {
           {/* Campo - ¿Tiene experiencia en retail? */}
           <FormField
             control={control}
-            name="retailExperience"
-            render={({ field, fieldState }) => (
-              <FormItem className="form-item">
-                <FormLabel className="body-text required">¿Tiene experiencia en retail?</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ""}>
-                  <FormControl>
-                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={25}>
-                      <SelectValue placeholder="Seleccionar" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {yesNoOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage className="error-message" />
-              </FormItem>
-            )}
-          />
-
-          {/* Campo - Fecha de fin de experiencia previa */}
-          <FormField
-            control={control}
             name="previousJobEndDate"
             render={({ field, fieldState }) => (
               <FormItem className="form-item">
@@ -701,7 +675,7 @@ export default function SimpleForm() {
                     type="text"
                     placeholder="dd/mm/aaaa"
                     className={`form-control ${fieldState.error ? 'error' : ''}`}
-                    tabIndex={27}
+                    tabIndex={25}
                     maxLength={10}
                     onChange={(e) => {
                       let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
@@ -730,6 +704,32 @@ export default function SimpleForm() {
                     }}
                   />
                 </FormControl>
+                <FormMessage className="error-message" />
+              </FormItem>
+            )}
+          />
+
+          {/* Campo - Fecha de fin de experiencia previa */}
+          <FormField
+            control={control}
+            name="retailExperience"
+            render={({ field, fieldState }) => (
+              <FormItem className="form-item">
+                <FormLabel className="body-text required">¿Tiene experiencia en retail?</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value || ""}>
+                  <FormControl>
+                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={27}>
+                      <SelectValue placeholder="Seleccionar" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {yesNoOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage className="error-message" />
               </FormItem>
             )}
