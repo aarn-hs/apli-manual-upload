@@ -214,8 +214,8 @@ export default function Home() {
         });
         setShowWebhookModal(true);
       } else {
-        // Caso de error
-        const message = responseData?.message || 'Error desconocido';
+        // Caso de error del webhook (400, 404, etc.)
+        const message = responseData?.message || 'Los datos del candidato no pudieron procesarse correctamente';
         const applicationId = responseData?.content?.application_id;
         
         setWebhookResponse({

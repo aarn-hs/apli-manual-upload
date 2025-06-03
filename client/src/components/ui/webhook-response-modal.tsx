@@ -88,11 +88,7 @@ export default function WebhookResponseModal({
             </div>
           )}
           
-          <div className="flex justify-end">
-            <Button onClick={onClose} className="btn-primary">
-              Cerrar
-            </Button>
-          </div>
+
         </div>
       </DialogContent>
     </Dialog>

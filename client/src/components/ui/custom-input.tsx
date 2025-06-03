@@ -5,12 +5,13 @@ import { cleanAndFormatText } from "@/lib/validation";
 export interface CustomInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   errorSpacing?: boolean;
   autoUppercase?: boolean;
+  autoLowercase?: boolean;
   autoCleanSpaces?: boolean;
   fieldName?: string;
 }
 
 export const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
-  ({ className, type, value, autoUppercase, autoCleanSpaces, onChange, ...props }, ref) => {
+  ({ className, type, value, autoUppercase, autoLowercase, autoCleanSpaces, onChange, ...props }, ref) => {
     // Ensure value is never undefined to avoid controlled/uncontrolled warning
     const safeValue = value === undefined ? "" : value;
     
@@ -19,6 +20,10 @@ export const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
       
       if (autoUppercase) {
         newValue = newValue.toUpperCase();
+      }
+      
+      if (autoLowercase) {
+        newValue = newValue.toLowerCase();
       }
       
       if (autoCleanSpaces) {

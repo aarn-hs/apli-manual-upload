@@ -214,6 +214,7 @@ export default function SimpleForm() {
                     placeholder="ejemplo@dominio.com"
                     className="form-control"
                     tabIndex={9}
+                    autoLowercase={true}
                     onBlur={createCleanSpacesHandler("email")}
                   />
                 </FormControl>
@@ -494,9 +495,11 @@ export default function SimpleForm() {
                 <FormControl>
                   <CustomInput
                     {...field}
+                    autoUppercase={true}
                     placeholder="PMX12345678"
                     className="form-control"
                     tabIndex={4}
+                    maxLength={11}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
