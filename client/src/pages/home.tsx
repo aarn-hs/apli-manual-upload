@@ -229,47 +229,38 @@ export default function Home() {
     } catch (error) {
       console.error('Error al enviar datos al webhook:', error);
       
-      let errorMessage = "Hubo un problema al procesar la información. Por favor intenta nuevamente.";
-      let isWebhookError = false;
+      let errorMessage = "No se pudo iniciar el proceso de carga. Por favor intenta nuevamente.";
+      let isConnectionError = false;
       
       if (error instanceof Error) {
         if (error.message.startsWith('TIMEOUT:')) {
-          errorMessage = error.message.replace('TIMEOUT: ', '');
-          isWebhookError = true;
+          errorMessage = "El proceso de carga tardó más de 90 segundos en responder.";
+          isConnectionError = true;
         } else if (error.message.startsWith('NETWORK_ERROR:')) {
-          errorMessage = error.message.replace('NETWORK_ERROR: ', '');
-          isWebhookError = true;
+          errorMessage = "No se pudo iniciar el proceso de carga debido a restricciones de red.";
+          isConnectionError = true;
         } else if (error.message.includes('Failed to fetch')) {
-          errorMessage = "No se pudo conectar con el webhook. Verifica que el webhook esté activo y configurado correctamente.";
-          isWebhookError = true;
+          errorMessage = "No se pudo iniciar el proceso de carga. El servicio no está disponible.";
+          isConnectionError = true;
         } else if (error.name === 'TypeError' && error.message.includes('fetch')) {
-          errorMessage = "Error de conexión: El webhook no está disponible o no responde. Verifica la configuración del webhook.";
-          isWebhookError = true;
+          errorMessage = "No se pudo iniciar el proceso de carga. Verifica tu conexión a internet.";
+          isConnectionError = true;
         } else {
-          errorMessage = error.message;
-          isWebhookError = true;
+          errorMessage = "No se pudo iniciar el proceso de carga.";
+          isConnectionError = true;
         }
       } else {
-        errorMessage = "Error desconocido al conectar con el webhook. Verifica que esté activo y configurado correctamente.";
-        isWebhookError = true;
+        errorMessage = "No se pudo iniciar el proceso de carga.";
+        isConnectionError = true;
       }
       
-      // Mostrar error en el modal de webhook si es un error relacionado con el webhook
-      if (isWebhookError) {
-        setWebhookResponse({
-          isSuccess: false,
-          message: errorMessage,
-          applicationId: undefined
-        });
-        setShowWebhookModal(true);
-      } else {
-        // Para otros errores, usar toast
-        toast({
-          title: "Error al enviar candidato",
-          description: errorMessage,
-          variant: "destructive",
-        });
-      }
+      // Mostrar error en el modal 
+      setWebhookResponse({
+        isSuccess: false,
+        message: errorMessage,
+        applicationId: undefined
+      });
+      setShowWebhookModal(true);
     } finally {
       setIsSubmitting(false);
     }

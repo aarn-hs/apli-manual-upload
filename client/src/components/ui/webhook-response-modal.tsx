@@ -24,12 +24,12 @@ export default function WebhookResponseModal({
     }
   };
 
-  // Determinar si es un error de conexión/webhook inactivo
-  const isConnectionError = message.includes('webhook') || 
-                           message.includes('conectar') || 
-                           message.includes('conexión') ||
-                           message.includes('disponible') ||
-                           message.includes('activo');
+  // Determinar si es un error de conexión real (no puede iniciar proceso vs respuesta de error del webhook)
+  const isConnectionError = message.includes('No se pudo iniciar el proceso') ||
+                           message.includes('tardó más de 90 segundos') ||
+                           message.includes('restricciones de red') ||
+                           message.includes('servicio no está disponible') ||
+                           message.includes('conexión a internet');
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
