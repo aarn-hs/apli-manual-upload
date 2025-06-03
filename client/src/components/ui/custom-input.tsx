@@ -6,6 +6,7 @@ export interface CustomInputProps extends React.InputHTMLAttributes<HTMLInputEle
   errorSpacing?: boolean;
   autoUppercase?: boolean;
   autoCleanSpaces?: boolean;
+  fieldName?: string;
 }
 
 export const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
@@ -35,15 +36,20 @@ export const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
     const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
       if (autoCleanSpaces) {
         // Al perder el foco, hacer limpieza completa incluyendo trim
-        const cleanedValue = cleanAndFormatText(e.target.value);
-        if (cleanedValue !== e.target.value) {
-          e.target.value = cleanedValue;
+        const originalValue = e.target.value;
+        const cleanedValue = cleanAndFormatText(originalValue);
+        
+        if (cleanedValue !== originalValue) {
+          // Crear un nuevo evento de cambio con el valor limpio
+          const event = {
+            target: {
+              value: cleanedValue,
+              name: e.target.name
+            }
+          } as React.ChangeEvent<HTMLInputElement>;
+          
           if (onChange) {
-            const syntheticEvent = {
-              ...e,
-              target: { ...e.target, value: cleanedValue }
-            } as React.ChangeEvent<HTMLInputElement>;
-            onChange(syntheticEvent);
+            onChange(event);
           }
         }
       }
