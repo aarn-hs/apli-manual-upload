@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
+import { cleanAndFormatText } from "@/lib/validation";
 import { CustomInput } from "@/components/ui/custom-input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
@@ -20,7 +21,7 @@ import {
 } from "@/lib/data";
 
 export default function SimpleForm() {
-  const { control, setValue } = useFormContext();
+  const { control, setValue, watch } = useFormContext();
   
   const selectedState = useWatch({
     control,
@@ -34,6 +35,22 @@ export default function SimpleForm() {
       setValue("municipality", "");
     }
   }, [selectedState, setValue]);
+
+  // Función para crear handlers de limpieza de espacios
+  const createCleanSpacesHandler = (fieldName: string) => {
+    return () => {
+      const currentValue = watch(fieldName);
+      if (currentValue && typeof currentValue === 'string') {
+        const cleanedValue = cleanAndFormatText(currentValue);
+        if (cleanedValue !== currentValue) {
+          setValue(fieldName, cleanedValue, { 
+            shouldValidate: true,
+            shouldDirty: true 
+          });
+        }
+      }
+    };
+  };
 
   // Función mejorada para formateo de fechas en tiempo real
   const handleDateInput = (fieldOnChange: any, currentValue: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -154,7 +171,7 @@ export default function SimpleForm() {
                     placeholder="Nombre(s)"
                     className="form-control"
                     tabIndex={5}
-                    autoCleanSpaces={true}
+                    onBlur={createCleanSpacesHandler("firstName")}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -175,7 +192,7 @@ export default function SimpleForm() {
                     placeholder="Apellido materno"
                     className="form-control"
                     tabIndex={7}
-                    autoCleanSpaces={true}
+                    onBlur={createCleanSpacesHandler("secondLastName")}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -197,7 +214,7 @@ export default function SimpleForm() {
                     placeholder="ejemplo@dominio.com"
                     className="form-control"
                     tabIndex={9}
-                    autoCleanSpaces={true}
+                    onBlur={createCleanSpacesHandler("email")}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -500,7 +517,7 @@ export default function SimpleForm() {
                     placeholder="Apellido paterno"
                     className="form-control"
                     tabIndex={6}
-                    autoCleanSpaces={true}
+                    onBlur={createCleanSpacesHandler("firstLastName")}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
