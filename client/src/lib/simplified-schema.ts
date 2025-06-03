@@ -143,7 +143,14 @@ export const simplifiedCandidateSchema = z.object({
   motivation: z.string({ required_error: "Debes seleccionar una opción" }),
   
   // Información legal (Obligatorio)
-  curp: z.string({ required_error: "Ingrese el CURP" }),
+  curp: z.string({ required_error: "Ingrese el CURP" })
+    .refine((curp) => {
+      const validation = validateCURPWithDetails(curp);
+      return validation.isValid;
+    }, (curp) => {
+      const validation = validateCURPWithDetails(curp);
+      return { message: validation.error || "CURP inválido" };
+    }),
   
   // Información laboral adicional (Obligatorio)
   jobsLast24Months: z.string({ required_error: "Debes seleccionar una opción" }),
@@ -166,9 +173,15 @@ export const simplifiedCandidateSchema = z.object({
   
 
 }).refine(
-  (data) => validateCURPComplete(data.curp, data.birthDate, data.nationality),
-  {
-    message: "El CURP no es válido: revisa la fecha de nacimiento, nacionalidad y estado de nacimiento",
-    path: ["curp"]
+  (data) => {
+    const validation = validateCURPWithDetails(data.curp, data.birthDate, data.nationality);
+    return validation.isValid;
+  },
+  (data) => {
+    const validation = validateCURPWithDetails(data.curp, data.birthDate, data.nationality);
+    return {
+      message: validation.error || "El CURP no es válido",
+      path: ["curp"]
+    };
   }
 );
