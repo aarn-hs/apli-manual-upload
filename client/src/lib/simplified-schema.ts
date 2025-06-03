@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { validatePMX, validateName, validatePhone, validatePostalCode, validateAddress, validateBirthDate, validateCURPWithBirthDate, validatePastDate, validateDateWithDetails, validateBirthDateWithDetails, validateStreetColonyWithDetails, validateEmployerPositionWithDetails, validateNameWithDetails, validateEmailWithDetails, validateTextNotOnlySpaces, cleanAndFormatText } from "./validation";
+import { validatePMX, validateName, validatePhone, validatePostalCode, validateAddress, validateBirthDate, validateCURPWithBirthDate, validateCURPComplete, validateCURPWithDetails, validatePastDate, validateDateWithDetails, validateBirthDateWithDetails, validateStreetColonyWithDetails, validateEmployerPositionWithDetails, validateNameWithDetails, validateEmailWithDetails, validateTextNotOnlySpaces, cleanAndFormatText } from "./validation";
 
 // Esquema simplificado del candidato según los campos obligatorios
 export const simplifiedCandidateSchema = z.object({
@@ -166,9 +166,9 @@ export const simplifiedCandidateSchema = z.object({
   
 
 }).refine(
-  (data) => validateCURPWithBirthDate(data.curp, data.birthDate),
+  (data) => validateCURPComplete(data.curp, data.birthDate, data.nationality),
   {
-    message: "La fecha en el CURP no coincide con la fecha de nacimiento",
+    message: "El CURP no es válido: revisa la fecha de nacimiento, nacionalidad y estado de nacimiento",
     path: ["curp"]
   }
 );

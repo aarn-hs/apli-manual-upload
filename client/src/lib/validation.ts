@@ -1,3 +1,56 @@
+// Códigos de estados mexicanos para validación de CURP
+const MEXICAN_STATE_CODES = {
+  'AS': 'AGUASCALIENTES',
+  'BC': 'BAJA CALIFORNIA',
+  'BS': 'BAJA CALIFORNIA SUR',
+  'CC': 'CAMPECHE',
+  'CL': 'COAHUILA',
+  'CM': 'COLIMA',
+  'CS': 'CHIAPAS',
+  'CH': 'CHIHUAHUA',
+  'DF': 'DISTRITO FEDERAL',
+  'DG': 'DURANGO',
+  'GT': 'GUANAJUATO',
+  'GR': 'GUERRERO',
+  'HG': 'HIDALGO',
+  'JC': 'JALISCO',
+  'MC': 'MÉXICO',
+  'MN': 'MICHOACÁN',
+  'MS': 'MORELOS',
+  'NT': 'NAYARIT',
+  'NL': 'NUEVO LEÓN',
+  'OC': 'OAXACA',
+  'PL': 'PUEBLA',
+  'QT': 'QUERÉTARO',
+  'QR': 'QUINTANA ROO',
+  'SP': 'SAN LUIS POTOSÍ',
+  'SL': 'SINALOA',
+  'SR': 'SONORA',
+  'TC': 'TABASCO',
+  'TS': 'TAMAULIPAS',
+  'TL': 'TLAXCALA',
+  'VZ': 'VERACRUZ',
+  'YN': 'YUCATÁN',
+  'ZS': 'ZACATECAS',
+  'NE': 'NACIDO EN EL EXTRANJERO'
+};
+
+// Algoritmo para calcular el dígito verificador de CURP
+function calculateCURPCheckDigit(curp: string): string {
+  const first17 = curp.substring(0, 17);
+  const dictionary = "0123456789ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
+  let sum = 0;
+  
+  for (let i = 0; i < 17; i++) {
+    const charValue = dictionary.indexOf(first17[i]);
+    if (charValue === -1) return ''; // Carácter inválido
+    sum += charValue * (18 - i);
+  }
+  
+  const remainder = sum % 10;
+  return remainder === 0 ? '0' : (10 - remainder).toString();
+}
+
 // PMX validation (format: PMX + 8 digits)
 export function validatePMX(pmx: string): boolean {
   if (!pmx) return false;
@@ -216,6 +269,19 @@ export function validateCURP(curp: string): boolean {
     return false;
   }
   
+  // Validar estado de nacimiento (posiciones 11-12)
+  const stateCode = curp.substring(11, 13);
+  if (!MEXICAN_STATE_CODES[stateCode as keyof typeof MEXICAN_STATE_CODES]) {
+    return false;
+  }
+  
+  // Validar dígito verificador
+  const expectedCheckDigit = calculateCURPCheckDigit(curp);
+  const actualCheckDigit = curp.substring(17, 18);
+  if (expectedCheckDigit !== actualCheckDigit) {
+    return false;
+  }
+  
   // Extraer fecha de nacimiento de CURP
   const yearPart = curp.substring(4, 6);
   const monthPart = curp.substring(6, 8);
@@ -241,7 +307,7 @@ export function validateCURP(curp: string): boolean {
   return age >= 18;
 }
 
-// CURP validation with birth date cross-check
+// CURP validation with birth date and nationality cross-check
 export function validateCURPWithBirthDate(curp: string, birthDate: string): boolean {
   // First check basic CURP format
   if (!validateCURP(curp)) return false;
@@ -288,6 +354,101 @@ export function validateCURPWithBirthDate(curp: string, birthDate: string): bool
     parseInt(curpMonth) === birthMonth &&
     parseInt(curpDay) === birthDay
   );
+}
+
+// CURP validation with nationality cross-check
+export function validateCURPWithNationality(curp: string, nationality: string): boolean {
+  // First check basic CURP format
+  if (!validateCURP(curp)) return false;
+  
+  // If no nationality provided, we can't cross-validate
+  if (!nationality) return true;
+  
+  // Extract state code from CURP (positions 11-12)
+  const stateCode = curp.substring(11, 13);
+  
+  // Check nationality consistency
+  if (nationality === 'México') {
+    // For Mexican nationality, state code should NOT be NE (Nacido en el Extranjero)
+    return stateCode !== 'NE';
+  } else {
+    // For foreign nationality, state code SHOULD be NE (Nacido en el Extranjero)
+    return stateCode === 'NE';
+  }
+}
+
+// Complete CURP validation with birth date and nationality
+export function validateCURPComplete(curp: string, birthDate: string, nationality: string): boolean {
+  return validateCURPWithBirthDate(curp, birthDate) && validateCURPWithNationality(curp, nationality);
+}
+
+// CURP validation with detailed error messages
+export function validateCURPWithDetails(curp: string, birthDate?: string, nationality?: string): { isValid: boolean; error?: string } {
+  if (!curp) {
+    return { isValid: false, error: "El CURP es requerido" };
+  }
+  
+  if (curp.length !== 18) {
+    return { isValid: false, error: "El CURP debe tener exactamente 18 caracteres" };
+  }
+  
+  // Basic CURP format validation
+  const curpRegex = /^[A-Z]{4}\d{6}[HM][A-Z]{5}[0-9A-Z]\d$/;
+  if (!curpRegex.test(curp)) {
+    return { isValid: false, error: "Formato de CURP inválido. Debe seguir el patrón: 4 letras + 6 dígitos + H/M + 5 caracteres + 1 dígito" };
+  }
+  
+  // Validate state code
+  const stateCode = curp.substring(11, 13);
+  if (!MEXICAN_STATE_CODES[stateCode as keyof typeof MEXICAN_STATE_CODES]) {
+    return { isValid: false, error: `Código de estado '${stateCode}' no válido en el CURP` };
+  }
+  
+  // Validate check digit
+  const expectedCheckDigit = calculateCURPCheckDigit(curp);
+  const actualCheckDigit = curp.substring(17, 18);
+  if (expectedCheckDigit !== actualCheckDigit) {
+    return { isValid: false, error: "El dígito verificador del CURP es incorrecto" };
+  }
+  
+  // Validate nationality consistency if provided
+  if (nationality) {
+    if (nationality === 'México' && stateCode === 'NE') {
+      return { isValid: false, error: "Para nacionalidad mexicana, el CURP no debe tener código NE (extranjero)" };
+    }
+    if (nationality !== 'México' && stateCode !== 'NE') {
+      return { isValid: false, error: "Para nacionalidad extranjera, el CURP debe tener código NE" };
+    }
+  }
+  
+  // Validate birth date consistency if provided
+  if (birthDate && !validateCURPWithBirthDate(curp, birthDate)) {
+    return { isValid: false, error: "La fecha en el CURP no coincide con la fecha de nacimiento ingresada" };
+  }
+  
+  // Validate age
+  const yearPart = curp.substring(4, 6);
+  const monthPart = curp.substring(6, 8);
+  const dayPart = curp.substring(8, 10);
+  
+  const century = parseInt(yearPart) >= 30 ? "19" : "20";
+  const birthYear = century + yearPart;
+  const curpBirthDate = new Date(`${birthYear}-${monthPart}-${dayPart}`);
+  
+  if (isNaN(curpBirthDate.getTime())) {
+    return { isValid: false, error: "La fecha de nacimiento en el CURP no es válida" };
+  }
+  
+  const today = new Date();
+  const age = today.getFullYear() - curpBirthDate.getFullYear();
+  const monthDiff = today.getMonth() - curpBirthDate.getMonth();
+  const actualAge = monthDiff < 0 || (monthDiff === 0 && today.getDate() < curpBirthDate.getDate()) ? age - 1 : age;
+  
+  if (actualAge < 18) {
+    return { isValid: false, error: "El candidato debe ser mayor de edad (18 años)" };
+  }
+  
+  return { isValid: true };
 }
 
 // RFC validation (13 alphanumeric characters)
