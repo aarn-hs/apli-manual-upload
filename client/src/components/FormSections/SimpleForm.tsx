@@ -270,6 +270,7 @@ export default function SimpleForm() {
                     placeholder="Colonia"
                     className="form-control"
                     tabIndex={15}
+                    autoCleanSpaces={true}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -290,6 +291,7 @@ export default function SimpleForm() {
                     placeholder="Calle y número"
                     className="form-control"
                     tabIndex={17}
+                    autoCleanSpaces={true}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -336,6 +338,7 @@ export default function SimpleForm() {
                     placeholder="Compañía donde trabajó anteriormente"
                     className="form-control"
                     tabIndex={21}
+                    autoCleanSpaces={true}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -697,6 +700,7 @@ export default function SimpleForm() {
                     placeholder="Puesto que ocupó anteriormente"
                     className="form-control"
                     tabIndex={22}
+                    autoCleanSpaces={true}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
