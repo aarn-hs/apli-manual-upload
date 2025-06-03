@@ -1,11 +1,18 @@
 import { useState, useEffect } from "react";
 import CandidateForm from "@/components/CandidateForm";
 import SuccessModal from "@/components/ui/success-modal";
+import WebhookResponseModal from "@/components/ui/webhook-response-modal";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Home() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showWebhookModal, setShowWebhookModal] = useState(false);
+  const [webhookResponse, setWebhookResponse] = useState<{
+    isSuccess: boolean;
+    message: string;
+    applicationId?: string;
+  } | null>(null);
   const { toast } = useToast();
 
   // Función para obtener parámetros de URL
@@ -191,37 +198,32 @@ export default function Home() {
 
       console.log('Respuesta del webhook:', response.status, response.statusText);
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        console.log('Error data:', errorData);
-        
-        if (response.status === 404 && errorData?.message?.includes('not registered')) {
-          throw new Error('El webhook no está activo. Por favor activa el webhook en la plataforma y vuelve a intentar.');
-        }
-        
-        throw new Error(`Error del servidor: ${response.status} - ${errorData?.message || 'Error desconocido'}`);
-      }
-
-      // Verificar que la respuesta sea válida
+      // Obtener los datos de respuesta
       const responseData = await response.json().catch(() => null);
       console.log('Datos de respuesta del webhook:', responseData);
-      
-      // El webhook responde con {"status": "success"} cuando es exitoso
+
       if (responseData && responseData.status === 'success') {
-        const applicationId = responseData.data?.application_id || 'N/A';
-        const resultMessage = responseData.data?.result || 'Postulación procesada';
+        // Caso de éxito
+        const applicationId = responseData.content?.application_id;
+        const message = responseData.message || 'Postulación creada exitosamente';
         
-        // Mostrar modal de éxito
-        setShowSuccessModal(true);
-        
-        toast({
-          title: "¡Candidato enviado exitosamente!",
-          description: `${resultMessage}. ID: ${applicationId}`,
+        setWebhookResponse({
+          isSuccess: true,
+          message,
+          applicationId
         });
+        setShowWebhookModal(true);
       } else {
-        // Si no es exitoso, manejar como error
-        const errorMessage = responseData?.message || 'Respuesta inesperada del webhook';
-        throw new Error(errorMessage);
+        // Caso de error
+        const message = responseData?.message || 'Error desconocido';
+        const applicationId = responseData?.content?.application_id;
+        
+        setWebhookResponse({
+          isSuccess: false,
+          message,
+          applicationId
+        });
+        setShowWebhookModal(true);
       }
 
     } catch (error) {
@@ -265,6 +267,14 @@ export default function Home() {
       <SuccessModal 
         isOpen={showSuccessModal} 
         onClose={() => setShowSuccessModal(false)} 
+      />
+      
+      <WebhookResponseModal
+        isOpen={showWebhookModal}
+        onClose={() => setShowWebhookModal(false)}
+        isSuccess={webhookResponse?.isSuccess || false}
+        message={webhookResponse?.message || ''}
+        applicationId={webhookResponse?.applicationId}
       />
     </div>
   );
