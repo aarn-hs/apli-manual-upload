@@ -44,7 +44,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false }: Candid
     }
   });
 
-  const { handleSubmit, formState: { isSubmitting: isFormSubmitting }, reset, watch } = methods;
+  const { handleSubmit, formState: { isSubmitting: isFormSubmitting, errors, isValid }, reset, watch } = methods;
 
   // Watch all form values to determine if form is empty
   const watchedValues = watch();
@@ -58,7 +58,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false }: Candid
     return value === "" || value === null || value === undefined;
   });
 
-  // Check if all required fields are completed
+  // Check if all required fields are completed AND valid
   const requiredFields = [
     'source', 'position', 'location', 'pmx', 'firstName', 'firstLastName', 
     'birthDate', 'email', 'phone', 'gender', 'nationality',
@@ -68,6 +68,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false }: Candid
     'jobsLast24Months', 'previousJobStartDate', 'previousJobEndDate'
   ];
 
+  // Check if all required fields have values
   const areAllRequiredFieldsCompleted = requiredFields.every(field => {
     const value = (watchedValues as any)[field];
     if (field === 'birthDate' && value) {
@@ -76,6 +77,14 @@ export default function CandidateForm({ onSubmit, isSubmitting = false }: Candid
     }
     return value !== "" && value !== null && value !== undefined;
   });
+
+  // Check if all required fields are valid (no errors)
+  const areAllRequiredFieldsValid = requiredFields.every(field => {
+    return !errors[field as keyof typeof errors];
+  });
+
+  // Form is ready for submission if all fields are completed AND valid
+  const isFormReadyForSubmission = areAllRequiredFieldsCompleted && areAllRequiredFieldsValid;
 
 
 
@@ -125,7 +134,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false }: Candid
           <button 
             type="submit" 
             className="btn-primary"
-            disabled={isSubmitting || isFormSubmitting || !areAllRequiredFieldsCompleted}
+            disabled={isSubmitting || isFormSubmitting || !isFormReadyForSubmission}
           >
             {(isSubmitting || isFormSubmitting) ? "Cargando..." : "Cargar candidato"}
           </button>
