@@ -154,6 +154,7 @@ export default function SimpleForm() {
                     placeholder="Nombre(s)"
                     className="form-control"
                     tabIndex={5}
+                    autoCleanSpaces={true}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -174,6 +175,7 @@ export default function SimpleForm() {
                     placeholder="Apellido materno"
                     className="form-control"
                     tabIndex={7}
+                    autoCleanSpaces={true}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -195,6 +197,7 @@ export default function SimpleForm() {
                     placeholder="ejemplo@dominio.com"
                     className="form-control"
                     tabIndex={9}
+                    autoCleanSpaces={true}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -494,6 +497,7 @@ export default function SimpleForm() {
                     placeholder="Apellido paterno"
                     className="form-control"
                     tabIndex={6}
+                    autoCleanSpaces={true}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -646,6 +650,7 @@ export default function SimpleForm() {
                     placeholder="Número interior (opcional)"
                     className="form-control"
                     tabIndex={18}
+                    autoCleanSpaces={true}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
