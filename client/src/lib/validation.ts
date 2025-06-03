@@ -46,9 +46,9 @@ export function validateStreetColonyWithDetails(text: string): { isValid: boolea
     return { isValid: false, error: "Debe contener al menos 3 letras" };
   }
   
-  // Solo permite letras, números, espacios, / y algunos caracteres especiales básicos
-  if (!/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s\/\.\-\#\']+$/.test(text)) {
-    return { isValid: false, error: "Solo se permiten letras, números, espacios y el símbolo /" };
+  // Solo permite letras, números y espacios (sin caracteres especiales)
+  if (!/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s]+$/.test(text)) {
+    return { isValid: false, error: "Solo se permiten letras, números y espacios" };
   }
   
   // Verificar longitud mínima
