@@ -12,6 +12,69 @@ export function validateName(name: string): boolean {
   return /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/.test(name);
 }
 
+// Función para limpiar y formatear texto
+export function cleanAndFormatText(text: string): string {
+  if (!text) return text;
+  
+  return text
+    .trim() // Eliminar espacios al inicio y final
+    .replace(/\s+/g, ' '); // Reemplazar múltiples espacios con uno solo
+}
+
+// Validación para campos de texto que no deben ser solo espacios
+export function validateTextNotOnlySpaces(text: string): { isValid: boolean; error?: string } {
+  if (!text) return { isValid: false, error: "Este campo es requerido" };
+  
+  // Verificar que no sea solo espacios
+  if (text.trim().length === 0) {
+    return { isValid: false, error: "No puede contener solo espacios" };
+  }
+  
+  return { isValid: true };
+}
+
+// Validación específica para nombres y apellidos
+export function validateNameWithDetails(name: string): { isValid: boolean; error?: string } {
+  if (!name) return { isValid: false, error: "Este campo es requerido" };
+  
+  // Verificar que no sea solo espacios
+  if (name.trim().length === 0) {
+    return { isValid: false, error: "No puede contener solo espacios" };
+  }
+  
+  // Verificar longitud mínima después de limpiar
+  const cleanName = cleanAndFormatText(name);
+  if (cleanName.length < 2) {
+    return { isValid: false, error: "Debe tener al menos 2 caracteres" };
+  }
+  
+  // Solo permite letras y espacios
+  if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/.test(cleanName)) {
+    return { isValid: false, error: "Solo se permiten letras y espacios" };
+  }
+  
+  return { isValid: true };
+}
+
+// Validación para email
+export function validateEmailWithDetails(email: string): { isValid: boolean; error?: string } {
+  if (!email) return { isValid: false, error: "Este campo es requerido" };
+  
+  // Verificar que no sea solo espacios
+  if (email.trim().length === 0) {
+    return { isValid: false, error: "No puede contener solo espacios" };
+  }
+  
+  const cleanEmail = email.trim();
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+  if (!emailRegex.test(cleanEmail)) {
+    return { isValid: false, error: "Formato de email inválido" };
+  }
+  
+  return { isValid: true };
+}
+
 // Phone validation (exactly 10 digits)
 export function validatePhone(phone: string): boolean {
   if (!phone) return false;
@@ -35,24 +98,31 @@ export function validateAddress(address: string): boolean {
 export function validateStreetColonyWithDetails(text: string): { isValid: boolean; error?: string } {
   if (!text) return { isValid: false, error: "Este campo es requerido" };
   
+  // Verificar que no sea solo espacios
+  if (text.trim().length === 0) {
+    return { isValid: false, error: "No puede contener solo espacios" };
+  }
+  
+  const cleanText = cleanAndFormatText(text);
+  
   // No debe contener únicamente números
-  if (/^\d+$/.test(text.trim())) {
+  if (/^\d+$/.test(cleanText)) {
     return { isValid: false, error: "No puede contener únicamente números" };
   }
   
   // Debe tener al menos 3 letras
-  const letterCount = (text.match(/[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]/g) || []).length;
+  const letterCount = (cleanText.match(/[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]/g) || []).length;
   if (letterCount < 3) {
     return { isValid: false, error: "Debe contener al menos 3 letras" };
   }
   
   // Solo permite letras, números y espacios (sin caracteres especiales)
-  if (!/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s]+$/.test(text)) {
+  if (!/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s]+$/.test(cleanText)) {
     return { isValid: false, error: "Solo se permiten letras, números y espacios" };
   }
   
   // Verificar longitud mínima
-  if (text.trim().length < 3) {
+  if (cleanText.length < 3) {
     return { isValid: false, error: "El texto es demasiado corto" };
   }
   
@@ -63,24 +133,31 @@ export function validateStreetColonyWithDetails(text: string): { isValid: boolea
 export function validateEmployerPositionWithDetails(text: string): { isValid: boolean; error?: string } {
   if (!text) return { isValid: false, error: "Este campo es requerido" };
   
+  // Verificar que no sea solo espacios
+  if (text.trim().length === 0) {
+    return { isValid: false, error: "No puede contener solo espacios" };
+  }
+  
+  const cleanText = cleanAndFormatText(text);
+  
   // No debe contener únicamente números
-  if (/^\d+$/.test(text.trim())) {
+  if (/^\d+$/.test(cleanText)) {
     return { isValid: false, error: "No puede contener únicamente números" };
   }
   
   // Debe tener al menos 3 letras
-  const letterCount = (text.match(/[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]/g) || []).length;
+  const letterCount = (cleanText.match(/[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]/g) || []).length;
   if (letterCount < 3) {
     return { isValid: false, error: "Debe contener al menos 3 letras" };
   }
   
   // Solo permite letras, números y espacios (sin caracteres especiales)
-  if (!/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s]+$/.test(text)) {
+  if (!/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s]+$/.test(cleanText)) {
     return { isValid: false, error: "Solo se permiten letras, números y espacios" };
   }
   
   // Verificar longitud mínima
-  if (text.trim().length < 3) {
+  if (cleanText.length < 3) {
     return { isValid: false, error: "El texto es demasiado corto" };
   }
   

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { validatePMX, validateName, validatePhone, validatePostalCode, validateAddress, validateBirthDate, validateCURPWithBirthDate, validatePastDate, validateDateWithDetails, validateBirthDateWithDetails, validateStreetColonyWithDetails, validateEmployerPositionWithDetails } from "./validation";
+import { validatePMX, validateName, validatePhone, validatePostalCode, validateAddress, validateBirthDate, validateCURPWithBirthDate, validatePastDate, validateDateWithDetails, validateBirthDateWithDetails, validateStreetColonyWithDetails, validateEmployerPositionWithDetails, validateNameWithDetails, validateEmailWithDetails, validateTextNotOnlySpaces, cleanAndFormatText } from "./validation";
 
 // Esquema simplificado del candidato según los campos obligatorios
 export const simplifiedCandidateSchema = z.object({
@@ -18,15 +18,36 @@ export const simplifiedCandidateSchema = z.object({
   
   // Información personal (Obligatorio)
   firstName: z.string({ required_error: "Ingrese el nombre" })
-    .min(2, "Nombre demasiado corto")
-    .refine(validateName, "No se permiten caracteres especiales"),
+    .transform(cleanAndFormatText)
+    .refine((name) => {
+      const validation = validateNameWithDetails(name);
+      return validation.isValid;
+    }, (name) => {
+      const validation = validateNameWithDetails(name);
+      return { message: validation.error || "Nombre inválido" };
+    }),
   
   firstLastName: z.string({ required_error: "Ingrese el apellido paterno" })
-    .min(2, "Apellido demasiado corto")
-    .refine(validateName, "No se permiten caracteres especiales"),
+    .transform(cleanAndFormatText)
+    .refine((name) => {
+      const validation = validateNameWithDetails(name);
+      return validation.isValid;
+    }, (name) => {
+      const validation = validateNameWithDetails(name);
+      return { message: validation.error || "Apellido inválido" };
+    }),
   
   secondLastName: z.string().optional()
-    .refine(val => !val || validateName(val), "No se permiten caracteres especiales"),
+    .transform((val) => val ? cleanAndFormatText(val) : val)
+    .refine((val) => {
+      if (!val) return true;
+      const validation = validateNameWithDetails(val);
+      return validation.isValid;
+    }, (val) => {
+      if (!val) return { message: "Apellido inválido" };
+      const validation = validateNameWithDetails(val);
+      return { message: validation.error || "Apellido inválido" };
+    }),
   
   birthDate: z.string({ required_error: "Ingrese la fecha de nacimiento" })
     .refine((date) => {
@@ -57,7 +78,17 @@ export const simplifiedCandidateSchema = z.object({
       return { message: validation.error || "Dirección inválida" };
     }),
   
-  interiorNumber: z.string().optional(),
+  interiorNumber: z.string().optional()
+    .transform((val) => val ? cleanAndFormatText(val) : val)
+    .refine((val) => {
+      if (!val) return true;
+      const validation = validateTextNotOnlySpaces(val);
+      return validation.isValid;
+    }, (val) => {
+      if (!val) return { message: "Número interior inválido" };
+      const validation = validateTextNotOnlySpaces(val);
+      return { message: validation.error || "Número interior inválido" };
+    }),
   
   neighborhood: z.string({ required_error: "Ingrese la colonia" })
     .refine((text) => {
