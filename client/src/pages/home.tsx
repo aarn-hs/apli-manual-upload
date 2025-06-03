@@ -230,24 +230,46 @@ export default function Home() {
       console.error('Error al enviar datos al webhook:', error);
       
       let errorMessage = "Hubo un problema al procesar la información. Por favor intenta nuevamente.";
+      let isWebhookError = false;
       
       if (error instanceof Error) {
         if (error.message.startsWith('TIMEOUT:')) {
           errorMessage = error.message.replace('TIMEOUT: ', '');
+          isWebhookError = true;
         } else if (error.message.startsWith('NETWORK_ERROR:')) {
           errorMessage = error.message.replace('NETWORK_ERROR: ', '');
+          isWebhookError = true;
         } else if (error.message.includes('Failed to fetch')) {
-          errorMessage = "No se pudo conectar con el webhook. Esto puede deberse a restricciones de red del entorno de desarrollo o problemas de conectividad.";
+          errorMessage = "No se pudo conectar con el webhook. Verifica que el webhook esté activo y configurado correctamente.";
+          isWebhookError = true;
+        } else if (error.name === 'TypeError' && error.message.includes('fetch')) {
+          errorMessage = "Error de conexión: El webhook no está disponible o no responde. Verifica la configuración del webhook.";
+          isWebhookError = true;
         } else {
           errorMessage = error.message;
+          isWebhookError = true;
         }
+      } else {
+        errorMessage = "Error desconocido al conectar con el webhook. Verifica que esté activo y configurado correctamente.";
+        isWebhookError = true;
       }
       
-      toast({
-        title: "Error al enviar candidato",
-        description: errorMessage,
-        variant: "destructive",
-      });
+      // Mostrar error en el modal de webhook si es un error relacionado con el webhook
+      if (isWebhookError) {
+        setWebhookResponse({
+          isSuccess: false,
+          message: errorMessage,
+          applicationId: undefined
+        });
+        setShowWebhookModal(true);
+      } else {
+        // Para otros errores, usar toast
+        toast({
+          title: "Error al enviar candidato",
+          description: errorMessage,
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsSubmitting(false);
     }

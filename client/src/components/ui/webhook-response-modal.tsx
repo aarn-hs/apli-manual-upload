@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, AlertCircle, X } from "lucide-react";
+import { CheckCircle, AlertCircle, X, WifiOff } from "lucide-react";
 
 interface WebhookResponseModalProps {
   isOpen: boolean;
@@ -24,6 +24,13 @@ export default function WebhookResponseModal({
     }
   };
 
+  // Determinar si es un error de conexión/webhook inactivo
+  const isConnectionError = message.includes('webhook') || 
+                           message.includes('conectar') || 
+                           message.includes('conexión') ||
+                           message.includes('disponible') ||
+                           message.includes('activo');
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
@@ -34,6 +41,11 @@ export default function WebhookResponseModal({
                 <>
                   <CheckCircle className="h-5 w-5 text-green-600" />
                   Candidato Enviado
+                </>
+              ) : isConnectionError ? (
+                <>
+                  <WifiOff className="h-5 w-5 text-orange-600" />
+                  Error de Conexión
                 </>
               ) : (
                 <>
