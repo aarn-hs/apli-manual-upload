@@ -59,7 +59,14 @@ export const simplifiedCandidateSchema = z.object({
     }),
   
   email: z.string({ required_error: "Ingrese el correo electrónico" })
-    .email("Formato de correo electrónico inválido"),
+    .transform(cleanAndFormatText)
+    .refine((email) => {
+      const validation = validateEmailWithDetails(email);
+      return validation.isValid;
+    }, (email) => {
+      const validation = validateEmailWithDetails(email);
+      return { message: validation.error || "Email inválido" };
+    }),
   
   phone: z.string({ required_error: "Ingrese el número de teléfono" })
     .refine(validatePhone, "El número debe tener exactamente 10 dígitos"),
