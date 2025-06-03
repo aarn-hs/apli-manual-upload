@@ -31,6 +31,57 @@ export function validateAddress(address: string): boolean {
   return /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s\.\-\#\']{2,}$/.test(address);
 }
 
+// Validación detallada para calles y colonias
+export function validateStreetColonyWithDetails(text: string): { isValid: boolean; error?: string } {
+  if (!text) return { isValid: false, error: "Este campo es requerido" };
+  
+  // No debe contener únicamente números
+  if (/^\d+$/.test(text.trim())) {
+    return { isValid: false, error: "No puede contener únicamente números" };
+  }
+  
+  // Debe tener al menos 3 letras
+  const letterCount = (text.match(/[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]/g) || []).length;
+  if (letterCount < 3) {
+    return { isValid: false, error: "Debe contener al menos 3 letras" };
+  }
+  
+  // Solo permite letras, números, espacios, / y algunos caracteres especiales básicos
+  if (!/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s\/\.\-\#\']+$/.test(text)) {
+    return { isValid: false, error: "Solo se permiten letras, números, espacios y el símbolo /" };
+  }
+  
+  // Verificar longitud mínima
+  if (text.trim().length < 3) {
+    return { isValid: false, error: "El texto es demasiado corto" };
+  }
+  
+  return { isValid: true };
+}
+
+// Validación detallada para empleador y puesto
+export function validateEmployerPositionWithDetails(text: string): { isValid: boolean; error?: string } {
+  if (!text) return { isValid: false, error: "Este campo es requerido" };
+  
+  // No debe contener únicamente números
+  if (/^\d+$/.test(text.trim())) {
+    return { isValid: false, error: "No puede contener únicamente números" };
+  }
+  
+  // Debe tener al menos 3 letras
+  const letterCount = (text.match(/[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]/g) || []).length;
+  if (letterCount < 3) {
+    return { isValid: false, error: "Debe contener al menos 3 letras" };
+  }
+  
+  // Verificar longitud mínima
+  if (text.trim().length < 3) {
+    return { isValid: false, error: "El texto es demasiado corto" };
+  }
+  
+  return { isValid: true };
+}
+
 // Birth date validation for dd/mm/yyyy format
 export function validateBirthDate(dateStr: string): boolean {
   if (!dateStr) return false;

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { validatePMX, validateName, validatePhone, validatePostalCode, validateAddress, validateBirthDate, validateCURPWithBirthDate, validatePastDate, validateDateWithDetails, validateBirthDateWithDetails } from "./validation";
+import { validatePMX, validateName, validatePhone, validatePostalCode, validateAddress, validateBirthDate, validateCURPWithBirthDate, validatePastDate, validateDateWithDetails, validateBirthDateWithDetails, validateStreetColonyWithDetails, validateEmployerPositionWithDetails } from "./validation";
 
 // Esquema simplificado del candidato según los campos obligatorios
 export const simplifiedCandidateSchema = z.object({
@@ -49,12 +49,24 @@ export const simplifiedCandidateSchema = z.object({
   
   // Información de dirección (Obligatorio)
   streetAndNumber: z.string({ required_error: "Ingrese la calle y número" })
-    .refine(validateAddress, "La dirección debe tener al menos 2 caracteres"),
+    .refine((text) => {
+      const validation = validateStreetColonyWithDetails(text);
+      return validation.isValid;
+    }, (text) => {
+      const validation = validateStreetColonyWithDetails(text);
+      return { message: validation.error || "Dirección inválida" };
+    }),
   
   interiorNumber: z.string().optional(),
   
   neighborhood: z.string({ required_error: "Ingrese la colonia" })
-    .refine(validateAddress, "La colonia debe tener al menos 2 caracteres"),
+    .refine((text) => {
+      const validation = validateStreetColonyWithDetails(text);
+      return validation.isValid;
+    }, (text) => {
+      const validation = validateStreetColonyWithDetails(text);
+      return { message: validation.error || "Colonia inválida" };
+    }),
   
   state: z.string({ required_error: "Debes seleccionar una opción" }),
   
@@ -68,9 +80,23 @@ export const simplifiedCandidateSchema = z.object({
   
   maritalStatus: z.string({ required_error: "Debes seleccionar una opción" }),
   
-  previousCompany: z.string({ required_error: "Ingrese la compañía de experiencia previa" }),
+  previousCompany: z.string({ required_error: "Ingrese la compañía de experiencia previa" })
+    .refine((text) => {
+      const validation = validateEmployerPositionWithDetails(text);
+      return validation.isValid;
+    }, (text) => {
+      const validation = validateEmployerPositionWithDetails(text);
+      return { message: validation.error || "Compañía inválida" };
+    }),
   
-  previousPosition: z.string({ required_error: "Ingrese el puesto de experiencia previa" }),
+  previousPosition: z.string({ required_error: "Ingrese el puesto de experiencia previa" })
+    .refine((text) => {
+      const validation = validateEmployerPositionWithDetails(text);
+      return validation.isValid;
+    }, (text) => {
+      const validation = validateEmployerPositionWithDetails(text);
+      return { message: validation.error || "Puesto inválido" };
+    }),
   
 
   
