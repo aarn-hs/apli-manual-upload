@@ -107,7 +107,7 @@ export default function Home() {
       "requesting_user_name": userParams.name,
       "requesting_user_lastname": userParams.lastName,
       "requesting_user_email": userParams.email,
-      "Fuente": "agencia_cygnus", // Valor fijo como en tu ejemplo
+      "Fuente": formData.source || "",
       "Puesto": formData.position || "",
       "Ubicación": formData.location || "",
       "PMX": formData.pmx || "",
