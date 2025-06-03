@@ -74,6 +74,11 @@ export function validateEmployerPositionWithDetails(text: string): { isValid: bo
     return { isValid: false, error: "Debe contener al menos 3 letras" };
   }
   
+  // Solo permite letras, números y espacios (sin caracteres especiales)
+  if (!/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s]+$/.test(text)) {
+    return { isValid: false, error: "Solo se permiten letras, números y espacios" };
+  }
+  
   // Verificar longitud mínima
   if (text.trim().length < 3) {
     return { isValid: false, error: "El texto es demasiado corto" };
