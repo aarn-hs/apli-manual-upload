@@ -6,9 +6,17 @@ import SimpleForm from "@/components/FormSections/SimpleForm";
 interface CandidateFormProps {
   onSubmit: (data: any) => void;
   isSubmitting?: boolean;
+  notificationState?: {
+    isVisible: boolean;
+    isSuccess: boolean;
+    message: string;
+    submissionRequestId?: string;
+    applicationId?: string;
+  };
+  onDismissNotification?: () => void;
 }
 
-export default function CandidateForm({ onSubmit, isSubmitting = false }: CandidateFormProps) {
+export default function CandidateForm({ onSubmit, isSubmitting = false, notificationState, onDismissNotification }: CandidateFormProps) {
   const methods = useForm({
     resolver: zodResolver(simplifiedCandidateSchema),
     mode: "onChange",
@@ -134,7 +142,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false }: Candid
           <button 
             type="submit" 
             className="btn-primary"
-            disabled={isSubmitting || isFormSubmitting || !isFormReadyForSubmission}
+            disabled={isSubmitting || isFormSubmitting || !isFormReadyForSubmission || (notificationState?.isVisible && notificationState?.isSuccess)}
           >
             {(isSubmitting || isFormSubmitting) ? "Cargando..." : "Cargar candidato"}
           </button>
@@ -143,11 +151,66 @@ export default function CandidateForm({ onSubmit, isSubmitting = false }: Candid
             type="button" 
             className="btn-secondary"
             onClick={handleClearForm}
-            disabled={isFormEmpty}
+            disabled={isFormEmpty || isSubmitting}
           >
             Limpiar formulario
           </button>
         </div>
+
+        {/* Notification panel */}
+        {notificationState?.isVisible && (
+          <div className={`mt-4 p-4 rounded-lg border ${
+            notificationState.isSuccess 
+              ? 'bg-cyan-50 border-cyan-200 text-cyan-800' 
+              : 'bg-purple-50 border-purple-200 text-purple-800'
+          }`}>
+            <div className="flex justify-between items-start">
+              <div className="flex-1">
+                <p className="text-sm font-medium mb-2">
+                  {notificationState.message}
+                </p>
+                
+                {notificationState.submissionRequestId && (
+                  <p className="text-xs mb-1">
+                    <span className="font-medium">ID de solicitud:</span>{' '}
+                    <span className={notificationState.isSuccess ? 'text-cyan-600' : 'text-purple-600'}>
+                      {notificationState.submissionRequestId}
+                    </span>
+                  </p>
+                )}
+                
+                {notificationState.applicationId && (
+                  <p className="text-xs">
+                    <span className="font-medium">ID de postulación:</span>{' '}
+                    <a
+                      href={`https://demo.apli.app/candidates/${notificationState.applicationId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`underline hover:no-underline ${
+                        notificationState.isSuccess ? 'text-cyan-600 hover:text-cyan-800' : 'text-purple-600 hover:text-purple-800'
+                      }`}
+                    >
+                      {notificationState.applicationId}
+                    </a>
+                  </p>
+                )}
+              </div>
+              
+              {onDismissNotification && (
+                <button
+                  onClick={onDismissNotification}
+                  className={`ml-4 text-lg font-bold ${
+                    notificationState.isSuccess ? 'text-cyan-400 hover:text-cyan-600' : 'text-purple-400 hover:text-purple-600'
+                  }`}
+                  aria-label="Cerrar notificación"
+                >
+                  ×
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
         <p className="text-sm text-gray-500">
           Asegúrate de llenar todos los campos obligatorios para poder continuar.
         </p>

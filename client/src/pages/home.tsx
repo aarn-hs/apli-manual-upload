@@ -5,12 +5,12 @@ import WebhookResponseModal from "@/components/ui/webhook-response-modal";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Home() {
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showWebhookModal, setShowWebhookModal] = useState(false);
-  const [webhookResponse, setWebhookResponse] = useState<{
+  const [notificationState, setNotificationState] = useState<{
+    isVisible: boolean;
     isSuccess: boolean;
     message: string;
+    submissionRequestId?: string;
     applicationId?: string;
   } | null>(null);
   const { toast } = useToast();
@@ -50,7 +50,7 @@ export default function Home() {
     observer.observe(document.body);
     
     return () => observer.disconnect();
-  }, [showSuccessModal]);
+  }, [notificationState?.isVisible]);
 
   // Función para generar UUID personalizado
   const generateCustomUUID = (prefix: string): string => {
@@ -152,6 +152,7 @@ export default function Home() {
     try {
       // Transformar los datos al formato del webhook
       const webhookData = transformFormDataToWebhook(data);
+      const submissionRequestId = webhookData.submission_request_id;
       
       // Obtener la URL del webhook de las variables de entorno
       const webhookUrl = import.meta.env.VITE_WEBHOOK_URL;
@@ -207,23 +208,25 @@ export default function Home() {
         const applicationId = responseData.content?.application_id;
         const message = responseData.message || 'Postulación creada exitosamente';
         
-        setWebhookResponse({
+        setNotificationState({
+          isVisible: true,
           isSuccess: true,
           message,
+          submissionRequestId: submissionRequestId,
           applicationId
         });
-        setShowWebhookModal(true);
       } else {
         // Caso de error del webhook (400, 404, etc.)
         const message = responseData?.message || 'Los datos del candidato no pudieron procesarse correctamente';
         const applicationId = responseData?.content?.application_id;
         
-        setWebhookResponse({
+        setNotificationState({
+          isVisible: true,
           isSuccess: false,
           message,
+          submissionRequestId: submissionRequestId,
           applicationId
         });
-        setShowWebhookModal(true);
       }
 
     } catch (error) {
@@ -254,13 +257,14 @@ export default function Home() {
         isConnectionError = true;
       }
       
-      // Mostrar error en el modal 
-      setWebhookResponse({
+      // Mostrar error en la notificación 
+      setNotificationState({
+        isVisible: true,
         isSuccess: false,
         message: errorMessage,
+        submissionRequestId: submissionRequestId,
         applicationId: undefined
       });
-      setShowWebhookModal(true);
     } finally {
       setIsSubmitting(false);
     }
