@@ -169,7 +169,9 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
               : 'bg-purple-50 border-purple-400 text-purple-800'
           }`}>
             <div>
-              <p className="text-sm font-medium mb-2">
+              <p className={`text-sm font-medium mb-2 ${
+                notificationState.isSuccess ? 'text-cyan-700' : 'text-purple-700'
+              }`}>
                 {notificationState.message}
               </p>
               
