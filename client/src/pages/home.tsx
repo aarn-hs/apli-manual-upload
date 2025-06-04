@@ -153,13 +153,23 @@ export default function Home() {
       webhookData = transformFormDataToWebhook(data);
       const submissionRequestId = webhookData.submission_request_id;
       
-      // Obtener la URL del webhook de las variables de entorno
+      // Obtener la URL del webhook y el token de autorización de las variables de entorno
       const webhookUrl = import.meta.env.VITE_WEBHOOK_URL;
+      const authToken = import.meta.env.VITE_WEBHOOK_AUTH_TOKEN;
       
       if (!webhookUrl) {
         toast({
           title: "Error de configuración",
           description: "La URL del webhook no está configurada. Por favor contacta al administrador.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (!authToken) {
+        toast({
+          title: "Error de configuración",
+          description: "El token de autorización no está configurado. Por favor contacta al administrador.",
           variant: "destructive",
         });
         return;
@@ -179,6 +189,7 @@ export default function Home() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`,
         },
         body: JSON.stringify(webhookData),
         signal: controller.signal
