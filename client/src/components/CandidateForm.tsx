@@ -131,6 +131,10 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
       previousJobStartDate: "",
       previousJobEndDate: ""
     });
+    // Dismiss notification when clearing form
+    if (onDismissNotification) {
+      onDismissNotification();
+    }
   };
 
   return (
@@ -159,10 +163,10 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
 
         {/* Notification panel */}
         {notificationState?.isVisible && (
-          <div className={`mt-4 p-4 rounded-lg border ${
+          <div className={`mt-4 p-4 rounded-lg border-2 ${
             notificationState.isSuccess 
-              ? 'bg-cyan-50 border-cyan-200 text-cyan-800' 
-              : 'bg-purple-50 border-purple-200 text-purple-800'
+              ? 'bg-cyan-50 border-cyan-400 text-cyan-800' 
+              : 'bg-purple-50 border-purple-400 text-purple-800'
           }`}>
             <div className="flex justify-between items-start">
               <div className="flex-1">
