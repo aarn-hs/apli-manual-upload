@@ -146,7 +146,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
           <button 
             type="submit" 
             className="btn-primary"
-            disabled={isSubmitting || isFormSubmitting || !isFormReadyForSubmission || (notificationState?.isVisible && notificationState?.isSuccess)}
+            disabled={isSubmitting || isFormSubmitting || !isFormReadyForSubmission || notificationState?.isVisible}
           >
             {(isSubmitting || isFormSubmitting) ? "Cargando..." : "Cargar candidato"}
           </button>
