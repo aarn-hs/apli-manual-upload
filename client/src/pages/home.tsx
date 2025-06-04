@@ -169,32 +169,20 @@ export default function Home() {
       console.log('Enviando datos al webhook:', webhookData);
       console.log('URL del webhook:', webhookUrl);
 
-      // Enviar datos al webhook con timeout personalizado
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => {
-        controller.abort();
-      }, 300000); // 5 minutos timeout
-
-      const response = await fetch(webhookUrl, {
+      // Enviar datos a través del proxy del backend para evitar CORS
+      const response = await fetch('/api/webhook-proxy', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(webhookData),
-        signal: controller.signal
+        body: JSON.stringify({
+          webhookUrl: webhookUrl,
+          data: webhookData
+        })
       }).catch((fetchError) => {
-        clearTimeout(timeoutId);
         console.error('Error inmediato al hacer fetch:', fetchError);
-        
-        if (fetchError.name === 'AbortError') {
-          throw new Error('TIMEOUT: El webhook tardó más de 5 minutos en responder.');
-        }
-        
-        // Error inmediato - probablemente bloqueo de red o CORS
-        throw new Error('NETWORK_ERROR: No se pudo establecer conexión con el webhook. Esto puede deberse a restricciones de red del entorno de desarrollo.');
+        throw new Error('NETWORK_ERROR: No se pudo establecer conexión con el servidor.');
       });
-
-      clearTimeout(timeoutId);
 
       console.log('Respuesta del webhook:', response.status, response.statusText);
 
