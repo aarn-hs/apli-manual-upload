@@ -168,48 +168,34 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
               ? 'bg-cyan-50 border-cyan-400 text-cyan-800' 
               : 'bg-purple-50 border-purple-400 text-purple-800'
           }`}>
-            <div className="flex justify-between items-start">
-              <div className="flex-1">
-                <p className="text-sm font-medium mb-2">
-                  {notificationState.message}
-                </p>
-                
-                {notificationState.submissionRequestId && (
-                  <p className="text-xs mb-1">
-                    <span className="font-medium">ID de solicitud:</span>{' '}
-                    <span className={notificationState.isSuccess ? 'text-cyan-600' : 'text-purple-600'}>
-                      {notificationState.submissionRequestId}
-                    </span>
-                  </p>
-                )}
-                
-                {notificationState.applicationId && (
-                  <p className="text-xs">
-                    <span className="font-medium">ID de postulación:</span>{' '}
-                    <a
-                      href={`https://demo.apli.app/candidates/${notificationState.applicationId}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`underline hover:no-underline ${
-                        notificationState.isSuccess ? 'text-cyan-600 hover:text-cyan-800' : 'text-purple-600 hover:text-purple-800'
-                      }`}
-                    >
-                      {notificationState.applicationId}
-                    </a>
-                  </p>
-                )}
-              </div>
+            <div>
+              <p className="text-sm font-medium mb-2">
+                {notificationState.message}
+              </p>
               
-              {onDismissNotification && (
-                <button
-                  onClick={onDismissNotification}
-                  className={`ml-4 text-lg font-bold ${
-                    notificationState.isSuccess ? 'text-cyan-400 hover:text-cyan-600' : 'text-purple-400 hover:text-purple-600'
-                  }`}
-                  aria-label="Cerrar notificación"
-                >
-                  ×
-                </button>
+              {notificationState.submissionRequestId && (
+                <p className="text-xs mb-1">
+                  <span className="font-medium">ID de solicitud:</span>{' '}
+                  <span className={notificationState.isSuccess ? 'text-cyan-600' : 'text-purple-600'}>
+                    {notificationState.submissionRequestId}
+                  </span>
+                </p>
+              )}
+              
+              {notificationState.applicationId && (
+                <p className="text-xs">
+                  <span className="font-medium">ID de postulación:</span>{' '}
+                  <a
+                    href={`https://demo.apli.app/candidates/${notificationState.applicationId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`underline hover:no-underline ${
+                      notificationState.isSuccess ? 'text-cyan-600 hover:text-cyan-800' : 'text-purple-600 hover:text-purple-800'
+                    }`}
+                  >
+                    {notificationState.applicationId}
+                  </a>
+                </p>
               )}
             </div>
           </div>
