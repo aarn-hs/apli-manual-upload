@@ -8,6 +8,7 @@ export interface CustomInputProps extends React.InputHTMLAttributes<HTMLInputEle
   autoLowercase?: boolean;
   autoCleanSpaces?: boolean;
   fieldName?: string;
+  maxLength?: number;
 }
 
 export const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(

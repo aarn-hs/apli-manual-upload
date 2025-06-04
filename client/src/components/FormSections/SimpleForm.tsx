@@ -636,6 +636,7 @@ export default function SimpleForm() {
                     placeholder="10 dígitos"
                     className="form-control"
                     tabIndex={10}
+                    maxLength={10}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -708,6 +709,7 @@ export default function SimpleForm() {
                     placeholder="5 dígitos"
                     className="form-control"
                     tabIndex={16}
+                    maxLength={5}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
