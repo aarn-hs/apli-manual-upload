@@ -190,8 +190,13 @@ export default function Home() {
           throw new Error('TIMEOUT: El webhook tardó más de 5 minutos en responder.');
         }
         
-        // Error inmediato - probablemente bloqueo de red o CORS
-        throw new Error('NETWORK_ERROR: No se pudo establecer conexión con el webhook. Esto puede deberse a restricciones de red del entorno de desarrollo.');
+        // Verificar si es un error CORS específico
+        if (fetchError.message && fetchError.message.includes('CORS')) {
+          throw new Error('CORS_ERROR: El webhook requiere configuración CORS adicional. El proceso puede estar ejecutándose en segundo plano.');
+        }
+        
+        // Error de red general
+        throw new Error('NETWORK_ERROR: No se pudo establecer conexión con el webhook. Verifica la conectividad de red.');
       });
 
       clearTimeout(timeoutId);
@@ -236,7 +241,10 @@ export default function Home() {
       
       if (error instanceof Error) {
         if (error.message.startsWith('TIMEOUT:')) {
-          errorMessage = "El proceso de carga tardó más de 90 segundos en responder.";
+          errorMessage = "El proceso de carga tardó más de 5 minutos en responder.";
+          isConnectionError = true;
+        } else if (error.message.startsWith('CORS_ERROR:')) {
+          errorMessage = "Configuración CORS requerida. El proceso puede estar ejecutándose en segundo plano.";
           isConnectionError = true;
         } else if (error.message.startsWith('NETWORK_ERROR:')) {
           errorMessage = "No se pudo iniciar el proceso de carga debido a restricciones de red.";
