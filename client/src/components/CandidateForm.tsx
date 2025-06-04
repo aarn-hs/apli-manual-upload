@@ -165,8 +165,8 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
         {notificationState?.isVisible && (
           <div className={`mt-4 p-4 rounded-lg border-2 ${
             notificationState.isSuccess 
-              ? 'bg-cyan-50 border-cyan-400 text-cyan-800' 
-              : 'bg-purple-50 border-purple-400 text-purple-800'
+              ? 'bg-cyan-50 border-cyan-500 text-cyan-900' 
+              : 'bg-purple-50 border-purple-500 text-purple-900'
           }`}>
             <div>
               <p className={`text-sm font-medium mb-2 ${
