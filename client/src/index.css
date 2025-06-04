@@ -170,4 +170,13 @@
   .form-item {
     @apply min-h-[105px] mb-2 flex flex-col;
   }
+
+  /* Disabled field styles */
+  .form-control.disabled {
+    @apply bg-light-grey text-dark-grey cursor-not-allowed opacity-60;
+  }
+
+  .form-control.disabled::placeholder {
+    @apply text-dark-grey;
+  }
 }

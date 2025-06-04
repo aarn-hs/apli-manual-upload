@@ -21,11 +21,29 @@ import {
 } from "@/lib/data";
 
 export default function SimpleForm() {
-  const { control, setValue, watch } = useFormContext();
+  const { control, setValue, watch, trigger } = useFormContext();
   
   const selectedState = useWatch({
     control,
     name: "state",
+    defaultValue: "",
+  });
+
+  const birthDate = useWatch({
+    control,
+    name: "birthDate",
+    defaultValue: "",
+  });
+
+  const nationality = useWatch({
+    control,
+    name: "nationality",
+    defaultValue: "",
+  });
+
+  const curp = useWatch({
+    control,
+    name: "curp",
     defaultValue: "",
   });
   
@@ -35,6 +53,44 @@ export default function SimpleForm() {
       setValue("municipality", "");
     }
   }, [selectedState, setValue]);
+
+  // Revalidate CURP when birth date or nationality changes
+  useEffect(() => {
+    if (curp && (birthDate || nationality)) {
+      trigger("curp");
+    }
+  }, [birthDate, nationality, curp, trigger]);
+
+  // Check if CURP field should be enabled
+  const isCURPEnabled = () => {
+    // Validate birth date format and logical validity
+    let birthDateValid = false;
+    if (birthDate && /^\d{2}\/\d{2}\/\d{4}$/.test(birthDate)) {
+      const dateParts = birthDate.split('/');
+      const day = parseInt(dateParts[0], 10);
+      const month = parseInt(dateParts[1], 10);
+      const year = parseInt(dateParts[2], 10);
+      
+      // Check basic ranges
+      if (month >= 1 && month <= 12 && day >= 1 && day <= 31 && year >= 1940 && year <= new Date().getFullYear()) {
+        // Create date object to validate it's a real date
+        const testDate = new Date(year, month - 1, day);
+        birthDateValid = testDate.getDate() === day && testDate.getMonth() === month - 1 && testDate.getFullYear() === year;
+      }
+    }
+    
+    // Nationality must be selected
+    const nationalityValid = nationality && nationality.length > 0;
+    
+    return birthDateValid && nationalityValid;
+  };
+
+  // Clear CURP when prerequisites are not met
+  useEffect(() => {
+    if (!isCURPEnabled() && curp) {
+      setValue("curp", "", { shouldValidate: false });
+    }
+  }, [birthDate, nationality, curp, setValue]);
 
   // Función para crear handlers de limpieza de espacios
   const createCleanSpacesHandler = (fieldName: string) => {
@@ -793,23 +849,30 @@ export default function SimpleForm() {
             )}
           />
           
-          {/* Campo - Cantidad de trabajos en los últimos 24 meses */}
+          {/* Campo - CURP */}
           <FormField
             control={control}
             name="curp"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem className="form-item">
                 <FormLabel className="body-text required">CURP</FormLabel>
                 <FormControl>
                   <CustomInput
                     {...field}
-                    placeholder="18 caracteres"
-                    className="form-control"
+                    placeholder={isCURPEnabled() ? "18 caracteres" : "Complete fecha de nacimiento y nacionalidad primero"}
+                    className={`form-control ${fieldState.error ? 'error' : ''} ${!isCURPEnabled() ? 'disabled' : ''}`}
                     autoUppercase={true}
                     tabIndex={28}
+                    disabled={!isCURPEnabled()}
+                    maxLength={18}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
+                {!isCURPEnabled() && (
+                  <p className="text-sm text-gray-500 mt-1">
+                    Para habilitar este campo, ingrese primero una fecha de nacimiento válida y seleccione la nacionalidad.
+                  </p>
+                )}
               </FormItem>
             )}
           />
