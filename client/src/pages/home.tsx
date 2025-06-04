@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import CandidateForm from "@/components/CandidateForm";
-import SuccessModal from "@/components/ui/success-modal";
-import WebhookResponseModal from "@/components/ui/webhook-response-modal";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Home() {
@@ -12,7 +10,7 @@ export default function Home() {
     message: string;
     submissionRequestId?: string;
     applicationId?: string;
-  } | null>(null);
+  } | undefined>();
   const { toast } = useToast();
 
   // Función para obtener parámetros de URL
@@ -148,10 +146,11 @@ export default function Home() {
 
   const handleFormSubmit = async (data: any) => {
     setIsSubmitting(true);
+    let webhookData: any = null;
     
     try {
       // Transformar los datos al formato del webhook
-      const webhookData = transformFormDataToWebhook(data);
+      webhookData = transformFormDataToWebhook(data);
       const submissionRequestId = webhookData.submission_request_id;
       
       // Obtener la URL del webhook de las variables de entorno
@@ -262,7 +261,7 @@ export default function Home() {
         isVisible: true,
         isSuccess: false,
         message: errorMessage,
-        submissionRequestId: submissionRequestId,
+        submissionRequestId: webhookData?.submission_request_id || undefined,
         applicationId: undefined
       });
     } finally {
@@ -278,21 +277,13 @@ export default function Home() {
           <p className="subtitle text-dark-grey">Completa el formulario con los datos del candidato que deseas cargar. Todos los campos marcados con <span className="text-red">*</span> son obligatorios. Una vez completado, haz clic en "Enviar Candidato" para mandar la información.</p>
         </div>
 
-        <CandidateForm onSubmit={handleFormSubmit} isSubmitting={isSubmitting} />
+        <CandidateForm 
+          onSubmit={handleFormSubmit} 
+          isSubmitting={isSubmitting}
+          notificationState={notificationState}
+          onDismissNotification={() => setNotificationState(undefined)}
+        />
       </main>
-
-      <SuccessModal 
-        isOpen={showSuccessModal} 
-        onClose={() => setShowSuccessModal(false)} 
-      />
-      
-      <WebhookResponseModal
-        isOpen={showWebhookModal}
-        onClose={() => setShowWebhookModal(false)}
-        isSuccess={webhookResponse?.isSuccess || false}
-        message={webhookResponse?.message || ''}
-        applicationId={webhookResponse?.applicationId}
-      />
     </div>
   );
 }
