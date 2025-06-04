@@ -173,7 +173,7 @@ export default function Home() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => {
         controller.abort();
-      }, 90000); // 90 segundos timeout
+      }, 300000); // 5 minutos timeout
 
       const response = await fetch(webhookUrl, {
         method: 'POST',
@@ -187,7 +187,7 @@ export default function Home() {
         console.error('Error inmediato al hacer fetch:', fetchError);
         
         if (fetchError.name === 'AbortError') {
-          throw new Error('TIMEOUT: El webhook tardó más de 90 segundos en responder.');
+          throw new Error('TIMEOUT: El webhook tardó más de 5 minutos en responder.');
         }
         
         // Error inmediato - probablemente bloqueo de red o CORS
