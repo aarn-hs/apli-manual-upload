@@ -860,7 +860,7 @@ export default function SimpleForm() {
                   <CustomInput
                     {...field}
                     placeholder={isCURPEnabled() ? "18 caracteres" : "Complete fecha de nacimiento y nacionalidad primero"}
-                    className={`form-control ${fieldState.error ? 'error' : ''} ${!isCURPEnabled() ? 'disabled' : ''}`}
+                    className={`form-control ${fieldState.error ? 'error' : ''}`}
                     autoUppercase={true}
                     tabIndex={28}
                     disabled={!isCURPEnabled()}
@@ -868,11 +868,6 @@ export default function SimpleForm() {
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
-                {!isCURPEnabled() && (
-                  <p className="text-sm text-gray-500 mt-1">
-                    Para habilitar este campo, ingrese primero una fecha de nacimiento válida y seleccione la nacionalidad.
-                  </p>
-                )}
               </FormItem>
             )}
           />
