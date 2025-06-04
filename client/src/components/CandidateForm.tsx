@@ -165,12 +165,12 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
         {notificationState?.isVisible && (
           <div className={`mt-4 p-4 rounded-lg border-2 ${
             notificationState.isSuccess 
-              ? 'bg-teal-50 border-teal-400' 
+              ? 'bg-cyan-50 border-[#46FEEB]' 
               : 'bg-violet-50 border-violet-400'
           }`}>
             <div>
               <p className={`text-sm font-medium mb-2 ${
-                notificationState.isSuccess ? 'text-teal-700' : 'text-violet-700'
+                notificationState.isSuccess ? 'text-[#46FEEB]' : 'text-violet-700'
               }`}>
                 {notificationState.message}
               </p>
@@ -178,7 +178,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
               {notificationState.submissionRequestId && (
                 <p className="text-xs mb-1">
                   <span className="font-medium">ID de solicitud:</span>{' '}
-                  <span className={notificationState.isSuccess ? 'text-teal-600' : 'text-violet-600'}>
+                  <span className={notificationState.isSuccess ? 'text-[#46FEEB]' : 'text-violet-600'}>
                     {notificationState.submissionRequestId}
                   </span>
                 </p>
@@ -192,7 +192,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
                     target="_blank"
                     rel="noopener noreferrer"
                     className={`underline hover:no-underline ${
-                      notificationState.isSuccess ? 'text-teal-600 hover:text-teal-800' : 'text-violet-600 hover:text-violet-800'
+                      notificationState.isSuccess ? 'text-[#46FEEB] hover:text-[#39D9C7]' : 'text-violet-600 hover:text-violet-800'
                     }`}
                   >
                     {notificationState.applicationId}
