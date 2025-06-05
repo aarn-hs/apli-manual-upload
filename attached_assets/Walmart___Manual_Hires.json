@@ -1,0 +1,2404 @@
+{
+  "name": "Walmart | Manual Hires",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "const input = items[0].json;\n\nreturn [\n  {\n    json: input.body\n  }\n];\n\n"
+      },
+      "id": "34a7527d-1651-473c-b802-72c23b65bb8e",
+      "name": "Parse Records",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        760,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  return {\n    json: item.json.content\n  };\n});\n\n"
+      },
+      "id": "124573d3-9075-4b1a-a1a0-7c6666f4e872",
+      "name": "Parse Requisition Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1260,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://bb8.apli.tools/webhook/bcc26499-8caa-4142-a396-00cdc61723af",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"job\": \"{{ $json.Puesto }}\",\n    \"location\": \"{{ $json['Ubicación'] }}\",\n    \"pmx\": \"{{ $json.PMX }}\",\n    \"candidate_submition_id\": \"{{ $json.candidate_submission_id }}\"\n} ",
+        "options": {}
+      },
+      "id": "9aaad5e8-0bd3-4b28-a05f-193f34e92d15",
+      "name": "Search Requisition",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1080,
+        500
+      ],
+      "notesInFlow": true,
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": false,
+      "notes": "GET"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cb6c37fc-be87-4399-bb4f-1290004faa48",
+              "leftValue": "={{ $json.campaign_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "f3adf435-f92e-4863-bbc1-bbc28297ce57",
+              "leftValue": "={{ $json.campaign_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "8a59335a-9a28-4b4c-a667-873dd9e664b3",
+              "leftValue": "={{ $json.job_offer_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "33ea5a54-7b1b-4412-a33d-38f18243c95d",
+              "leftValue": "={{ $json.job_offer_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "60db9ea9-25d4-4e18-bc86-9a617f8149c8",
+              "leftValue": "={{ $json.job_opening_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "94007d9d-1c46-4935-a0c5-25005fcce323",
+              "leftValue": "={{ $json.job_opening_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "4312571d-b30e-450b-8d3c-0652c469b48b",
+      "name": "Has a campaign_id",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1740,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const reference = items[0].json.content?.reference_location || null;\n\nreturn [\n  {\n    json: {\n      latitude: reference?.latitude || null,\n      longitude: reference?.longitude || null\n    }\n  }\n];\n\n"
+      },
+      "id": "1993d5ef-8c19-442e-bac4-42d7430bc534",
+      "name": "Parse Coordinates",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2340,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://i-stg.apli.rest/api/v2/job-openings/nearest/",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "address",
+              "value": "={{ $json['Calle y número de la vivienda'] }} {{ $json.Colonia }} {{ $json.Municipio.split(',')[0].trim() }} {{ $json.Estado }}"
+            },
+            {
+              "name": "is_available",
+              "value": "true"
+            },
+            {
+              "name": "job_offer_id",
+              "value": "={{ $json.job_offer_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a566bd93-efa1-4f19-8c08-629631dd7f70",
+      "name": "Get Address Coordinates",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2120,
+        600
+      ],
+      "notesInFlow": true,
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "maxTries": 2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "PdAEWnxot3xK9e4m",
+          "name": "Apli Staging Correct"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "notes": "GET"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://bb8.apli.tools/webhook/a5a3a2a6-1bb2-4aa4-abb2-5f648464a9f2",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"TENANT-ID\": \"6ad8f9b8-8fb2-493a-b77a-84a51f629630\",\n    \"candidate_submition_id\": \"{{ $json.candidate_submission_id }}\",\n    \"first_name\": \"{{ $json['Nombre(s)'] }}\",\n    \"first_surname\": \"{{ $json['Apellido paterno'] }}\",\n    \"second_surname\": \"{{ $json['Apellido materno'] }}\",\n    \"email_address\": \"{{ $json['Correo electrónico'] }}\",\n    \"phone_number\": \"{{ $json['Número de teléfono'] }}\"\n} ",
+        "options": {}
+      },
+      "id": "30e41132-194d-4076-8efe-860d66fd51c9",
+      "name": "Create Profile",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2120,
+        780
+      ],
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "notesInFlow": true,
+      "onError": "continueRegularOutput",
+      "notes": "POST"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  return {\n    json: item.json.content\n  };\n});"
+      },
+      "id": "ef87123b-535d-41a5-aa0f-dcb92a285fd9",
+      "name": "Parse Profile Info",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2340,
+        780
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "49d2924e-de0e-41ab-a7d1-0cf40ebc33b9",
+              "leftValue": "={{ $json.profile_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "54461400-1439-4398-b6b5-feb02a9691ae",
+              "leftValue": "={{ $json.profile_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "4721e7a9-79fb-4e04-8a0d-2b8deac4e3cc",
+              "leftValue": "={{ $json.is_existing_profile }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "0cd83b4e-3ccb-47db-83f5-4e0a0cee8653",
+              "leftValue": "={{ $json.is_existing_profile }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "6fd3e76e-ca02-414b-97be-90a647f30a64",
+      "name": "Has Profile Data",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2900,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Search Requisition \n* Llama al escenario **Walmart | Bulk Hires: Search Available Requisitions** mediante un webhook.\nhttps://bb8.apli.tools/workflow/5XcSTGaRYnri1fFk\n* La búsqueda en BigQueary utiliza como condicionales la posición, ubicación y PMX de la solicitud y solo acepta requisiciones con estatus **Publicada** y **Despublicada**.",
+        "height": 174.66203192988257,
+        "width": 415.69566328620334
+      },
+      "id": "5d16e69b-6012-4cd8-9601-37759809fd2e",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Create Profile\n* Llama al escenario **Walmart | Bulk Hires: Create Profile** mediante un webhook para la creación del perfil. https://bb8.apli.tools/workflow/Jr0Wx2iB2nmaxLdP\n* En caso de que ya exista el perfil, recupera su ID y añade la clave **_*is_existing_profile*_**",
+        "height": 176.4704206128025,
+        "width": 403.0003078449166
+      },
+      "id": "0327683f-ca47-4440-a81b-b500baa791cb",
+      "name": "Sticky Note10",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2120,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Create Application\n* Llama al escenario **Walmart | Bulk Hires: Create Application** mediante un webhook para la creación de la postulación. https://bb8.apli.tools/workflow/xmg8XAdXhY8EHXXE  \n* En caso de que el perfil ya cuente con una postulación para esa requisición, se recupera el application_id y se añade la clave **is_existing_application**",
+        "height": 194.70044049978898,
+        "width": 427.0628257597381
+      },
+      "id": "945d20df-34f7-453e-b83f-623931b295da",
+      "name": "Sticky Note7",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3440,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const escolaridadMap = {\n  \"Primaria\": \"MX_PRIMARIA\",\n  \"Secundaria\": \"MX_SECUNDARIA \",\n  \"Preparatoria\": \"MX_PREPARATORIA \",\n  \"Carrera Técnica\": \"MX_ASSOCIATE\",\n  \"Universidad\": \"MX_BACHELORS \",\n  \"Posgrado\": \"MX_MASTERS \",\n};\n\nconst item = items[0].json;\nitem.Degree = escolaridadMap[item.Escolaridad] || \"OTRO\";\n\nreturn [{ \n  profile_id: item.profile_id,\n  Degree: item.Degree }];\n"
+      },
+      "id": "169f1e8f-b12b-4afc-b2df-f56ede0b96eb",
+      "name": "Map Degree",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3660,
+        880
+      ]
+    },
+    {
+      "parameters": {
+        "content": "### Is a New Profile\nSolo se ejecuta para nuevos perfiles",
+        "height": 83.66054873177731,
+        "width": 162.19870148624148
+      },
+      "id": "2f3cd185-2003-4339-a31d-5d07e831c542",
+      "name": "Sticky Note8",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3400,
+        740
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Aún necesita configurarse la fuente",
+        "height": 80,
+        "width": 150,
+        "color": 3
+      },
+      "id": "790c1236-b52f-4693-a7fa-642301ebed1c",
+      "name": "Sticky Note12",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3440,
+        960
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://i-stg.apli.rest/api/v2/profiles/{{ $json.profile_id }}/hiring-profile/work-experience/",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n\t\"company\": {\n\t\t\"name\": \"{{ $json['Compañía Experiencia Previa'] }}\"\n\t},\n\t\"role\": \"{{ $json['Puesto Experiencia Previa'] }}\"\n}",
+        "options": {}
+      },
+      "id": "76c8b814-e287-412e-b33e-b7769e47560a",
+      "name": "Add Work Experience",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3820,
+        720
+      ],
+      "notesInFlow": true,
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "PdAEWnxot3xK9e4m",
+          "name": "Apli Staging Correct"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "notes": "POST"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://i-stg.apli.rest/api/v2/profiles/{{ $json.profile_id }}/education-profile/education/",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n\t\"degree\": \"{{ $json.Degree }}\",  \n\t\"title\": \"No solicitado\",\n\t\"status\": \"COMPLETED\",\n\t\"institution_name\": \"No solicitado\"\n} ",
+        "options": {}
+      },
+      "id": "ac5481ad-ed8d-4a74-99cd-9e5c5692537b",
+      "name": "Add Education",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3820,
+        880
+      ],
+      "notesInFlow": true,
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "PdAEWnxot3xK9e4m",
+          "name": "Apli Staging Correct"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "notes": "POST"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://i-stg.apli.rest/api/v2/profiles/{{ $json.profile_id }}/",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"birth_date\": \"{{ $json['Fecha de nacimiento'].split(' ')[0] }}\",\n  \"gender\": \"{{ \n  $json[\"Género\"] === \"H\" ? \"M\" : \n  $json[\"Género\"] === \"M\" ? \"F\" : \n  $json[\"Género\"] === \"X\" ? \"O\" : \n  $json[\"Género\"] \n}}\",\n  \"addresses\": [{\n            \"country\": \"México\",\n            \"latitude\": {{ $json.latitude }},\n            \"longitude\": {{ $json.longitude }},\n            \"state\": \"{{ $json.Estado }}\",\n            \"city\": \"{{ $json.Municipio.split(',')[0].trim() }}\",\n            \"zip_code\":\"{{ $json['Código postal'] }}\",\n            \"street_address\": \"{{ $json['Calle y número de la vivienda'] }} {{ $json['Número interior'] }}\",\n            \"is_default\": true\n    }],\n  \"marital_status\": \"{{ $json.marital_status_code }}\"\n} ",
+        "options": {}
+      },
+      "id": "dbfeeac6-5f08-43a6-90a4-6a661d567535",
+      "name": "Add Profile Data",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3820,
+        560
+      ],
+      "notesInFlow": true,
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "maxTries": 2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "PdAEWnxot3xK9e4m",
+          "name": "Apli Staging Correct"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "notes": "PATCH"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://bb8.apli.tools/webhook/2681ef8a-1eac-4ba3-939c-d5bd19e57060",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"candidate_submition_id\": \"{{ $json.candidate_submition_id }}\",\n    \"campaign_id\": \"{{ $json.campaign_id }}\",\n    \"job_opening_id\": \"{{ $json.job_opening_id }}\",\n    \"profile_id\": \"{{ $json.profile_id }}\",\n    \"source\": \"{{ $json.Fuente }}\"\n}   ",
+        "options": {}
+      },
+      "id": "2fbb5fbf-c7f2-4063-b009-b4a73a0def78",
+      "name": "Create Application",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3460,
+        1060
+      ],
+      "notesInFlow": true,
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput",
+      "notes": "POST"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  return {\n    json: item.json.content\n  };\n});\n\n"
+      },
+      "id": "c58e7b9c-7c00-46ee-977c-dd0fedf8bfae",
+      "name": "Parse Application Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3820,
+        1060
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "0d3ff763-05e3-4007-8f04-e47c6d5ddcf5",
+              "leftValue": "={{ $json.is_existing_profile }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "72288c24-69f9-46da-b13c-d1cfaaa9c563",
+      "name": "Is a New Profile",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2,
+      "position": [
+        3460,
+        560
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "url": "https://bb8.apli.tools/webhook/5db43bef-d9e7-4844-8253-c82ba6b6192c",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"environment\": \"production\",\n    \"event_type\": \"search rehire\",\n    \"curp\": \"{{$json.CURP}}\"\n}",
+        "options": {}
+      },
+      "id": "d13b50c9-0e99-485c-a60f-d25b6b578c57",
+      "name": "Search Rehire",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3820,
+        400
+      ],
+      "notesInFlow": true,
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput",
+      "notes": "GET"
+    },
+    {
+      "parameters": {
+        "jsCode": "const rehireRaw = items[0].json?.message || null;\n\nconst mapping = {\n  'The information is not available in the database.': 'No',\n  'The candidate is not eligible for rehire.': 'No recontratable',\n  'The candidate is eligible for rehire.': 'Sí'\n};\n\nconst rehire = mapping[rehireRaw] || \"Error al buscar datos para recontratación\";\n\nreturn [\n  {\n    json: {\n      Rehire: rehire\n    }\n  }\n];\n\n"
+      },
+      "id": "3599f47a-153e-4c7a-a4e4-82709af83c26",
+      "name": "Map Rehirability",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4040,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 3
+      },
+      "id": "68ed27dd-b336-4a26-8a10-852c1ff43d04",
+      "name": "Wait 1",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        4040,
+        560
+      ],
+      "webhookId": "cfab56aa-1494-4b97-ad5f-b796da059c71"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "7785c4b6-ed70-4538-a75c-a349d0bbbccf",
+              "leftValue": "={{ $json.Rehire }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "e7eb04ac-be82-4732-99cf-cb0c086ecd5b",
+              "leftValue": "={{ $json.application_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "f8708f7e-d5a1-4637-84a6-5955f63d66a2",
+              "leftValue": "={{ $json.application_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "d450ffbb-ff5b-421b-9133-8340bcd9e72c",
+              "leftValue": "={{ $json.is_existing_application }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "8f02977b-978a-4d72-bcaf-0dfabc19b4a2",
+              "leftValue": "={{ $json.is_existing_application }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0aa153eb-7feb-4965-b04a-e256401f869d",
+      "name": "Has Application Data",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        4620,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "content": "#### Etapa de registro\nEn esta etapa se crea el test de **Gar-E** con el cual se añade la información de perfilación, la cuál será visible en Wall-A ",
+        "height": 106.65165274653516,
+        "width": 285.236484903324
+      },
+      "id": "06096001-aa61-4808-aa24-744c388559b0",
+      "name": "Sticky Note9",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        5200,
+        920
+      ]
+    },
+    {
+      "parameters": {
+        "content": "No se pueden aprobar etapas en requisiciones con status CLOSED",
+        "height": 80,
+        "width": 186.1441429414583,
+        "color": 3
+      },
+      "id": "cfe6efd1-9bdd-4e86-b231-f236c1fa4e2f",
+      "name": "Sticky Note11",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4900,
+        900
+      ]
+    },
+    {
+      "parameters": {
+        "content": "#### Etapa de documentación \nEn esta etapa se añaden los datos de contacto de emergencia/dependientes y datos gubernamentales",
+        "height": 105.03007467180757,
+        "width": 277.92869025242356
+      },
+      "id": "ce668356-3879-4f9b-bac7-8bf5d8b839e0",
+      "name": "Sticky Note13",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        5840,
+        -60
+      ]
+    },
+    {
+      "parameters": {
+        "content": "#### Get Next Stage\n* Este endpoint devuelve la etapa actual en la que se encuentra la postulación. \n* Retorna el id de la etapa y cualquier test incluido en esta",
+        "height": 80,
+        "width": 309.5330302203056
+      },
+      "id": "147607e7-0c57-4008-ac97-c3a5c9eb994a",
+      "name": "Sticky Note14",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        5020,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://i-stg.apli.rest/api/v2/applications/{{ $('Has Application Data').item.json.application_id }}/next-stage/",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "id": "e479c9b7-0663-471b-a329-f1fab5141472",
+      "name": "Get Next Stage",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        5020,
+        320
+      ],
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "PdAEWnxot3xK9e4m",
+          "name": "Apli Staging Correct"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "content": "Gov-Id de CLABE no existe en stg",
+        "height": 80,
+        "width": 150,
+        "color": 3
+      },
+      "id": "9abaf4d2-b6b9-417f-9137-8db406e9aefb",
+      "name": "Sticky Note16",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        5920,
+        60
+      ]
+    },
+    {
+      "parameters": {
+        "content": "#### Etapa de contratación \nEn esta etapa se añaden los datos de fecha de ingreso y discapacidad",
+        "height": 86.51467295660979,
+        "width": 253.7162418556266
+      },
+      "id": "2f651060-90e3-49c9-9917-e95cfb6d44b3",
+      "name": "Sticky Note17",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        6180,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "46ca311a-f55e-42a6-a49e-c3788df729f0",
+              "leftValue": "={{ $json.content.stage.name }}",
+              "rightValue": "Registro",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "9a275c31-50da-4974-9378-88614bfdfc35",
+      "name": "Is Not Registro Stage",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        5260,
+        320
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "f1f4df1f-231b-45c5-a506-8e6612fa6f3b",
+              "leftValue": "={{ $json.content.stage.name }}",
+              "rightValue": "Documentación",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "7de7538e-87ee-420a-99a3-f28f91d24f65",
+      "name": "Is Not Documentación Stage",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        5940,
+        160
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "26eb6cc8-3f81-4714-80db-5b520acc320b",
+              "leftValue": "={{ $json.content.stage.name }}",
+              "rightValue": "Contratación",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "36d2614d-e43c-49a6-a6a4-52209a4c1156",
+      "name": "Is Not Contratación Stage",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        6240,
+        40
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "ce706a69-dd44-4158-ae4d-0dc753c550bd",
+              "leftValue": "={{ $json.content.stage.name }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "bab73623-451c-47f6-9ac1-863440cd3996",
+      "name": "Stage Don't Exists",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        6540,
+        -60
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {},
+      "id": "938bcc41-2e13-46df-8dad-7c77a26f149b",
+      "name": "No Operation, do nothing",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        7500,
+        980
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://i-stg.apli.rest/api/v2/applications/{{ $('Has Application Data').item.json.application_id }}/stage-tasks/{{ $('Get Next Stage').item.json.content.next_task.stage_task.id }}/evaluate/",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n    \"is_approved\": true,\n    \"is_completed\": true\n}",
+        "options": {}
+      },
+      "id": "d1090042-7b78-4b26-831b-e2bdcae7c401",
+      "name": "Evaluate Other Stages",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        6540,
+        160
+      ],
+      "retryOnFail": true,
+      "notesInFlow": true,
+      "maxTries": 2,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "PdAEWnxot3xK9e4m",
+          "name": "Apli Staging Correct"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "notes": "PATCH"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "9badffeb-8c70-499e-81c1-d5935138afbc",
+              "leftValue": "={{ $json.content.last_stage }}",
+              "rightValue": "registro_approval_process",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "a6c961cb-c6bd-437b-92ba-8bab766662a3",
+              "leftValue": "={{ $json.content.last_stage_status }}",
+              "rightValue": "finished",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "999c3b0c-8e96-44b5-b85c-b239246cf293",
+      "name": "Registro Is Finished",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        5260,
+        740
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "200eaea7-6834-45c8-83ad-a5267dace646",
+              "leftValue": "={{ $json.message }}",
+              "rightValue": "Application Stage Task evaluated",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "2815970b-535d-45fd-917d-ce76a24db636",
+      "name": "Stage Approved",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        6540,
+        360
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "6f9782c6-80b3-4b08-9591-11da5783219f",
+      "name": "Wait 2",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        4980,
+        1000
+      ],
+      "webhookId": "bff91a55-6aff-47b3-8b10-8a651d53bd03"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://bb8.apli.tools/webhook/ccb28b3a-ba3c-42fc-9a9c-83e3f61d6dfe",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"candidate_submition_id\": \"{{ $('Has Application Data').item.json.candidate_submition_id }}\",\n    \"profile_id\": \"{{ $('Has Application Data').item.json.profile_id }}\",\n    \"application_id\": \"{{ $('Has Application Data').item.json.application_id }}\",\n    \"stage_task_id\": \"{{ $json.content.next_task.stage_task.id }}\",\n    \"test_id\": \"{{ $json.content.next_task.stage_task.settings.custom_tests[0].test_id }}\", \n    \"CURP\": \"{{ $('Has Application Data').item.json.CURP }}\",\n    \"Rehire\": \"{{ $('Has Application Data').item.json.Rehire }}\",\n    \"Discapacidad\": \"{{ $('Has Application Data').item.json.Discapacidad }}\",\n    \"Experiencia en retail\": \"{{ $('Has Application Data').item.json['Experiencia en retail'] }}\",\n    \"Motivación al elegir trabajo\": \"{{ $('Has Application Data').item.json['Motivación al elegir trabajo'] }}\"\n}",
+        "options": {}
+      },
+      "id": "de6fada5-6218-49a3-b112-23d7e20616d9",
+      "name": "Evaluate Registro",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        5260,
+        540
+      ],
+      "notesInFlow": true,
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput",
+      "notes": "POST"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "70f4adab-72ce-4832-8862-674642e3e3fb",
+              "leftValue": "={{ $json.stage.toLowerCase() }}",
+              "rightValue": "contrata",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "dd046fa4-838f-473a-af5d-5437841f6893",
+      "name": "Stage Is Contratación ",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        7320,
+        -180
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "70f4adab-72ce-4832-8862-674642e3e3fb",
+              "leftValue": "={{ $json.stage.toLowerCase() }}",
+              "rightValue": "registro",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "a54b75e2-56cd-45cb-bbf4-4e50ca084d9f",
+              "leftValue": "={{ $json.stage.toLowerCase() }}",
+              "rightValue": "regist",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "3a6722b0-2843-4cee-a362-88a7efbdce4e",
+      "name": "Stage Is Registro",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        7620,
+        -20
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "d4399966-8b77-4dd1-a654-daaddc629fdc",
+              "leftValue": "={{ $json.approval_status }}",
+              "rightValue": "rejected",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "ee8d6334-10a4-4f88-8a6b-baf026e2b9c4",
+              "leftValue": "={{ $json.is_completed }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "bcd5f222-9dbd-47a5-88aa-0c22cf8b2a32",
+              "leftValue": "={{ $json.is_approved }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "5c6b5a3c-bb9a-4e5f-8c17-3cc6f961ba8d",
+      "name": "Registro Is Discarded",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        7940,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return items[0].json.content.map(result => {\n  return {\n    application_id: result.application_id,\n    content_id: result.id,\n    stage: result.stage_task.stage.name,\n    stage_task_id: result.stage_task.id,\n    approval_status: result.approval_status,\n    is_completed: result.is_completed,\n    is_approved: result.is_approved\n  };\n});"
+      },
+      "id": "dbf4efda-1afa-4cdb-9a08-69abcb80de98",
+      "name": "Map Stage Tasks IDs ",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        7060,
+        -140
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://i-stg.apli.rest/api/v2/applications/{{ $('Has Application Data').item.json.application_id }}/stage-tasks/",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "5ba051a0-060b-418f-912f-c9970e7b7a77",
+      "name": "Get stage tasks",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        6840,
+        -140
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "PdAEWnxot3xK9e4m",
+          "name": "Apli Staging Correct"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "af0f3ef3-0f85-496c-af51-88db485c8233",
+              "leftValue": "={{ $json.approval_status }}",
+              "rightValue": "approved",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "71072821-e822-4520-adca-db3f1e2b2832",
+              "leftValue": "={{ $json.is_completed }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "cafa577f-5cf3-4c4d-b328-a39b70a18f33",
+              "leftValue": "={{ $json.is_approved }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "c01deacb-2203-4f93-9a38-3920e1d35d26",
+      "name": "Contratacion Is Approved",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        7620,
+        -380
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "id": "64d616dd-dd20-4fd0-90be-eb493201bf62",
+      "name": "Merge Into Object",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1520,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "numberInputs": 3,
+        "options": {}
+      },
+      "id": "9d345a3f-f80b-4d20-9459-f9cdef2166a6",
+      "name": "Merge Into Object 3",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        4420,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "f1f4df1f-231b-45c5-a506-8e6612fa6f3b",
+              "leftValue": "={{ $json.content.stage.name }}",
+              "rightValue": "Entrevista inicial",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "d4c70253-572d-432e-9380-654887472b59",
+      "name": "Is Not Entrevista Stage",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        5600,
+        240
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "content": "## Stage Approval Loop\n* Llama al escenario **Walmart | Bulk Hires: Stage Approval Loop** mediante un webhook. \nhttps://bb8.apli.tools/workflow/TSxdzEujZdDJK1L4\n* Este escenario cuenta con tres webhooks diferentes que corresponden a los flujos para aprobar las etapas de registro, documentación y contratación",
+        "height": 174.83576967761996,
+        "width": 437.10379714552414
+      },
+      "id": "b04dc5c0-51ba-4b21-be11-5e395a0eb7f2",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        5000,
+        -20
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const mapping = {\n  \"Soltera/o\": 1,\n  \"Casada/o\": 0,\n  \"Viudo\": 3,\n  \"Divorciado/a\": 2,\n  \"Separado\": 100,\n  \"Unión libre\": 5,\n};\n\nconst item = items[0].json;\nitem.marital_status = mapping[item['Estado civil']] || 1;\n\nreturn [{ \n  marital_status_code: item.marital_status }];\n\n\n"
+      },
+      "id": "1986f59b-8534-4e2a-bc39-8d03a20924cb",
+      "name": "Map Marital Status",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2340,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "numberInputs": 4,
+        "options": {}
+      },
+      "id": "857812ec-e0ec-4f14-a40c-10479063132e",
+      "name": "Merge Into Object 2",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        2660,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "ae959b5f-36ef-4e7c-a8e7-e42418547819",
+              "leftValue": "={{ $('Has Application Data').item.json.Rehire }}",
+              "rightValue": "No recontratable",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "746cbb68-2c72-42ab-bed1-feebe024406f",
+      "name": "Not Rehirable",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        5660,
+        860
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n    \"http_status_code\": 404,\n    \"status\": \"error\",\n    \"message\": \"No se encontraron requisiciones disponibles con los datos ingresados\",\n    \"content\": {\n        \"campaign_id\": null,\n        \"job_opening_status\": null,\n        \"job_offer_id\": null\n    }\n}",
+        "options": {
+          "responseCode": 404,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "https://manual-upload.apli.app"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "POST, OPTIONS"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type, Authorization"
+              }
+            ]
+          }
+        }
+      },
+      "id": "3ca5f689-b303-4e7b-8fa9-33c20bd22d8b",
+      "name": "Respond: No Available Requisitions",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1740,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n    \"http_status_code\": 400,\n    \"status\": \"error\",\n    \"message\": \"No se pudo crear el perfil del candidato\",\n    \"content\": {\n        \"profile_id\": null\n    }\n}",
+        "options": {
+          "responseCode": 400,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "https://manual-upload.apli.app"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "POST, OPTIONS"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type, Authorization"
+              }
+            ]
+          }
+        }
+      },
+      "id": "53728d5e-7076-4948-9280-c4eedde7e954",
+      "name": "Respond: Profile Not Created",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        2900,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n    \"http_status_code\": 400,\n    \"status\": \"error\",\n    \"message\": \"No se pudo crear la postulación del candidato en Apli\",\n    \"content\": {\n        \"application_id\": null\n    }\n}",
+        "options": {
+          "responseCode": 400,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "https://manual-upload.apli.app"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "POST, OPTIONS"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type, Authorization"
+              }
+            ]
+          }
+        }
+      },
+      "id": "f4352820-129c-4ae1-8c84-3fb6f4c6c035",
+      "name": "Respond: Profile Not Created1",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        4620,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n    \"http_status_code\": 200,\n    \"status\": \"success\",\n    \"message\": \"Postulación creada exitosamente\",\n    \"content\": {\n        \"application_id\": \"{{ $json.content.tasks[0].application_id }}\"\n    }\n}",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "https://manual-upload.apli.app"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "POST, OPTIONS"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type, Authorization"
+              }
+            ]
+          }
+        }
+      },
+      "id": "e9611be6-2944-4209-9931-16f8b158d313",
+      "name": "Respond: Candidate Uploaded",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        6200,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n    \"http_status_code\": 400,\n    \"status\": \"error\",\n    \"message\": \"Error al evaluar etapas\",\n    \"content\": {\n        \"application_id\": \"{{ $json.content.tasks[0].application_id }}\"\n    }\n}",
+        "options": {
+          "responseCode": 400,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "https://manual-upload.apli.app"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "POST, OPTIONS"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type, Authorization"
+              }
+            ]
+          }
+        }
+      },
+      "id": "ade9e265-2d7b-499c-b46a-b229dedcd9bf",
+      "name": "Respond: Stage Not Finished",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        7500,
+        1220
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n    \"http_status_code\": 400,\n    \"status\": \"error\",\n    \"message\": \"Candidato no recontratable\",\n    \"content\": {\n        \"application_id\": \"{{ $json.content.tasks[0].application_id }}\"\n    }\n}",
+        "options": {
+          "responseCode": 400,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "https://manual-upload.apli.app"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "POST, OPTIONS"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type, Authorization"
+              }
+            ]
+          }
+        }
+      },
+      "id": "fee43d96-a97b-41c0-a036-b1b8bde6351c",
+      "name": "Respond: Not Rehirable",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        7500,
+        1420
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n    \"http_status_code\": 400,\n    \"status\": \"error\",\n    \"message\": \"Candidato ya ha sido asignado y contratado en esta posición\",\n    \"content\": {\n        \"application_id\": \"{{ $json.content.tasks[0].application_id }}\"\n    }\n}",
+        "options": {
+          "responseCode": 400,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "https://manual-upload.apli.app"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "POST, OPTIONS"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type, Authorization"
+              }
+            ]
+          }
+        }
+      },
+      "id": "b9f7425b-592b-441e-a588-f440bad1f359",
+      "name": "Respond: Candidate Already Hired",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        7960,
+        -560
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n    \"http_status_code\": 400,\n    \"status\": \"error\",\n    \"message\": \"Candidato no recontratable\",\n    \"content\": {\n        \"application_id\": \"{{ $json.content.tasks[0].application_id }}\"\n    }\n}",
+        "options": {
+          "responseCode": 400,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "https://manual-upload.apli.app"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "POST, OPTIONS"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type, Authorization"
+              }
+            ]
+          }
+        }
+      },
+      "id": "48cd4be0-e413-4fb5-8d09-d8e135d00648",
+      "name": "Respond: Candidate Discarded",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        8260,
+        -140
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n    \"http_status_code\": 401,\n    \"status\": \"error\",\n    \"message\": \"No autorizado\",\n    \"content\": {\n        \"campaign_id\": null,\n        \"job_opening_status\": null,\n        \"job_offer_id\": null\n    }\n}",
+        "options": {}
+      },
+      "id": "b28ebd5c-d18c-432d-95d7-629c5126066d",
+      "name": "Respond: Not Authorized",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        760,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "827b66ae-b25b-43aa-b7a0-3c2beb01d736",
+              "leftValue": "={{ $json.headers.authorization }}",
+              "rightValue": "Bearer 7e6da2110b30c03807420b1e6559cb8b",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "994b6a4d-5b3b-4d06-afe8-63dc653f9d9b",
+      "name": "Valid Token",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        500,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "0d1c7160-ae49-4858-937a-ad4cb265eae5",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "https://manual-upload.apli.app/"
+        }
+      },
+      "id": "22431973-e9b0-4487-aed0-fb6eb3cde3d3",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        280,
+        360
+      ],
+      "webhookId": "0d1c7160-ae49-4858-937a-ad4cb265eae5"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Search Requisition": {
+      "main": [
+        [
+          {
+            "node": "Parse Requisition Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Requisition Data": {
+      "main": [
+        [
+          {
+            "node": "Merge Into Object",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Get Address Coordinates": {
+      "main": [
+        [
+          {
+            "node": "Parse Coordinates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Profile": {
+      "main": [
+        [
+          {
+            "node": "Parse Profile Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has a campaign_id": {
+      "main": [
+        [
+          {
+            "node": "Get Address Coordinates",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create Profile",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge Into Object 2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Map Marital Status",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond: No Available Requisitions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Coordinates": {
+      "main": [
+        [
+          {
+            "node": "Merge Into Object 2",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Parse Profile Info": {
+      "main": [
+        [
+          {
+            "node": "Merge Into Object 2",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Map Degree": {
+      "main": [
+        [
+          {
+            "node": "Add Education",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Work Experience": {
+      "main": [
+        [
+          {
+            "node": "Wait 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Education": {
+      "main": [
+        [
+          {
+            "node": "Wait 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Profile Data": {
+      "main": [
+        [
+          {
+            "node": "Wait 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Application": {
+      "main": [
+        [
+          {
+            "node": "Parse Application Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is a New Profile": {
+      "main": [
+        [
+          {
+            "node": "Add Profile Data",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Add Work Experience",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Map Degree",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Rehire": {
+      "main": [
+        [
+          {
+            "node": "Map Rehirability",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map Rehirability": {
+      "main": [
+        [
+          {
+            "node": "Merge Into Object 3",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Has Profile Data": {
+      "main": [
+        [
+          {
+            "node": "Is a New Profile",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Search Rehire",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge Into Object 3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create Application",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond: Profile Not Created",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Application Data": {
+      "main": [
+        [
+          {
+            "node": "Merge Into Object 3",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Has Application Data": {
+      "main": [
+        [
+          {
+            "node": "Get Next Stage",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond: Profile Not Created1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Next Stage": {
+      "main": [
+        [
+          {
+            "node": "Is Not Registro Stage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Not Registro Stage": {
+      "main": [
+        [
+          {
+            "node": "Is Not Entrevista Stage",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Evaluate Registro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Not Documentación Stage": {
+      "main": [
+        [
+          {
+            "node": "Is Not Contratación Stage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Not Contratación Stage": {
+      "main": [
+        [
+          {
+            "node": "Stage Don't Exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stage Don't Exists": {
+      "main": [
+        [
+          {
+            "node": "Get stage tasks",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Evaluate Other Stages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing": {
+      "main": [
+        [
+          {
+            "node": "Wait 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evaluate Other Stages": {
+      "main": [
+        [
+          {
+            "node": "Stage Approved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registro Is Finished": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Not Rehirable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stage Approved": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond: Stage Not Finished",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evaluate Registro": {
+      "main": [
+        [
+          {
+            "node": "Registro Is Finished",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stage Is Contratación ": {
+      "main": [
+        [
+          {
+            "node": "Contratacion Is Approved",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stage Is Registro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stage Is Registro": {
+      "main": [
+        [
+          {
+            "node": "Registro Is Discarded",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registro Is Discarded": {
+      "main": [
+        [
+          {
+            "node": "Respond: Candidate Discarded",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map Stage Tasks IDs ": {
+      "main": [
+        [
+          {
+            "node": "Stage Is Contratación ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get stage tasks": {
+      "main": [
+        [
+          {
+            "node": "Map Stage Tasks IDs ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Contratacion Is Approved": {
+      "main": [
+        [
+          {
+            "node": "Respond: Candidate Already Hired",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Records": {
+      "main": [
+        [
+          {
+            "node": "Merge Into Object",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Search Requisition",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Into Object": {
+      "main": [
+        [
+          {
+            "node": "Has a campaign_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Into Object 3": {
+      "main": [
+        [
+          {
+            "node": "Has Application Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Not Entrevista Stage": {
+      "main": [
+        [
+          {
+            "node": "Is Not Documentación Stage",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond: Candidate Uploaded",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Into Object 2": {
+      "main": [
+        [
+          {
+            "node": "Has Profile Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map Marital Status": {
+      "main": [
+        [
+          {
+            "node": "Merge Into Object 2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Wait 2": {
+      "main": [
+        [
+          {
+            "node": "Get Next Stage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Not Rehirable": {
+      "main": [
+        [
+          {
+            "node": "Respond: Not Rehirable",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond: Stage Not Finished",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Valid Token": {
+      "main": [
+        [
+          {
+            "node": "Parse Records",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond: Not Authorized",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Valid Token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "7a56272c-c9cb-4950-a55a-a80cedfda17b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4c4694c469075106a88cca004de24cbb8593291c0c8a7ecfd23a9ec63e2be320"
+  },
+  "id": "dnjcGaZ32XIz0nO8",
+  "tags": [
+    {
+      "createdAt": "2025-04-16T18:17:03.805Z",
+      "updatedAt": "2025-04-16T18:19:30.639Z",
+      "id": "kIfb7IPYDemteeJE",
+      "name": "walmart"
+    },
+    {
+      "createdAt": "2025-05-26T16:37:40.591Z",
+      "updatedAt": "2025-05-26T16:37:40.591Z",
+      "id": "EQNTGNLm0Dv41sOM",
+      "name": "manual_hires"
+    }
+  ]
+}
