@@ -175,9 +175,8 @@ export default function Home() {
         return;
       }
 
-      // Log de los datos que se envían
+      // Log de los datos que se envían (sin información sensible)
       console.log('Enviando datos al webhook:', webhookData);
-      console.log('URL del webhook:', webhookUrl);
 
       // Enviar datos al webhook con timeout personalizado
       const controller = new AbortController();
