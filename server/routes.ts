@@ -145,7 +145,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         callback_url: `${req.protocol}://${req.get('host')}/api/webhook-result` // URL donde n8n enviará el resultado
       };
 
-      // Enviar a n8n sin esperar (fire and forget)
+      // Enviar a n8n de forma asíncrona (fire and forget)
       fetch(webhookUrl, {
         method: 'POST',
         headers: {
@@ -153,26 +153,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           'Authorization': `Bearer ${authToken}`,
         },
         body: JSON.stringify(dataForN8n)
-      }).then(async (response) => {
-        console.log(`[WEBHOOK ASYNC] n8n respondió con status: ${response.status} para ID: ${processing_id}`);
-        
-        // Si n8n no maneja callbacks, procesamos la respuesta directamente
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error(`[WEBHOOK ASYNC] Error de n8n para ID ${processing_id}:`, errorText);
-          
-          pendingResults.set(processing_id, {
-            status: 'error',
-            result: { 
-              error: `Error del webhook: ${response.status}`,
-              details: errorText
-            },
-            timestamp: Date.now()
-          });
-        }
       }).catch((error) => {
         console.error(`[WEBHOOK ASYNC] Error enviando a n8n para ID ${processing_id}:`, error.message);
         
+        // Solo registrar errores de conexión críticos
         pendingResults.set(processing_id, {
           status: 'error',
           result: { 
