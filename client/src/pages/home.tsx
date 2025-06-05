@@ -195,6 +195,19 @@ export default function Home() {
 
       console.log('Respuesta del webhook:', response.status, response.statusText);
 
+      // Manejar error 504 (Gateway Timeout) específicamente
+      if (response.status === 504) {
+        console.log('Error 504: Gateway Timeout - El proceso puede estar ejecutándose en segundo plano');
+        setNotificationState({
+          isVisible: true,
+          isSuccess: false,
+          message: `El proceso tardó más de lo esperado pero puede estar ejecutándose en segundo plano. Verifica el estado en unos minutos con el ID: ${submissionRequestId}`,
+          submissionRequestId: submissionRequestId,
+          applicationId: undefined
+        });
+        return;
+      }
+
       // Obtener los datos de respuesta
       const responseData = await response.json().catch(() => null);
       console.log('Datos de respuesta del webhook:', responseData);
