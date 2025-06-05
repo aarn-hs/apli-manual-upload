@@ -27,16 +27,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Proxy endpoint para el webhook de n8n
   app.post("/api/webhook", async (req, res) => {
     try {
+      console.log('[WEBHOOK PROXY] Variables de entorno disponibles:', {
+        N8N_WEBHOOK_URL: process.env.N8N_WEBHOOK_URL ? 'SET' : 'NOT SET',
+        VITE_WEBHOOK_AUTH_TOKEN: process.env.VITE_WEBHOOK_AUTH_TOKEN ? 'SET' : 'NOT SET'
+      });
+      
       const webhookUrl = process.env.N8N_WEBHOOK_URL;
       const authToken = process.env.VITE_WEBHOOK_AUTH_TOKEN;
 
       if (!webhookUrl) {
+        console.log('[WEBHOOK PROXY] ERROR: N8N_WEBHOOK_URL no está configurada');
         return res.status(500).json({
           error: "N8N_WEBHOOK_URL no configurada en el servidor"
         });
       }
 
       if (!authToken) {
+        console.log('[WEBHOOK PROXY] ERROR: VITE_WEBHOOK_AUTH_TOKEN no está configurado');
         return res.status(500).json({
           error: "Token de autorización no configurado"
         });
@@ -44,6 +51,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const startTime = Date.now();
       console.log(`[WEBHOOK PROXY] Iniciando petición a n8n...`);
+      console.log(`[WEBHOOK PROXY] URL del webhook: ${webhookUrl ? 'configurada' : 'NO CONFIGURADA'}`);
+      console.log(`[WEBHOOK PROXY] Token: ${authToken ? 'configurado' : 'NO CONFIGURADO'}`);
       
       // Configurar timeout de 5 minutos completos
       const controller = new AbortController();
@@ -56,19 +65,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Hacer una sola petición y esperar pacientemente hasta 5 minutos
         console.log(`[WEBHOOK PROXY] Enviando petición única a n8n y esperando respuesta...`);
         
-        // Configurar fetch con timeout personalizado muy largo
         const response = await fetch(webhookUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${authToken}`,
-            'Keep-Alive': 'timeout=300', // Mantener conexión viva por 5 minutos
-            'Connection': 'keep-alive'
           },
           body: JSON.stringify(req.body),
-          signal: controller.signal,
-          // Configuraciones adicionales para conexiones largas
-          keepalive: true
+          signal: controller.signal
         });
         clearTimeout(timeoutId);
         
