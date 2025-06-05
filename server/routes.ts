@@ -52,8 +52,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "processing_id requerido" });
       }
 
-      console.log(`[WEBHOOK RESULT] Recibido resultado para ID: ${processing_id}, status: ${status}`);
-      
       // Actualizar el resultado en memoria
       pendingResults.set(processing_id, {
         status: status === 'success' ? 'completed' : 'error',
@@ -63,7 +61,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json({ success: true, message: "Resultado recibido" });
     } catch (error) {
-      console.error('[WEBHOOK RESULT] Error:', error);
       res.status(500).json({ error: "Error interno del servidor" });
     }
   });
@@ -87,31 +84,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         timestamp: result.timestamp
       });
     } catch (error) {
-      console.error('[CHECK STATUS] Error:', error);
       res.status(500).json({ error: "Error interno del servidor" });
     }
   });
 
-  // Proxy endpoint para el webhook de n8n (ahora asíncrono)
+  // Proxy endpoint para el webhook de n8n (asíncrono)
   app.post("/api/webhook", async (req, res) => {
     try {
-      console.log('[WEBHOOK ASYNC] Variables de entorno disponibles:', {
-        N8N_WEBHOOK_URL: process.env.N8N_WEBHOOK_URL ? 'SET' : 'NOT SET',
-        VITE_WEBHOOK_AUTH_TOKEN: process.env.VITE_WEBHOOK_AUTH_TOKEN ? 'SET' : 'NOT SET'
-      });
-      
       const webhookUrl = process.env.N8N_WEBHOOK_URL;
       const authToken = process.env.VITE_WEBHOOK_AUTH_TOKEN;
 
       if (!webhookUrl) {
-        console.log('[WEBHOOK ASYNC] ERROR: N8N_WEBHOOK_URL no está configurada');
         return res.status(500).json({
-          error: "N8N_WEBHOOK_URL no configurada en el servidor"
+          error: "Configuración del webhook no disponible"
         });
       }
 
       if (!authToken) {
-        console.log('[WEBHOOK ASYNC] ERROR: VITE_WEBHOOK_AUTH_TOKEN no está configurado');
         return res.status(500).json({
           error: "Token de autorización no configurado"
         });
@@ -120,32 +109,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Generar ID único para este procesamiento
       const processing_id = `PROC-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       
-      console.log(`[WEBHOOK ASYNC] Generado processing_id: ${processing_id}`);
-      
       // Registrar procesamiento como "en curso"
       pendingResults.set(processing_id, {
         status: 'processing',
         timestamp: Date.now()
       });
 
-      // Responder inmediatamente al frontend con el ID de procesamiento
+      // Responder inmediatamente al frontend
       res.json({
         processing_id,
         status: 'processing',
         message: 'Solicitud recibida, procesando en segundo plano'
       });
 
-      // Procesar en segundo plano sin bloquear la respuesta
-      console.log(`[WEBHOOK ASYNC] Enviando a n8n en segundo plano...`);
-      
-      // Preparar datos para n8n incluyendo el processing_id
+      // Preparar datos para n8n
       const dataForN8n = {
         ...req.body,
-        processing_id, // n8n necesita este ID para enviar la respuesta
-        callback_url: `${req.protocol}://${req.get('host')}/api/webhook-result` // URL donde n8n enviará el resultado
+        processing_id,
+        callback_url: `${req.protocol}://${req.get('host')}/api/webhook-result`
       };
 
-      // Enviar a n8n de forma asíncrona (fire and forget)
+      // Enviar a n8n de forma asíncrona
       fetch(webhookUrl, {
         method: 'POST',
         headers: {
@@ -154,13 +138,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         },
         body: JSON.stringify(dataForN8n)
       }).catch((error) => {
-        console.error(`[WEBHOOK ASYNC] Error enviando a n8n para ID ${processing_id}:`, error.message);
-        
-        // Solo registrar errores de conexión críticos
         pendingResults.set(processing_id, {
           status: 'error',
           result: { 
-            error: 'Error de conexión con el webhook',
+            error: 'Error de conexión con el servicio externo',
             details: error.message
           },
           timestamp: Date.now()
@@ -168,9 +149,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
     } catch (error) {
-      console.error('[WEBHOOK ASYNC] Error interno:', error);
       res.status(500).json({
-        error: 'Error interno del servidor proxy',
+        error: 'Error interno del servidor',
         details: error instanceof Error ? error.message : 'Error desconocido'
       });
     }
