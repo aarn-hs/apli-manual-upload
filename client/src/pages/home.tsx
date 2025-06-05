@@ -144,6 +144,91 @@ export default function Home() {
     };
   };
 
+  // Función para verificar el estado del procesamiento (polling)
+  const checkProcessingStatus = async (processingId: string): Promise<any> => {
+    try {
+      const response = await fetch(`/api/check-status/${processingId}`);
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error verificando estado:', error);
+      return { status: 'error', result: { error: 'Error de conexión al verificar estado' } };
+    }
+  };
+
+  // Función para hacer polling hasta obtener resultado
+  const pollForResult = async (processingId: string, submissionRequestId: string) => {
+    const startTime = Date.now();
+    const maxWaitTime = 10 * 60 * 1000; // 10 minutos máximo
+    const pollInterval = 3000; // 3 segundos
+
+    const poll = async (): Promise<void> => {
+      const elapsed = Date.now() - startTime;
+      
+      if (elapsed > maxWaitTime) {
+        setNotificationState({
+          isVisible: true,
+          isSuccess: false,
+          message: `El proceso tardó más de 10 minutos. ID de seguimiento: ${submissionRequestId}`,
+          submissionRequestId: submissionRequestId,
+          applicationId: undefined
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      const statusData = await checkProcessingStatus(processingId);
+      
+      if (statusData.status === 'completed') {
+        // Procesamiento completado exitosamente
+        const result = statusData.result;
+        const applicationId = result?.content?.application_id;
+        const message = result?.message || 'Postulación creada exitosamente';
+        
+        setNotificationState({
+          isVisible: true,
+          isSuccess: true,
+          message,
+          submissionRequestId: submissionRequestId,
+          applicationId
+        });
+        setIsSubmitting(false);
+        
+      } else if (statusData.status === 'error') {
+        // Error en el procesamiento
+        const error = statusData.result;
+        const message = error?.message || error?.error || 'Error durante el procesamiento';
+        
+        setNotificationState({
+          isVisible: true,
+          isSuccess: false,
+          message,
+          submissionRequestId: submissionRequestId,
+          applicationId: undefined
+        });
+        setIsSubmitting(false);
+        
+      } else if (statusData.status === 'processing') {
+        // Sigue procesando, continuar polling
+        setTimeout(poll, pollInterval);
+        
+      } else {
+        // Estado desconocido o no encontrado
+        setNotificationState({
+          isVisible: true,
+          isSuccess: false,
+          message: `Proceso no encontrado o expirado. ID: ${submissionRequestId}`,
+          submissionRequestId: submissionRequestId,
+          applicationId: undefined
+        });
+        setIsSubmitting(false);
+      }
+    };
+
+    // Iniciar polling
+    setTimeout(poll, pollInterval);
+  };
+
   const handleFormSubmit = async (data: any) => {
     setIsSubmitting(true);
     let webhookData: any = null;
@@ -153,123 +238,54 @@ export default function Home() {
       webhookData = transformFormDataToWebhook(data);
       const submissionRequestId = webhookData.submission_request_id;
       
-      // Usar el proxy local para evitar problemas CORS
-      const webhookUrl = "/api/webhook";
-      
-      // Nota: El token ahora se maneja en el servidor, no se necesita en el frontend
+      console.log('Enviando datos al webhook asíncrono:', webhookData);
 
-      // Log de los datos que se envían (sin información sensible)
-      console.log('Enviando datos al webhook:', webhookData);
-
-      // Enviar datos al webhook con timeout personalizado
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => {
-        controller.abort();
-      }, 300000); // 5 minutos timeout
-
-      const response = await fetch(webhookUrl, {
+      // Enviar datos al webhook asíncrono
+      const response = await fetch("/api/webhook", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(webhookData),
-        signal: controller.signal
-      }).catch((fetchError) => {
-        clearTimeout(timeoutId);
-        console.error('Error inmediato al hacer fetch:', fetchError);
-        
-        if (fetchError.name === 'AbortError') {
-          throw new Error('TIMEOUT: El webhook tardó más de 5 minutos en responder.');
-        }
-        
-        // Verificar si es un error CORS específico
-        if (fetchError.message && (fetchError.message.includes('CORS') || fetchError.message.includes('Failed to fetch'))) {
-          throw new Error('CORS_ERROR: El webhook requiere configuración CORS adicional. El proceso puede estar ejecutándose en segundo plano.');
-        }
-        
-        // Error de red general
-        throw new Error('NETWORK_ERROR: No se pudo establecer conexión con el webhook. Verifica la conectividad de red.');
+        body: JSON.stringify(webhookData)
       });
 
-      clearTimeout(timeoutId);
+      if (!response.ok) {
+        throw new Error(`Error del servidor: ${response.status}`);
+      }
 
-      console.log('Respuesta del webhook:', response.status, response.statusText);
+      const responseData = await response.json();
+      console.log('Respuesta inicial del webhook:', responseData);
 
-      // Manejar error 504 (Gateway Timeout) específicamente
-      if (response.status === 504) {
-        console.log('Error 504: Gateway Timeout - El proceso puede estar ejecutándose en segundo plano');
+      if (responseData.processing_id && responseData.status === 'processing') {
+        // Iniciar polling para obtener el resultado
+        console.log(`Iniciando polling para ID: ${responseData.processing_id}`);
+        pollForResult(responseData.processing_id, submissionRequestId);
+        
+      } else {
+        // Respuesta inesperada
         setNotificationState({
           isVisible: true,
           isSuccess: false,
-          message: `El proceso tardó más de lo esperado pero puede estar ejecutándose en segundo plano. Verifica el estado en unos minutos con el ID: ${submissionRequestId}`,
+          message: 'Respuesta inesperada del servidor',
           submissionRequestId: submissionRequestId,
           applicationId: undefined
         });
-        return;
-      }
-
-      // Obtener los datos de respuesta
-      const responseData = await response.json().catch(() => null);
-      console.log('Datos de respuesta del webhook:', responseData);
-
-      if (responseData && responseData.status === 'success') {
-        // Caso de éxito
-        const applicationId = responseData.content?.application_id;
-        const message = responseData.message || 'Postulación creada exitosamente';
-        
-        setNotificationState({
-          isVisible: true,
-          isSuccess: true,
-          message,
-          submissionRequestId: submissionRequestId,
-          applicationId
-        });
-      } else {
-        // Caso de error del webhook (400, 404, etc.)
-        const message = responseData?.message || 'Los datos del candidato no pudieron procesarse correctamente';
-        const applicationId = responseData?.content?.application_id;
-        
-        setNotificationState({
-          isVisible: true,
-          isSuccess: false,
-          message,
-          submissionRequestId: submissionRequestId,
-          applicationId
-        });
+        setIsSubmitting(false);
       }
 
     } catch (error) {
       console.error('Error al enviar datos al webhook:', error);
       
       let errorMessage = "No se pudo iniciar el proceso de carga. Por favor intenta nuevamente.";
-      let isConnectionError = false;
       
       if (error instanceof Error) {
-        if (error.message.startsWith('TIMEOUT:')) {
-          errorMessage = "El proceso de carga tardó más de 5 minutos en responder.";
-          isConnectionError = true;
-        } else if (error.message.startsWith('CORS_ERROR:')) {
-          errorMessage = "Configuración CORS requerida. El proceso puede estar ejecutándose en segundo plano.";
-          isConnectionError = true;
-        } else if (error.message.startsWith('NETWORK_ERROR:')) {
-          errorMessage = "No se pudo iniciar el proceso de carga debido a restricciones de red.";
-          isConnectionError = true;
-        } else if (error.message.includes('Failed to fetch')) {
-          errorMessage = "No se pudo iniciar el proceso de carga. El servicio no está disponible.";
-          isConnectionError = true;
-        } else if (error.name === 'TypeError' && error.message.includes('fetch')) {
-          errorMessage = "No se pudo iniciar el proceso de carga. Verifica tu conexión a internet.";
-          isConnectionError = true;
-        } else {
-          errorMessage = "No se pudo iniciar el proceso de carga.";
-          isConnectionError = true;
+        if (error.message.includes('Failed to fetch')) {
+          errorMessage = "No se pudo conectar con el servidor. Verifica tu conexión a internet.";
+        } else if (error.message.includes('Error del servidor')) {
+          errorMessage = "Error del servidor. Por favor intenta nuevamente.";
         }
-      } else {
-        errorMessage = "No se pudo iniciar el proceso de carga.";
-        isConnectionError = true;
       }
       
-      // Mostrar error en la notificación 
       setNotificationState({
         isVisible: true,
         isSuccess: false,
@@ -277,7 +293,6 @@ export default function Home() {
         submissionRequestId: webhookData?.submission_request_id || undefined,
         applicationId: undefined
       });
-    } finally {
       setIsSubmitting(false);
     }
   };
