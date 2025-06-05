@@ -201,7 +201,7 @@ export default function Home() {
         }
         
         // Verificar si es un error CORS específico
-        if (fetchError.message && fetchError.message.includes('CORS')) {
+        if (fetchError.message && (fetchError.message.includes('CORS') || fetchError.message.includes('Failed to fetch'))) {
           throw new Error('CORS_ERROR: El webhook requiere configuración CORS adicional. El proceso puede estar ejecutándose en segundo plano.');
         }
         
