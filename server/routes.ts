@@ -45,28 +45,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const startTime = Date.now();
       console.log(`[WEBHOOK PROXY] Iniciando petición a n8n...`);
       
-      // Configurar timeout de 5 minutos
+      // Configurar timeout de 5 minutos completos
       const controller = new AbortController();
       const timeoutId = setTimeout(() => {
         console.log(`[WEBHOOK PROXY] Timeout después de 5 minutos`);
         controller.abort();
       }, 300000); // 5 minutos
 
+      // Función para hacer la petición con reintentos en caso de 504
+      const makeRequestWithRetry = async (attempt = 1): Promise<Response> => {
+        console.log(`[WEBHOOK PROXY] Intento ${attempt} - Enviando petición a n8n...`);
+        
+        try {
+          const response = await fetch(webhookUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${authToken}`,
+            },
+            body: JSON.stringify(req.body),
+            signal: controller.signal
+          });
+
+          const elapsed = Date.now() - startTime;
+          console.log(`[WEBHOOK PROXY] Respuesta ${response.status} en ${elapsed}ms (intento ${attempt})`);
+
+          // Si recibimos 504 y aún tenemos tiempo, reintentamos
+          if (response.status === 504 && elapsed < 270000 && attempt < 5) { // Menos de 4.5 min y max 5 intentos
+            console.log(`[WEBHOOK PROXY] Error 504 en intento ${attempt}, reintentando en 20 segundos...`);
+            await new Promise(resolve => setTimeout(resolve, 20000)); // Esperar 20 segundos
+            return makeRequestWithRetry(attempt + 1);
+          }
+
+          return response;
+        } catch (error: any) {
+          if (error.name === 'AbortError') {
+            throw error; // Re-throw timeout errors
+          }
+          
+          const elapsed = Date.now() - startTime;
+          console.log(`[WEBHOOK PROXY] Error en intento ${attempt}: ${error.message} (${elapsed}ms)`);
+          
+          // Si hay error de red y aún tenemos tiempo, reintentamos
+          if (elapsed < 270000 && attempt < 5) {
+            console.log(`[WEBHOOK PROXY] Error de red en intento ${attempt}, reintentando en 15 segundos...`);
+            await new Promise(resolve => setTimeout(resolve, 15000));
+            return makeRequestWithRetry(attempt + 1);
+          }
+          
+          throw error;
+        }
+      };
+
       try {
-        const response = await fetch(webhookUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${authToken}`,
-          },
-          body: JSON.stringify(req.body),
-          signal: controller.signal
-        });
-
+        const response = await makeRequestWithRetry();
         clearTimeout(timeoutId);
+        
         const elapsed = Date.now() - startTime;
-
-        console.log(`[WEBHOOK PROXY] Respuesta recibida: ${response.status} en ${elapsed}ms`);
+        console.log(`[WEBHOOK PROXY] Proceso completado en ${elapsed}ms total`);
 
         const responseData = await response.text();
 
