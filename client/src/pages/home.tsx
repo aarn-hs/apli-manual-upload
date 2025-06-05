@@ -153,27 +153,10 @@ export default function Home() {
       webhookData = transformFormDataToWebhook(data);
       const submissionRequestId = webhookData.submission_request_id;
       
-      // Obtener la URL del webhook y el token de autorización de las variables de entorno
-      const webhookUrl = import.meta.env.VITE_WEBHOOK_URL;
-      const authToken = import.meta.env.VITE_WEBHOOK_AUTH_TOKEN;
+      // Usar el proxy local para evitar problemas CORS
+      const webhookUrl = "/api/webhook";
       
-      if (!webhookUrl) {
-        toast({
-          title: "Error de configuración",
-          description: "La URL del webhook no está configurada. Por favor contacta al administrador.",
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      if (!authToken) {
-        toast({
-          title: "Error de configuración",
-          description: "El token de autorización no está configurado. Por favor contacta al administrador.",
-          variant: "destructive",
-        });
-        return;
-      }
+      // Nota: El token ahora se maneja en el servidor, no se necesita en el frontend
 
       // Log de los datos que se envían (sin información sensible)
       console.log('Enviando datos al webhook:', webhookData);
@@ -188,7 +171,6 @@ export default function Home() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`,
         },
         body: JSON.stringify(webhookData),
         signal: controller.signal
