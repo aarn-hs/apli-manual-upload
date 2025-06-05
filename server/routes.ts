@@ -42,11 +42,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      console.log(`[WEBHOOK PROXY] Reenviando petición a n8n...`);
+      const startTime = Date.now();
+      console.log(`[WEBHOOK PROXY] Iniciando petición a n8n...`);
       
       // Configurar timeout de 5 minutos
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 300000); // 5 minutos
+      const timeoutId = setTimeout(() => {
+        console.log(`[WEBHOOK PROXY] Timeout después de 5 minutos`);
+        controller.abort();
+      }, 300000); // 5 minutos
 
       try {
         const response = await fetch(webhookUrl, {
@@ -60,10 +64,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
 
         clearTimeout(timeoutId);
+        const elapsed = Date.now() - startTime;
+
+        console.log(`[WEBHOOK PROXY] Respuesta recibida: ${response.status} en ${elapsed}ms`);
 
         const responseData = await response.text();
-        
-        console.log(`[WEBHOOK PROXY] Respuesta recibida: ${response.status}`);
 
         // Reenviar respuesta al frontend
         res.status(response.status);
@@ -92,6 +97,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
 
         console.error('[WEBHOOK PROXY] Error al conectar con n8n:', fetchError.message);
+        
+        // Manejo específico para diferentes tipos de error
+        if (fetchError.message.includes('504')) {
+          return res.status(504).json({
+            error: 'GATEWAY_TIMEOUT: El webhook de n8n tardó demasiado en responder',
+            details: 'El proceso puede estar ejecutándose. Espera unos minutos y verifica el resultado.'
+          });
+        }
+        
         return res.status(502).json({
           error: 'Error de conexión con el webhook externo',
           details: fetchError.message
