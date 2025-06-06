@@ -181,7 +181,7 @@ export default function Home() {
       if (statusData.status === 'completed') {
         // Procesamiento completado exitosamente
         const result = statusData.result;
-        const applicationId = result?.content?.application_id;
+        const applicationId = result?.application_id;
         let message = 'Postulación creada exitosamente';
         
         if (typeof result?.message === 'string') {

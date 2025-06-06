@@ -17,10 +17,13 @@ export default function WebhookResponseModal({
   message, 
   applicationId 
 }: WebhookResponseModalProps) {
+  const baseUrl = import.meta.env.VITE_APLI_CANDIDATES_BASE_URL || 'https://demo.apli.app/candidates';
+
   const handleLinkClick = (e: React.MouseEvent) => {
     e.preventDefault();
     if (applicationId) {
-      window.open(`https://demo.apli.app/candidates/${applicationId}`, '_blank');
+      const url = `${baseUrl}/${applicationId}`;
+      window.open(url, '_blank');
     }
   };
 
@@ -72,15 +75,15 @@ export default function WebhookResponseModal({
           
           {applicationId && (
             <div className="p-3 bg-gray-50 rounded-md">
-              <p className="text-xs text-gray-600 mb-1">ID de Aplicación:</p>
+              <p className="text-xs text-gray-600 mb-1">ID de postulación:</p>
               <a
-                href={`https://demo.apli.app/candidates/${applicationId}`}
+                href={`${baseUrl}/${applicationId}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={handleLinkClick}
                 className="text-blue-600 hover:text-blue-800 underline text-sm font-medium"
               >
-                {applicationId}
+                {`${baseUrl}/${applicationId}`}
               </a>
               <p className="text-xs text-gray-500 mt-1">
                 Haz clic para ver en Apli
