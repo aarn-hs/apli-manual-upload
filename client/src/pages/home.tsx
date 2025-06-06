@@ -157,7 +157,7 @@ export default function Home() {
   };
 
   // Función para hacer polling hasta obtener resultado
-  const pollForResult = async (processingId: string, submissionRequestId: string) => {
+  const pollForResult = async (candidateSubmissionId: string, submissionRequestId: string) => {
     const startTime = Date.now();
     const maxWaitTime = 10 * 60 * 1000; // 10 minutos máximo
     const pollInterval = 3000; // 3 segundos
@@ -177,7 +177,7 @@ export default function Home() {
         return;
       }
 
-      const statusData = await checkProcessingStatus(processingId);
+      const statusData = await checkProcessingStatus(candidateSubmissionId);
       if (statusData.status === 'completed') {
         // Procesamiento completado exitosamente
         const result = statusData.result;
@@ -271,10 +271,10 @@ export default function Home() {
       const responseData = await response.json();
       console.log('Solicitud recibida por el servidor:', responseData);
 
-      if (responseData.processing_id && responseData.status === 'processing') {
+      if (responseData.candidate_submission_id && responseData.status === 'processing') {
         // Iniciar verificación de estado
-        console.log(`Verificando estado para ID: ${responseData.processing_id}`);
-        pollForResult(responseData.processing_id, submissionRequestId);
+        console.log(`Verificando estado para ID: ${responseData.candidate_submission_id}`);
+        pollForResult(responseData.candidate_submission_id, submissionRequestId);
         
       } else {
         // Respuesta inesperada
