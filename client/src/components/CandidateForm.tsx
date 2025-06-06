@@ -17,6 +17,7 @@ interface CandidateFormProps {
 }
 
 export default function CandidateForm({ onSubmit, isSubmitting = false, notificationState, onDismissNotification }: CandidateFormProps) {
+  const baseUrl = import.meta.env.VITE_APLI_CANDIDATES_BASE_URL || 'https://demo.apli.app/candidates';
   const methods = useForm({
     resolver: zodResolver(simplifiedCandidateSchema),
     mode: "onChange",
@@ -188,14 +189,14 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
                 <p className="text-xs">
                   <span className="font-medium">ID de postulación:</span>{' '}
                   <a
-                    href={`https://demo.apli.app/candidates/${notificationState.applicationId}`}
+                    href={`${baseUrl}/${notificationState.applicationId}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={`underline hover:no-underline ${
                       notificationState.isSuccess ? 'text-cyan-600 hover:text-cyan-800' : 'text-violet-600 hover:text-violet-800'
                     }`}
                   >
-                    {notificationState.applicationId}
+                    {`${baseUrl}/${notificationState.applicationId}`}
                   </a>
                 </p>
               )}
