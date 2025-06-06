@@ -46,6 +46,18 @@ export default function SimpleForm() {
     name: "curp",
     defaultValue: "",
   });
+
+  const previousJobStartDate = useWatch({
+    control,
+    name: "previousJobStartDate",
+    defaultValue: "",
+  });
+
+  const previousJobEndDate = useWatch({
+    control,
+    name: "previousJobEndDate",
+    defaultValue: "",
+  });
   
   // Reset municipality when state changes
   useEffect(() => {
@@ -91,6 +103,50 @@ export default function SimpleForm() {
       setValue("curp", "", { shouldValidate: false });
     }
   }, [birthDate, nationality, curp, setValue]);
+
+  // Check if birth date is valid for work experience dates
+  const isBirthDateValidForWork = () => {
+    if (!birthDate || !/^\d{2}\/\d{2}\/\d{4}$/.test(birthDate)) return false;
+    
+    const dateParts = birthDate.split('/');
+    const day = parseInt(dateParts[0], 10);
+    const month = parseInt(dateParts[1], 10);
+    const year = parseInt(dateParts[2], 10);
+    
+    // Check basic ranges
+    if (month >= 1 && month <= 12 && day >= 1 && day <= 31 && year >= 1940 && year <= new Date().getFullYear()) {
+      // Create date object to validate it's a real date
+      const testDate = new Date(year, month - 1, day);
+      return testDate.getDate() === day && testDate.getMonth() === month - 1 && testDate.getFullYear() === year;
+    }
+    
+    return false;
+  };
+
+  // Revalidate work dates when birth date changes
+  useEffect(() => {
+    if (previousJobStartDate && isBirthDateValidForWork()) {
+      trigger("previousJobStartDate");
+    }
+  }, [birthDate, previousJobStartDate, trigger]);
+
+  useEffect(() => {
+    if (previousJobEndDate && (isBirthDateValidForWork() || previousJobStartDate)) {
+      trigger("previousJobEndDate");
+    }
+  }, [birthDate, previousJobStartDate, previousJobEndDate, trigger]);
+
+  // Clear work dates when birth date becomes invalid
+  useEffect(() => {
+    if (!isBirthDateValidForWork()) {
+      if (previousJobStartDate) {
+        setValue("previousJobStartDate", "", { shouldValidate: false });
+      }
+      if (previousJobEndDate) {
+        setValue("previousJobEndDate", "", { shouldValidate: false });
+      }
+    }
+  }, [birthDate, previousJobStartDate, previousJobEndDate, setValue]);
 
   // Función para crear handlers de limpieza de espacios
   const createCleanSpacesHandler = (fieldName: string) => {
@@ -432,10 +488,11 @@ export default function SimpleForm() {
                   <CustomInput
                     {...field}
                     type="text"
-                    placeholder="dd/mm/aaaa"
+                    placeholder={isBirthDateValidForWork() ? "dd/mm/aaaa" : "Primero ingrese fecha de nacimiento"}
                     className={`form-control ${fieldState.error ? 'error' : ''}`}
                     tabIndex={23}
                     maxLength={10}
+                    disabled={!isBirthDateValidForWork()}
                     onChange={handleDateInput(field.onChange, field.value)}
                     onBlur={formatDateOnBlur(field.onChange, field.value)}
                     onKeyDown={(e) => {
@@ -797,10 +854,11 @@ export default function SimpleForm() {
                   <CustomInput
                     {...field}
                     type="text"
-                    placeholder="dd/mm/aaaa"
+                    placeholder={isBirthDateValidForWork() ? "dd/mm/aaaa" : "Primero ingrese fecha de nacimiento"}
                     className={`form-control ${fieldState.error ? 'error' : ''}`}
                     tabIndex={24}
                     maxLength={10}
+                    disabled={!isBirthDateValidForWork()}
                     onChange={handleDateInput(field.onChange, field.value)}
                     onBlur={formatDateOnBlur(field.onChange, field.value)}
                     onKeyDown={(e) => {
