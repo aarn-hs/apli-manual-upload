@@ -618,7 +618,85 @@ export function validateBirthDateWithDetails(dateStr: string): { isValid: boolea
   
   // Check if the person is at least 18 years old and less than 80 years old
   if (actualAge < 18 || actualAge >= 80) {
-    return { isValid: false, error: "El candidato debe ser mayor de edad y menor a 80 años" };
+    return { isValid: false, error: "La edad debe estar entre 18 y 79 años" };
+  }
+  
+  return { isValid: true };
+}
+
+// Validate work experience start date
+export function validateWorkStartDate(startDateStr: string, birthDateStr?: string): { isValid: boolean; error?: string } {
+  if (!startDateStr) {
+    return { isValid: false, error: "La fecha de inicio es requerida" };
+  }
+  
+  // Basic date validation
+  const basicValidation = validateDateWithDetails(startDateStr);
+  if (!basicValidation.isValid) return basicValidation;
+  
+  // If birth date provided, validate against it
+  if (birthDateStr) {
+    const [startDay, startMonth, startYear] = startDateStr.split('/').map(Number);
+    const [birthDay, birthMonth, birthYear] = birthDateStr.split('/').map(Number);
+    
+    const startDate = new Date(startYear, startMonth - 1, startDay);
+    const birthDate = new Date(birthYear, birthMonth - 1, birthDay);
+    
+    // Work start date must be after birth date
+    if (startDate <= birthDate) {
+      return { isValid: false, error: "La fecha de inicio debe ser posterior a la fecha de nacimiento" };
+    }
+    
+    // Calculate age at start of work
+    const ageAtWork = startYear - birthYear;
+    const monthDiff = startMonth - birthMonth;
+    const actualAgeAtWork = monthDiff < 0 || (monthDiff === 0 && startDay < birthDay) ? ageAtWork - 1 : ageAtWork;
+    
+    // Must be at least 16 years old to work
+    if (actualAgeAtWork < 16) {
+      return { isValid: false, error: "La edad mínima para trabajar es 16 años" };
+    }
+  }
+  
+  return { isValid: true };
+}
+
+// Validate work experience end date
+export function validateWorkEndDate(endDateStr: string, startDateStr?: string, birthDateStr?: string): { isValid: boolean; error?: string } {
+  if (!endDateStr) {
+    return { isValid: false, error: "La fecha de fin es requerida" };
+  }
+  
+  // Basic date validation
+  const basicValidation = validateDateWithDetails(endDateStr);
+  if (!basicValidation.isValid) return basicValidation;
+  
+  // If start date provided, validate against it
+  if (startDateStr) {
+    const [endDay, endMonth, endYear] = endDateStr.split('/').map(Number);
+    const [startDay, startMonth, startYear] = startDateStr.split('/').map(Number);
+    
+    const endDate = new Date(endYear, endMonth - 1, endDay);
+    const startDate = new Date(startYear, startMonth - 1, startDay);
+    
+    // End date must be after start date
+    if (endDate <= startDate) {
+      return { isValid: false, error: "La fecha de fin debe ser posterior a la fecha de inicio" };
+    }
+  }
+  
+  // If birth date provided, validate against it
+  if (birthDateStr) {
+    const [endDay, endMonth, endYear] = endDateStr.split('/').map(Number);
+    const [birthDay, birthMonth, birthYear] = birthDateStr.split('/').map(Number);
+    
+    const endDate = new Date(endYear, endMonth - 1, endDay);
+    const birthDate = new Date(birthYear, birthMonth - 1, birthDay);
+    
+    // End date must be after birth date
+    if (endDate <= birthDate) {
+      return { isValid: false, error: "La fecha de fin debe ser posterior a la fecha de nacimiento" };
+    }
   }
   
   return { isValid: true };

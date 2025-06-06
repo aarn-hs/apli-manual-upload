@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { validatePMX, validateName, validatePhone, validatePostalCode, validateAddress, validateBirthDate, validateCURPWithBirthDate, validateCURPComplete, validateCURPWithDetails, validatePastDate, validateDateWithDetails, validateBirthDateWithDetails, validateStreetColonyWithDetails, validateEmployerPositionWithDetails, validateNameWithDetails, validateEmailWithDetails, validateTextNotOnlySpaces, cleanAndFormatText } from "./validation";
+import { validatePMX, validateName, validatePhone, validatePostalCode, validateAddress, validateBirthDate, validateCURPWithBirthDate, validateCURPComplete, validateCURPWithDetails, validatePastDate, validateDateWithDetails, validateBirthDateWithDetails, validateStreetColonyWithDetails, validateEmployerPositionWithDetails, validateNameWithDetails, validateEmailWithDetails, validateTextNotOnlySpaces, cleanAndFormatText, validateWorkStartDate, validateWorkEndDate } from "./validation";
 
 // Esquema simplificado del candidato según los campos obligatorios
 export const simplifiedCandidateSchema = z.object({
@@ -154,22 +154,8 @@ export const simplifiedCandidateSchema = z.object({
   
   // Información laboral adicional (Obligatorio)
   jobsLast24Months: z.string({ required_error: "Debes seleccionar una opción" }),
-  previousJobStartDate: z.string({ required_error: "Ingrese la fecha de inicio" })
-    .refine((date) => {
-      const validation = validateDateWithDetails(date);
-      return validation.isValid;
-    }, (date) => {
-      const validation = validateDateWithDetails(date);
-      return { message: validation.error || "Fecha de inicio inválida" };
-    }),
-  previousJobEndDate: z.string({ required_error: "Ingrese la fecha de fin" })
-    .refine((date) => {
-      const validation = validateDateWithDetails(date);
-      return validation.isValid;
-    }, (date) => {
-      const validation = validateDateWithDetails(date);
-      return { message: validation.error || "Fecha de fin inválida" };
-    }),
+  previousJobStartDate: z.string({ required_error: "Ingrese la fecha de inicio" }),
+  previousJobEndDate: z.string({ required_error: "Ingrese la fecha de fin" }),
   
 
 }).refine(
@@ -182,6 +168,30 @@ export const simplifiedCandidateSchema = z.object({
     return {
       message: validation.error || "El CURP no es válido",
       path: ["curp"]
+    };
+  }
+).refine(
+  (data) => {
+    const validation = validateWorkStartDate(data.previousJobStartDate, data.birthDate);
+    return validation.isValid;
+  },
+  (data) => {
+    const validation = validateWorkStartDate(data.previousJobStartDate, data.birthDate);
+    return {
+      message: validation.error || "Fecha de inicio de trabajo inválida",
+      path: ["previousJobStartDate"]
+    };
+  }
+).refine(
+  (data) => {
+    const validation = validateWorkEndDate(data.previousJobEndDate, data.previousJobStartDate, data.birthDate);
+    return validation.isValid;
+  },
+  (data) => {
+    const validation = validateWorkEndDate(data.previousJobEndDate, data.previousJobStartDate, data.birthDate);
+    return {
+      message: validation.error || "Fecha de fin de trabajo inválida",
+      path: ["previousJobEndDate"]
     };
   }
 );
