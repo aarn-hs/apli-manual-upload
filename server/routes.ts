@@ -88,6 +88,72 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Endpoint para cancelar un procesamiento (liquidar polling)
+  app.delete("/api/cancel-processing/:processing_id", async (req, res) => {
+    try {
+      const { processing_id } = req.params;
+      
+      if (pendingResults.has(processing_id)) {
+        pendingResults.set(processing_id, {
+          status: 'error',
+          result: { 
+            error: 'Procesamiento cancelado por el usuario',
+            message: 'La operación fue cancelada manualmente'
+          },
+          timestamp: Date.now()
+        });
+        
+        res.json({ 
+          success: true, 
+          message: 'Procesamiento cancelado exitosamente' 
+        });
+      } else {
+        res.json({ 
+          success: false, 
+          message: 'ID de procesamiento no encontrado' 
+        });
+      }
+    } catch (error) {
+      res.status(500).json({ error: "Error interno del servidor" });
+    }
+  });
+
+  // Endpoint para listar todos los procesamientos activos
+  app.get("/api/admin/active-processings", async (req, res) => {
+    try {
+      const activeProcessings = [];
+      pendingResults.forEach((data, id) => {
+        if (data.status === 'processing') {
+          activeProcessings.push({
+            processing_id: id,
+            timestamp: data.timestamp,
+            elapsed: Date.now() - data.timestamp
+          });
+        }
+      });
+      
+      res.json({ active: activeProcessings });
+    } catch (error) {
+      res.status(500).json({ error: "Error interno del servidor" });
+    }
+  });
+
+  // Endpoint para limpiar todos los procesamientos (liquidar)
+  app.post("/api/liquidate", async (req, res) => {
+    try {
+      const beforeCount = pendingResults.size;
+      pendingResults.clear();
+      
+      res.json({ 
+        success: true, 
+        message: `Sistema liquidado - ${beforeCount} procesamientos eliminados`,
+        cleared_count: beforeCount
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Error interno del servidor" });
+    }
+  });
+
   // Proxy endpoint para el webhook de n8n (asíncrono)
   app.post("/api/webhook", async (req, res) => {
     try {
