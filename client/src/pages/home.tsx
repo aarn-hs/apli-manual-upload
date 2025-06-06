@@ -183,7 +183,11 @@ export default function Home() {
         // Procesamiento completado exitosamente
         const result = statusData.result;
         const applicationId = result?.content?.application_id;
-        const message = result?.message || 'Postulación creada exitosamente';
+        let message = 'Postulación creada exitosamente';
+        
+        if (typeof result?.message === 'string') {
+          message = result.message;
+        }
         
         setNotificationState({
           isVisible: true,
@@ -197,7 +201,15 @@ export default function Home() {
       } else if (statusData.status === 'error') {
         // Error en el procesamiento
         const error = statusData.result;
-        const message = error?.message || error?.error || 'Error durante el procesamiento';
+        let message = 'Error durante el procesamiento';
+        
+        if (typeof error?.message === 'string') {
+          message = error.message;
+        } else if (typeof error?.error === 'string') {
+          message = error.error;
+        } else if (typeof error === 'string') {
+          message = error;
+        }
         
         setNotificationState({
           isVisible: true,

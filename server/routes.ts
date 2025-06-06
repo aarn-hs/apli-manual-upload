@@ -136,7 +136,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Endpoint para listar todos los procesamientos activos
   app.get("/api/admin/active-processings", async (req, res) => {
     try {
-      const activeProcessings = [];
+      const activeProcessings: Array<{processing_id: string; timestamp: number; elapsed: number}> = [];
       pendingResults.forEach((data, id) => {
         if (data.status === 'processing') {
           activeProcessings.push({
@@ -204,10 +204,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       // Preparar datos para n8n
+      const protocol = process.env.NODE_ENV === 'production' ? 'https' : req.protocol;
       const dataForN8n = {
         ...req.body,
         processing_id,
-        callback_url: `${req.protocol}://${req.get('host')}/api/webhook-result`
+        callback_url: `${protocol}://${req.get('host')}/api/webhook-result`
       };
 
       // Enviar a n8n de forma asíncrona
