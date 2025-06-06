@@ -97,8 +97,8 @@ export default function Home() {
     return dateStr;
   };
 
-  // Función para transformar los datos del formulario al formato del webhook
-  const transformFormDataToWebhook = (formData: any) => {
+  // Función para transformar los datos del formulario al formato de envío
+  const transformFormDataToSubmission = (formData: any) => {
     // Generar los UUIDs únicos para esta solicitud
     const submissionRequestId = generateCustomUUID('REQ');
     const candidateSubmissionId = generateCustomUUID('CAN');
@@ -248,13 +248,13 @@ export default function Home() {
     let webhookData: any = null;
     
     try {
-      // Transformar los datos al formato del webhook
-      webhookData = transformFormDataToWebhook(data);
+      // Transformar los datos al formato de envío
+      webhookData = transformFormDataToSubmission(data);
       const submissionRequestId = webhookData.submission_request_id;
       
-      console.log('Enviando datos al webhook asíncrono:', webhookData);
+      console.log('Enviando solicitud de postulación:', submissionRequestId);
 
-      // Enviar datos al webhook asíncrono
+      // Enviar solicitud de postulación
       const response = await fetch("/api/webhook", {
         method: 'POST',
         headers: {
@@ -268,11 +268,11 @@ export default function Home() {
       }
 
       const responseData = await response.json();
-      console.log('Respuesta inicial del webhook:', responseData);
+      console.log('Solicitud recibida por el servidor:', responseData);
 
       if (responseData.processing_id && responseData.status === 'processing') {
-        // Iniciar polling para obtener el resultado
-        console.log(`Iniciando polling para ID: ${responseData.processing_id}`);
+        // Iniciar verificación de estado
+        console.log(`Verificando estado para ID: ${responseData.processing_id}`);
         pollForResult(responseData.processing_id, submissionRequestId);
         
       } else {
@@ -288,7 +288,7 @@ export default function Home() {
       }
 
     } catch (error) {
-      console.error('Error al enviar datos al webhook:', error);
+      console.error('Error al procesar la solicitud:', error);
       
       let errorMessage = "No se pudo iniciar el proceso de carga. Por favor intenta nuevamente.";
       
