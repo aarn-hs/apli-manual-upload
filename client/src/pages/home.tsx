@@ -178,7 +178,6 @@ export default function Home() {
       }
 
       const statusData = await checkProcessingStatus(processingId);
-      
       if (statusData.status === 'completed') {
         // Procesamiento completado exitosamente
         const result = statusData.result;
