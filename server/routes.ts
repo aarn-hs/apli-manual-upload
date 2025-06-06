@@ -61,11 +61,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Endpoint para recibir resultados de n8n (callback asíncrono)
   app.post("/api/webhook-result", async (req, res) => {
     try {
-      console.log("DEBUG - Received webhook result:", JSON.stringify(req.body, null, 2));
       const { processing_id, status, result, error } = req.body;
       
       if (!processing_id) {
-        console.log("DEBUG - Missing processing_id in request body");
         return res.status(400).json({ error: "processing_id requerido" });
       }
 

@@ -203,7 +203,9 @@ export default function Home() {
         const error = statusData.result;
         let message = 'Error durante el procesamiento';
         
-        if (typeof error?.message === 'string') {
+        if (typeof error?.error?.message === 'string') {
+          message = error.error.message;
+        } else if (typeof error?.message === 'string') {
           message = error.message;
         } else if (typeof error?.error === 'string') {
           message = error.error;
