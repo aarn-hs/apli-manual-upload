@@ -22,6 +22,21 @@ setInterval(() => {
 }, 30 * 60 * 1000);
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Endpoint de diagnóstico para verificar rutas disponibles
+  app.get("/api/health", async (req, res) => {
+    res.json({ 
+      status: "ok", 
+      timestamp: new Date().toISOString(),
+      endpoints: [
+        "POST /api/candidates",
+        "POST /api/webhook-result", 
+        "GET /api/check-status/:processing_id",
+        "POST /api/liquidate",
+        "POST /api/webhook"
+      ]
+    });
+  });
+
   // API simplificada para validación del formulario
   app.post("/api/candidates", async (req, res) => {
     try {
