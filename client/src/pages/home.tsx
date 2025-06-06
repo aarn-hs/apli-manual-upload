@@ -169,7 +169,7 @@ export default function Home() {
         setNotificationState({
           isVisible: true,
           isSuccess: false,
-          message: `El proceso tardó más de 10 minutos. ID de seguimiento: ${submissionRequestId}`,
+          message: "El proceso tardó más de 10 minutos",
           submissionRequestId: submissionRequestId,
           applicationId: undefined
         });
@@ -217,7 +217,7 @@ export default function Home() {
         setNotificationState({
           isVisible: true,
           isSuccess: false,
-          message: `Proceso no encontrado o expirado. ID: ${submissionRequestId}`,
+          message: "Proceso no encontrado o expirado",
           submissionRequestId: submissionRequestId,
           applicationId: undefined
         });
