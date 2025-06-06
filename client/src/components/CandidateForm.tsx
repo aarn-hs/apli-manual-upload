@@ -169,37 +169,51 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
               ? 'bg-cyan-50 border-cyan-400' 
               : 'bg-violet-50 border-violet-400'
           }`}>
-            <div>
-              <p className={`text-sm font-medium mb-2 ${
-                notificationState.isSuccess ? 'text-cyan-600' : 'text-violet-700'
-              }`}>
-                {notificationState.message}
-              </p>
-              
-              {notificationState.submissionRequestId && (
-                <p className="text-xs mb-1">
-                  <span className="font-medium">ID de solicitud:</span>{' '}
-                  <span className={notificationState.isSuccess ? 'text-cyan-600' : 'text-violet-600'}>
-                    {notificationState.submissionRequestId}
-                  </span>
+            <div className="flex justify-between items-start">
+              <div className="flex-1">
+                <p className={`text-sm font-medium mb-2 ${
+                  notificationState.isSuccess ? 'text-cyan-600' : 'text-violet-700'
+                }`}>
+                  {notificationState.message}
                 </p>
-              )}
+                
+                {notificationState.submissionRequestId && (
+                  <p className="text-xs mb-1">
+                    <span className="font-medium">ID de solicitud:</span>{' '}
+                    <span className={notificationState.isSuccess ? 'text-cyan-600' : 'text-violet-600'}>
+                      {notificationState.submissionRequestId}
+                    </span>
+                  </p>
+                )}
+                
+                {notificationState.applicationId && (
+                  <p className="text-xs">
+                    <span className="font-medium">ID de postulación:</span>{' '}
+                    <a
+                      href={`${baseUrl}/${notificationState.applicationId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`underline hover:no-underline ${
+                        notificationState.isSuccess ? 'text-cyan-600 hover:text-cyan-800' : 'text-violet-600 hover:text-violet-800'
+                      }`}
+                    >
+                      {`${baseUrl}/${notificationState.applicationId}`}
+                    </a>
+                  </p>
+                )}
+              </div>
               
-              {notificationState.applicationId && (
-                <p className="text-xs">
-                  <span className="font-medium">ID de postulación:</span>{' '}
-                  <a
-                    href={`${baseUrl}/${notificationState.applicationId}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`underline hover:no-underline ${
-                      notificationState.isSuccess ? 'text-cyan-600 hover:text-cyan-800' : 'text-violet-600 hover:text-violet-800'
-                    }`}
-                  >
-                    {`${baseUrl}/${notificationState.applicationId}`}
-                  </a>
-                </p>
-              )}
+              <button
+                onClick={onDismissNotification}
+                className={`ml-4 p-1 rounded-full hover:bg-gray-200 transition-colors ${
+                  notificationState.isSuccess ? 'text-cyan-600 hover:text-cyan-800' : 'text-violet-600 hover:text-violet-800'
+                }`}
+                aria-label="Cerrar notificación"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
           </div>
         )}
