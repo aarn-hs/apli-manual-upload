@@ -30,7 +30,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       endpoints: [
         "POST /api/candidates",
         "POST /api/webhook-result", 
-        "GET /api/check-status/:processing_id",
+        "GET /api/check-status/:candidate_submission_id",
         "POST /api/liquidate",
         "POST /api/webhook"
       ]
@@ -61,14 +61,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Endpoint para recibir resultados de n8n (callback asíncrono)
   app.post("/api/webhook-result", async (req, res) => {
     try {
-      const { processing_id, status, result, error } = req.body;
+      const { candidate_submission_id, status, result, error } = req.body;
       
-      if (!processing_id) {
-        return res.status(400).json({ error: "processing_id requerido" });
+      if (!candidate_submission_id) {
+        return res.status(400).json({ error: "candidate_submission_id requerido" });
       }
 
       // Actualizar el resultado en memoria
-      pendingResults.set(processing_id, {
+      pendingResults.set(candidate_submission_id, {
         status: status === 'success' ? 'completed' : 'error',
         result: status === 'success' ? result : { error },
         timestamp: Date.now()
@@ -81,15 +81,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Endpoint para verificar el estado de un procesamiento (polling)
-  app.get("/api/check-status/:processing_id", async (req, res) => {
+  app.get("/api/check-status/:candidate_submission_id", async (req, res) => {
     try {
-      const { processing_id } = req.params;
-      const result = pendingResults.get(processing_id);
+      const { candidate_submission_id } = req.params;
+      const result = pendingResults.get(candidate_submission_id);
       
       if (!result) {
         return res.json({ 
           status: 'not_found',
-          message: 'ID de procesamiento no encontrado o expirado'
+          message: 'ID de candidato no encontrado o expirado'
         });
       }
 
@@ -104,12 +104,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Endpoint para cancelar un procesamiento (liquidar polling)
-  app.delete("/api/cancel-processing/:processing_id", async (req, res) => {
+  app.delete("/api/cancel-processing/:candidate_submission_id", async (req, res) => {
     try {
-      const { processing_id } = req.params;
+      const { candidate_submission_id } = req.params;
       
-      if (pendingResults.has(processing_id)) {
-        pendingResults.set(processing_id, {
+      if (pendingResults.has(candidate_submission_id)) {
+        pendingResults.set(candidate_submission_id, {
           status: 'error',
           result: { 
             error: 'Procesamiento cancelado por el usuario',
@@ -125,7 +125,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else {
         res.json({ 
           success: false, 
-          message: 'ID de procesamiento no encontrado' 
+          message: 'ID de candidato no encontrado' 
         });
       }
     } catch (error) {
@@ -136,11 +136,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Endpoint para listar todos los procesamientos activos
   app.get("/api/admin/active-processings", async (req, res) => {
     try {
-      const activeProcessings: Array<{processing_id: string; timestamp: number; elapsed: number}> = [];
+      const activeProcessings: Array<{candidate_submission_id: string; timestamp: number; elapsed: number}> = [];
       pendingResults.forEach((data, id) => {
         if (data.status === 'processing') {
           activeProcessings.push({
-            processing_id: id,
+            candidate_submission_id: id,
             timestamp: data.timestamp,
             elapsed: Date.now() - data.timestamp
           });
@@ -187,18 +187,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Generar ID único para este procesamiento
-      const processing_id = `PROC-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      // Generar ID único para este candidato
+      const candidate_submission_id = `CSI-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       
       // Registrar procesamiento como "en curso"
-      pendingResults.set(processing_id, {
+      pendingResults.set(candidate_submission_id, {
         status: 'processing',
         timestamp: Date.now()
       });
 
       // Responder inmediatamente al frontend
       res.json({
-        processing_id,
+        candidate_submission_id,
         status: 'processing',
         message: 'Solicitud recibida, procesando en segundo plano'
       });
@@ -207,7 +207,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const protocol = process.env.NODE_ENV === 'production' ? 'https' : req.protocol;
       const dataForN8n = {
         ...req.body,
-        processing_id,
+        candidate_submission_id,
         callback_url: `${protocol}://${req.get('host')}/api/webhook-result`
       };
 
@@ -220,7 +220,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         },
         body: JSON.stringify(dataForN8n)
       }).catch((error) => {
-        pendingResults.set(processing_id, {
+        pendingResults.set(candidate_submission_id, {
           status: 'error',
           result: { 
             error: 'Error de conexión con el servicio externo',

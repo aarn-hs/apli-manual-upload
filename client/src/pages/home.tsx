@@ -145,9 +145,9 @@ export default function Home() {
   };
 
   // Función para verificar el estado del procesamiento (polling)
-  const checkProcessingStatus = async (processingId: string): Promise<any> => {
+  const checkProcessingStatus = async (candidateSubmissionId: string): Promise<any> => {
     try {
-      const response = await fetch(`/api/check-status/${processingId}`);
+      const response = await fetch(`/api/check-status/${candidateSubmissionId}`);
       const data = await response.json();
       return data;
     } catch (error) {
