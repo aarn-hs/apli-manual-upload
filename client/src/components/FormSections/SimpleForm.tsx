@@ -367,7 +367,7 @@ export default function SimpleForm() {
             name="state"
             render={({ field, fieldState }) => (
               <FormItem className="form-item">
-                <FormLabel className="body-text required">Estado</FormLabel>
+                <FormLabel className="body-text required">Estado de residencia</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value || ""}>
                   <FormControl>
                     <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={13}>
