@@ -23,7 +23,7 @@
   --accent-foreground: 0 0% 0%;
   --destructive: 270 100% 60%;
   --destructive-foreground: 0 0% 100%;
-  --ring: 240 100% 60%;
+  --ring: 200 100% 60%;
   --radius: 0rem;
 
   /* Apli color palette */
@@ -69,7 +69,7 @@
   --accent-foreground: 0 0% 0%;
   --destructive: 270 100% 60%;
   --destructive-foreground: 0 0% 100%;
-  --ring: 240 100% 60%;
+  --ring: 200 100% 60%;
 }
 
 @layer base {
