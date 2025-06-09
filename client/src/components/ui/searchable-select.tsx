@@ -47,10 +47,8 @@ export function SearchableSelect({
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
     if (open && searchInputRef.current) {
-      // Focus the search input when opening
-      setTimeout(() => {
-        searchInputRef.current?.focus();
-      }, 100);
+      // Focus the search input immediately when opening
+      searchInputRef.current.focus();
     }
     if (!open) {
       setSearchTerm("");
@@ -134,7 +132,15 @@ export function SearchableSelect({
             {selectedOption?.label || placeholder}
           </SelectValue>
         </SelectTrigger>
-        <SelectContent onCloseAutoFocus={(e) => e.preventDefault()}>
+        <SelectContent 
+          onCloseAutoFocus={(e) => e.preventDefault()}
+          onOpenAutoFocus={(e) => {
+            e.preventDefault();
+            if (searchInputRef.current) {
+              searchInputRef.current.focus();
+            }
+          }}
+        >
           <div className="p-2 border-b">
             <CustomInput
               ref={searchInputRef}
@@ -146,6 +152,7 @@ export function SearchableSelect({
               onFocus={handleSearchFocus}
               className="h-8 text-sm"
               autoComplete="off"
+              autoFocus
             />
           </div>
           <div className="max-h-[200px] overflow-y-auto">
