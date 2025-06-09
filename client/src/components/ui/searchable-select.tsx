@@ -44,33 +44,13 @@ export function SearchableSelect({
     setSearchTerm("");
     setIsOpen(false);
     
-    // Move focus to next field after selection
+    // Keep focus on the current field after selection
     setTimeout(() => {
-      const form = containerRef.current?.closest('form');
-      if (form) {
-        // Get all tabbable elements in the form
-        const tabbableElements = Array.from(form.querySelectorAll(
-          'input:not([type="hidden"]):not([disabled]):not([tabindex="-1"]), select:not([disabled]):not([tabindex="-1"]), textarea:not([disabled]):not([tabindex="-1"]), button:not([disabled]):not([tabindex="-1"]), [tabindex]:not([tabindex="-1"]):not([disabled]), [role="combobox"]:not([disabled]):not([tabindex="-1"])'
-        )) as HTMLElement[];
-        
-        // Sort by tab index order
-        tabbableElements.sort((a, b) => {
-          const aIndex = parseInt(a.getAttribute('tabindex') || '0');
-          const bIndex = parseInt(b.getAttribute('tabindex') || '0');
-          return aIndex - bIndex;
-        });
-        
-        // Find current SearchableSelect trigger
-        const currentTrigger = containerRef.current?.querySelector('[role="combobox"]') as HTMLElement;
-        if (currentTrigger) {
-          const currentIndex = tabbableElements.indexOf(currentTrigger);
-          if (currentIndex >= 0 && currentIndex < tabbableElements.length - 1) {
-            const nextElement = tabbableElements[currentIndex + 1];
-            nextElement.focus();
-          }
-        }
+      const currentTrigger = containerRef.current?.querySelector('[role="combobox"]') as HTMLElement;
+      if (currentTrigger) {
+        currentTrigger.focus();
       }
-    }, 150);
+    }, 100);
   };
 
   const handleOpenChange = (open: boolean) => {
