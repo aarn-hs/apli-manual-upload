@@ -109,7 +109,7 @@ export function validateNameWithDetails(name: string): { isValid: boolean; error
   return { isValid: true };
 }
 
-// Validación para email
+// Validación robusta para email con reglas específicas
 export function validateEmailWithDetails(email: string): { isValid: boolean; error?: string } {
   if (!email) return { isValid: false, error: "Este campo es requerido" };
   
@@ -118,11 +118,77 @@ export function validateEmailWithDetails(email: string): { isValid: boolean; err
     return { isValid: false, error: "No puede contener solo espacios" };
   }
   
-  const cleanEmail = email.trim();
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const cleanEmail = email.trim().toLowerCase();
   
-  if (!emailRegex.test(cleanEmail)) {
-    return { isValid: false, error: "Formato de email inválido" };
+  // Verificar que contenga exactamente un @
+  const atCount = (cleanEmail.match(/@/g) || []).length;
+  if (atCount !== 1) {
+    return { isValid: false, error: "Debe contener exactamente un @" };
+  }
+  
+  const [localPart, domainPart] = cleanEmail.split('@');
+  
+  // Validar parte local (antes del @)
+  if (!localPart || localPart.length === 0) {
+    return { isValid: false, error: "Falta la parte antes del @" };
+  }
+  
+  // Verificar caracteres permitidos en parte local: a-z, 0-9, -, _, .
+  if (!/^[a-z0-9._-]+$/.test(localPart)) {
+    return { isValid: false, error: "Solo se permiten letras, números, puntos, guiones y guiones bajos antes del @" };
+  }
+  
+  // El punto no puede estar al inicio o al final de la parte local
+  if (localPart.startsWith('.') || localPart.endsWith('.')) {
+    return { isValid: false, error: "El punto no puede estar al inicio o al final antes del @" };
+  }
+  
+  // No puede haber dos puntos seguidos
+  if (localPart.includes('..')) {
+    return { isValid: false, error: "No puede haber dos puntos seguidos" };
+  }
+  
+  // Validar parte del dominio (después del @)
+  if (!domainPart || domainPart.length === 0) {
+    return { isValid: false, error: "Falta la parte después del @" };
+  }
+  
+  // Verificar caracteres permitidos en dominio: a-z, 0-9, -, .
+  if (!/^[a-z0-9.-]+$/.test(domainPart)) {
+    return { isValid: false, error: "Solo se permiten letras, números, puntos y guiones en el dominio" };
+  }
+  
+  // Debe contener al menos un punto en el dominio
+  if (!domainPart.includes('.')) {
+    return { isValid: false, error: "El dominio debe contener al menos un punto (ej: gmail.com)" };
+  }
+  
+  // El dominio no puede empezar o terminar con punto
+  if (domainPart.startsWith('.') || domainPart.endsWith('.')) {
+    return { isValid: false, error: "El dominio no puede empezar o terminar con punto" };
+  }
+  
+  // No puede haber dos puntos seguidos en el dominio
+  if (domainPart.includes('..')) {
+    return { isValid: false, error: "No puede haber dos puntos seguidos en el dominio" };
+  }
+  
+  // Validar cada subdominio (no puede empezar o terminar con guion)
+  const subdomains = domainPart.split('.');
+  for (const subdomain of subdomains) {
+    if (subdomain.length === 0) {
+      return { isValid: false, error: "Cada parte del dominio debe tener al menos un caracter" };
+    }
+    
+    if (subdomain.startsWith('-') || subdomain.endsWith('-')) {
+      return { isValid: false, error: "Cada parte del dominio no puede empezar o terminar con guion" };
+    }
+  }
+  
+  // Verificar que la última parte del dominio (TLD) tenga al menos 2 caracteres
+  const tld = subdomains[subdomains.length - 1];
+  if (tld.length < 2) {
+    return { isValid: false, error: "La extensión del dominio debe tener al menos 2 caracteres" };
   }
   
   return { isValid: true };
