@@ -46,27 +46,31 @@ export function SearchableSelect({
     
     // Move focus to next field after selection
     setTimeout(() => {
-      // Find all focusable form elements
-      const focusableElements = Array.from(document.querySelectorAll(
-        'input:not([type="hidden"]):not([disabled]), [role="combobox"]:not([disabled]), textarea:not([disabled]), button[type="submit"]:not([disabled])'
-      )) as HTMLElement[];
-      
-      // Find this specific SearchableSelect's trigger
-      const currentTrigger = containerRef.current?.querySelector('[role="combobox"]') as HTMLElement;
-      
-      if (currentTrigger && focusableElements.includes(currentTrigger)) {
-        const currentIndex = focusableElements.indexOf(currentTrigger);
-        const nextElement = focusableElements[currentIndex + 1];
+      const form = containerRef.current?.closest('form');
+      if (form) {
+        // Get all tabbable elements in the form
+        const tabbableElements = Array.from(form.querySelectorAll(
+          'input:not([type="hidden"]):not([disabled]):not([tabindex="-1"]), select:not([disabled]):not([tabindex="-1"]), textarea:not([disabled]):not([tabindex="-1"]), button:not([disabled]):not([tabindex="-1"]), [tabindex]:not([tabindex="-1"]):not([disabled]), [role="combobox"]:not([disabled]):not([tabindex="-1"])'
+        )) as HTMLElement[];
         
-        if (nextElement) {
-          nextElement.focus();
-          // If it's another SearchableSelect, make sure it gets proper focus
-          if (nextElement.getAttribute('role') === 'combobox') {
-            nextElement.click();
+        // Sort by tab index order
+        tabbableElements.sort((a, b) => {
+          const aIndex = parseInt(a.getAttribute('tabindex') || '0');
+          const bIndex = parseInt(b.getAttribute('tabindex') || '0');
+          return aIndex - bIndex;
+        });
+        
+        // Find current SearchableSelect trigger
+        const currentTrigger = containerRef.current?.querySelector('[role="combobox"]') as HTMLElement;
+        if (currentTrigger) {
+          const currentIndex = tabbableElements.indexOf(currentTrigger);
+          if (currentIndex >= 0 && currentIndex < tabbableElements.length - 1) {
+            const nextElement = tabbableElements[currentIndex + 1];
+            nextElement.focus();
           }
         }
       }
-    }, 100);
+    }, 150);
   };
 
   const handleOpenChange = (open: boolean) => {
