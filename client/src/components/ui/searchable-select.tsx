@@ -46,25 +46,27 @@ export function SearchableSelect({
     
     // Move focus to next field after selection
     setTimeout(() => {
-      if (containerRef.current) {
-        // Find all focusable elements in the document
-        const focusableElements = Array.from(document.querySelectorAll(
-          'input:not([type="hidden"]), select, textarea, button[type="submit"], [role="combobox"]'
-        )) as HTMLElement[];
+      // Find all focusable form elements
+      const focusableElements = Array.from(document.querySelectorAll(
+        'input:not([type="hidden"]):not([disabled]), [role="combobox"]:not([disabled]), textarea:not([disabled]), button[type="submit"]:not([disabled])'
+      )) as HTMLElement[];
+      
+      // Find this specific SearchableSelect's trigger
+      const currentTrigger = containerRef.current?.querySelector('[role="combobox"]') as HTMLElement;
+      
+      if (currentTrigger && focusableElements.includes(currentTrigger)) {
+        const currentIndex = focusableElements.indexOf(currentTrigger);
+        const nextElement = focusableElements[currentIndex + 1];
         
-        // Find the trigger button within this SearchableSelect
-        const triggerButton = containerRef.current.querySelector('[role="combobox"]') as HTMLElement;
-        
-        if (triggerButton) {
-          const currentIndex = focusableElements.indexOf(triggerButton);
-          const nextElement = focusableElements[currentIndex + 1];
-          
-          if (nextElement) {
-            nextElement.focus();
+        if (nextElement) {
+          nextElement.focus();
+          // If it's another SearchableSelect, make sure it gets proper focus
+          if (nextElement.getAttribute('role') === 'combobox') {
+            nextElement.click();
           }
         }
       }
-    }, 150);
+    }, 100);
   };
 
   const handleOpenChange = (open: boolean) => {
