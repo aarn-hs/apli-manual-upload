@@ -173,9 +173,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/webhook", async (req, res) => {
     try {
       const webhookUrl = process.env.N8N_WEBHOOK_URL;
+      const authToken = process.env.VITE_WEBHOOK_AUTH_TOKEN;
+
       if (!webhookUrl) {
         return res.status(500).json({
           error: "Configuración del webhook no disponible"
+        });
+      }
+
+      if (!authToken) {
+        return res.status(500).json({
+          error: "Token de autorización no configurado"
         });
       }
 
@@ -208,6 +216,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`,
         },
         body: JSON.stringify(dataForN8n)
       }).catch((error) => {
