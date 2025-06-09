@@ -64,6 +64,7 @@ export const locations = [
   "Cedis Walmart Cuautitlán",
   "Cedis Walmart ecommerce Guadalajara",
   "Cedis Walmart Guadalajara",
+  "Cedis Walmart Megapark",
   "Cedis Walmart Merida",
   "Cedis Walmart Mexicali",
   "Cedis Walmart San Martin Obispo",
