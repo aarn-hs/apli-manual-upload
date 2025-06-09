@@ -79,34 +79,19 @@ export function SearchableSelect({
     }
   };
 
-  // Keep search input focused but allow visual hover on items
+  // Handle search input focus when explicitly clicked
   const handleSearchFocus = () => {
-    if (searchInputRef.current) {
-      searchInputRef.current.focus();
-    }
+    // Only focus if explicitly clicked, no automatic focusing
   };
 
-  // Capture all keystrokes when dropdown is open
+  // Only capture keystrokes when search input is focused
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (isOpen && searchInputRef.current) {
-        // Handle printable characters and backspace
+      if (isOpen && searchInputRef.current && document.activeElement === searchInputRef.current) {
+        // Only handle keys when the search input is actually focused
         if (e.key.length === 1 || e.key === 'Backspace') {
-          e.preventDefault();
+          // Let the input handle the keystroke naturally
           e.stopPropagation();
-          
-          // Focus the search input
-          searchInputRef.current.focus();
-          
-          // Simulate the keystroke in the search input
-          if (e.key === 'Backspace') {
-            const currentValue = searchTerm;
-            const newValue = currentValue.slice(0, -1);
-            setSearchTerm(newValue);
-          } else if (e.key.length === 1) {
-            const newValue = searchTerm + e.key;
-            setSearchTerm(newValue);
-          }
         }
       }
     };
@@ -118,7 +103,7 @@ export function SearchableSelect({
     return () => {
       document.removeEventListener('keydown', handleKeyDown, true);
     };
-  }, [isOpen, searchTerm]);
+  }, [isOpen]);
 
   return (
     <div className="relative">
