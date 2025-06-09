@@ -57,6 +57,15 @@ export function SearchableSelect({
     }
   };
 
+  // Keep focus on search input when hovering over options
+  const handleItemMouseEnter = () => {
+    setTimeout(() => {
+      if (searchInputRef.current && isOpen) {
+        searchInputRef.current.focus();
+      }
+    }, 0);
+  };
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
     // Keep dropdown open
@@ -73,6 +82,11 @@ export function SearchableSelect({
   const handleSearchClick = (e: React.MouseEvent<HTMLInputElement>) => {
     // Prevent closing the dropdown when clicking on search input
     e.stopPropagation();
+  };
+
+  // Prevent focus loss when mouse moves over items
+  const handleItemMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
   };
 
   return (
@@ -112,6 +126,9 @@ export function SearchableSelect({
                 <SelectItem 
                   key={option.value} 
                   value={option.value}
+                  onMouseEnter={handleItemMouseEnter}
+                  onFocus={handleItemMouseEnter}
+                  onMouseDown={handleItemMouseDown}
                 >
                   {option.label}
                 </SelectItem>
