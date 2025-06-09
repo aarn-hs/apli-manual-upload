@@ -249,20 +249,17 @@ export default function SimpleForm() {
             render={({ field, fieldState }) => (
               <FormItem className="form-item">
                 <FormLabel className="body-text required">Ubicación</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ""}>
-                  <FormControl>
-                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={3}>
-                      <SelectValue placeholder="Seleccionar" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {locations.map((location) => (
-                      <SelectItem key={location} value={location}>
-                        {location}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <FormControl>
+                  <SearchableSelect
+                    options={locations.map(location => ({ value: location, label: location }))}
+                    placeholder="Seleccionar"
+                    searchPlaceholder="Buscar ubicación..."
+                    value={field.value || ""}
+                    onValueChange={field.onChange}
+                    className={`form-control ${fieldState.error ? 'error' : ''}`}
+                    tabIndex={3}
+                  />
+                </FormControl>
                 <FormMessage className="error-message" />
               </FormItem>
             )}
@@ -366,20 +363,17 @@ export default function SimpleForm() {
             render={({ field, fieldState }) => (
               <FormItem className="form-item">
                 <FormLabel className="body-text required">Estado de residencia</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ""}>
-                  <FormControl>
-                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={13}>
-                      <SelectValue placeholder="Seleccionar" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {mexicanStates.map((state) => (
-                      <SelectItem key={state} value={state}>
-                        {state}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <FormControl>
+                  <SearchableSelect
+                    options={mexicanStates.map(state => ({ value: state, label: state }))}
+                    placeholder="Seleccionar"
+                    searchPlaceholder="Buscar estado..."
+                    value={field.value || ""}
+                    onValueChange={field.onChange}
+                    className={`form-control ${fieldState.error ? 'error' : ''}`}
+                    tabIndex={13}
+                  />
+                </FormControl>
                 <FormMessage className="error-message" />
               </FormItem>
             )}
@@ -577,20 +571,17 @@ export default function SimpleForm() {
             render={({ field, fieldState }) => (
               <FormItem className="form-item">
                 <FormLabel className="body-text required">Puesto</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ""}>
-                  <FormControl>
-                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={2}>
-                      <SelectValue placeholder="Seleccionar" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {positions.map((position) => (
-                      <SelectItem key={position} value={position}>
-                        {position}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <FormControl>
+                  <SearchableSelect
+                    options={positions.map(position => ({ value: position, label: position }))}
+                    placeholder="Seleccionar"
+                    searchPlaceholder="Buscar puesto..."
+                    value={field.value || ""}
+                    onValueChange={field.onChange}
+                    className={`form-control ${fieldState.error ? 'error' : ''}`}
+                    tabIndex={2}
+                  />
+                </FormControl>
                 <FormMessage className="error-message" />
               </FormItem>
             )}
@@ -706,20 +697,17 @@ export default function SimpleForm() {
             render={({ field, fieldState }) => (
               <FormItem className="form-item">
                 <FormLabel className="body-text required">Nacionalidad</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ""}>
-                  <FormControl>
-                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={12}>
-                      <SelectValue placeholder="Seleccionar" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {nationalities.map((nationality) => (
-                      <SelectItem key={nationality} value={nationality}>
-                        {nationality}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <FormControl>
+                  <SearchableSelect
+                    options={nationalities.map(nationality => ({ value: nationality, label: nationality }))}
+                    placeholder="Seleccionar"
+                    searchPlaceholder="Buscar nacionalidad..."
+                    value={field.value || ""}
+                    onValueChange={field.onChange}
+                    className={`form-control ${fieldState.error ? 'error' : ''}`}
+                    tabIndex={12}
+                  />
+                </FormControl>
                 <FormMessage className="error-message" />
               </FormItem>
             )}
@@ -732,20 +720,18 @@ export default function SimpleForm() {
             render={({ field, fieldState }) => (
               <FormItem className="form-item">
                 <FormLabel className="body-text required">Municipio</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ""} disabled={!selectedState}>
-                  <FormControl>
-                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={14}>
-                      <SelectValue placeholder={selectedState ? "Seleccionar" : "Seleccione primero un estado"} />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {selectedState && getMunicipalitiesForState(selectedState).map((municipality) => (
-                      <SelectItem key={municipality} value={municipality}>
-                        {municipality}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <FormControl>
+                  <SearchableSelect
+                    options={selectedState ? getMunicipalitiesForState(selectedState).map(municipality => ({ value: municipality, label: municipality })) : []}
+                    placeholder={selectedState ? "Seleccionar" : "Seleccione primero un estado"}
+                    searchPlaceholder="Buscar municipio..."
+                    value={field.value || ""}
+                    onValueChange={field.onChange}
+                    className={`form-control ${fieldState.error ? 'error' : ''}`}
+                    tabIndex={14}
+                    disabled={!selectedState}
+                  />
+                </FormControl>
                 <FormMessage className="error-message" />
               </FormItem>
             )}
