@@ -57,15 +57,6 @@ export function SearchableSelect({
     }
   };
 
-  // Keep focus on search input when hovering over options
-  const handleItemMouseEnter = () => {
-    setTimeout(() => {
-      if (searchInputRef.current && isOpen) {
-        searchInputRef.current.focus();
-      }
-    }, 0);
-  };
-
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
     // Keep dropdown open
@@ -84,10 +75,27 @@ export function SearchableSelect({
     e.stopPropagation();
   };
 
-  // Prevent focus loss when mouse moves over items
-  const handleItemMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
+  // Keep search input focused but allow visual hover on items
+  const handleSearchFocus = () => {
+    if (searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
   };
+
+  // Maintain keyboard input capability
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (isOpen && searchInputRef.current && document.activeElement !== searchInputRef.current) {
+        // If the dropdown is open and a key is pressed, focus the search input
+        if (e.key.length === 1 || e.key === 'Backspace') {
+          searchInputRef.current.focus();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen]);
 
   return (
     <div className="relative">
@@ -126,9 +134,6 @@ export function SearchableSelect({
                 <SelectItem 
                   key={option.value} 
                   value={option.value}
-                  onMouseEnter={handleItemMouseEnter}
-                  onFocus={handleItemMouseEnter}
-                  onMouseDown={handleItemMouseDown}
                 >
                   {option.label}
                 </SelectItem>
