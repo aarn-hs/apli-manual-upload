@@ -46,14 +46,20 @@ export function SearchableSelect({
 
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
-    if (open && searchInputRef.current) {
-      // Focus the search input immediately when opening
-      searchInputRef.current.focus();
-    }
     if (!open) {
       setSearchTerm("");
     }
   };
+
+  // Focus search input immediately when dropdown opens
+  useEffect(() => {
+    if (isOpen && searchInputRef.current) {
+      // Use requestAnimationFrame to ensure DOM is ready
+      requestAnimationFrame(() => {
+        searchInputRef.current?.focus();
+      });
+    }
+  }, [isOpen]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -132,15 +138,7 @@ export function SearchableSelect({
             {selectedOption?.label || placeholder}
           </SelectValue>
         </SelectTrigger>
-        <SelectContent 
-          onCloseAutoFocus={(e) => e.preventDefault()}
-          onOpenAutoFocus={(e) => {
-            e.preventDefault();
-            if (searchInputRef.current) {
-              searchInputRef.current.focus();
-            }
-          }}
-        >
+        <SelectContent onCloseAutoFocus={(e) => e.preventDefault()}>
           <div className="p-2 border-b">
             <CustomInput
               ref={searchInputRef}
@@ -152,7 +150,6 @@ export function SearchableSelect({
               onFocus={handleSearchFocus}
               className="h-8 text-sm"
               autoComplete="off"
-              autoFocus
             />
           </div>
           <div className="max-h-[200px] overflow-y-auto">
