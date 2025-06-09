@@ -31,6 +31,7 @@ export function SearchableSelect({
   const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const filteredOptions = options.filter(option =>
     option.label.toLowerCase().includes(searchTerm.toLowerCase())
@@ -45,19 +46,25 @@ export function SearchableSelect({
     
     // Move focus to next field after selection
     setTimeout(() => {
-      const currentElement = document.activeElement;
-      if (currentElement) {
-        // Find the next focusable element
-        const focusableElements = document.querySelectorAll(
-          'input, select, textarea, button, [tabindex]:not([tabindex="-1"])'
-        );
-        const currentIndex = Array.from(focusableElements).indexOf(currentElement as Element);
-        const nextElement = focusableElements[currentIndex + 1] as HTMLElement;
-        if (nextElement) {
-          nextElement.focus();
+      if (containerRef.current) {
+        // Find all focusable elements in the document
+        const focusableElements = Array.from(document.querySelectorAll(
+          'input:not([type="hidden"]), select, textarea, button[type="submit"], [role="combobox"]'
+        )) as HTMLElement[];
+        
+        // Find the trigger button within this SearchableSelect
+        const triggerButton = containerRef.current.querySelector('[role="combobox"]') as HTMLElement;
+        
+        if (triggerButton) {
+          const currentIndex = focusableElements.indexOf(triggerButton);
+          const nextElement = focusableElements[currentIndex + 1];
+          
+          if (nextElement) {
+            nextElement.focus();
+          }
         }
       }
-    }, 100);
+    }, 150);
   };
 
   const handleOpenChange = (open: boolean) => {
@@ -138,7 +145,7 @@ export function SearchableSelect({
   }, [isOpen, searchTerm]);
 
   return (
-    <div className="relative">
+    <div ref={containerRef} className="relative">
       <Select 
         value={value} 
         onValueChange={handleSelectChange}
