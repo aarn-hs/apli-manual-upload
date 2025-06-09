@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CustomInput } from "@/components/ui/custom-input";
 
@@ -30,6 +30,7 @@ export function SearchableSelect({
 }: SearchableSelectProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const filteredOptions = options.filter(option =>
     option.label.toLowerCase().includes(searchTerm.toLowerCase())
@@ -37,12 +38,50 @@ export function SearchableSelect({
 
   const selectedOption = options.find(option => option.value === value);
 
+  const handleSelectChange = (newValue: string) => {
+    onValueChange(newValue);
+    setSearchTerm("");
+    setIsOpen(false);
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+    if (open && searchInputRef.current) {
+      // Focus the search input when opening
+      setTimeout(() => {
+        searchInputRef.current?.focus();
+      }, 100);
+    }
+    if (!open) {
+      setSearchTerm("");
+    }
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+    // Keep dropdown open
+    if (!isOpen) {
+      setIsOpen(true);
+    }
+  };
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Prevent the Select component from closing when typing
+    e.stopPropagation();
+  };
+
+  const handleSearchClick = (e: React.MouseEvent<HTMLInputElement>) => {
+    // Prevent closing the dropdown when clicking on search input
+    e.stopPropagation();
+  };
+
   return (
     <div className="relative">
       <Select 
         value={value} 
-        onValueChange={onValueChange}
-        onOpenChange={setIsOpen}
+        onValueChange={handleSelectChange}
+        onOpenChange={handleOpenChange}
+        open={isOpen}
         disabled={disabled}
       >
         <SelectTrigger className={className} tabIndex={tabIndex}>
@@ -50,14 +89,17 @@ export function SearchableSelect({
             {selectedOption?.label || placeholder}
           </SelectValue>
         </SelectTrigger>
-        <SelectContent>
-          <div className="p-2 border-b">
+        <SelectContent onCloseAutoFocus={(e) => e.preventDefault()}>
+          <div className="p-2 border-b" onMouseDown={(e) => e.preventDefault()}>
             <CustomInput
+              ref={searchInputRef}
               placeholder={searchPlaceholder}
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={handleSearchChange}
+              onKeyDown={handleSearchKeyDown}
+              onClick={handleSearchClick}
               className="h-8 text-sm"
-              onClick={(e) => e.stopPropagation()}
+              autoComplete="off"
             />
           </div>
           <div className="max-h-[200px] overflow-y-auto">
@@ -70,7 +112,6 @@ export function SearchableSelect({
                 <SelectItem 
                   key={option.value} 
                   value={option.value}
-                  onClick={() => setSearchTerm("")}
                 >
                   {option.label}
                 </SelectItem>
