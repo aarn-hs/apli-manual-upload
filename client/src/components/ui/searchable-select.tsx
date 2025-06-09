@@ -46,20 +46,16 @@ export function SearchableSelect({
 
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
+    if (open && searchInputRef.current) {
+      // Focus the search input when opening
+      setTimeout(() => {
+        searchInputRef.current?.focus();
+      }, 100);
+    }
     if (!open) {
       setSearchTerm("");
     }
   };
-
-  // Focus search input immediately when dropdown opens
-  useEffect(() => {
-    if (isOpen && searchInputRef.current) {
-      // Use requestAnimationFrame to ensure DOM is ready
-      requestAnimationFrame(() => {
-        searchInputRef.current?.focus();
-      });
-    }
-  }, [isOpen]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
