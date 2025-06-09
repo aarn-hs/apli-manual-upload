@@ -73,6 +73,10 @@ export function SearchableSelect({
   const handleSearchClick = (e: React.MouseEvent<HTMLInputElement>) => {
     // Prevent closing the dropdown when clicking on search input
     e.stopPropagation();
+    // Ensure the input gets focus when clicked
+    if (searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
   };
 
   // Keep search input focused but allow visual hover on items
@@ -131,7 +135,7 @@ export function SearchableSelect({
           </SelectValue>
         </SelectTrigger>
         <SelectContent onCloseAutoFocus={(e) => e.preventDefault()}>
-          <div className="p-2 border-b" onMouseDown={(e) => e.preventDefault()}>
+          <div className="p-2 border-b">
             <CustomInput
               ref={searchInputRef}
               placeholder={searchPlaceholder}
@@ -139,6 +143,7 @@ export function SearchableSelect({
               onChange={handleSearchChange}
               onKeyDown={handleSearchKeyDown}
               onClick={handleSearchClick}
+              onFocus={handleSearchFocus}
               className="h-8 text-sm"
               autoComplete="off"
             />
