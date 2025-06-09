@@ -82,20 +82,39 @@ export function SearchableSelect({
     }
   };
 
-  // Maintain keyboard input capability
+  // Capture all keystrokes when dropdown is open
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (isOpen && searchInputRef.current && document.activeElement !== searchInputRef.current) {
-        // If the dropdown is open and a key is pressed, focus the search input
+      if (isOpen && searchInputRef.current) {
+        // Handle printable characters and backspace
         if (e.key.length === 1 || e.key === 'Backspace') {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          // Focus the search input
           searchInputRef.current.focus();
+          
+          // Simulate the keystroke in the search input
+          if (e.key === 'Backspace') {
+            const currentValue = searchTerm;
+            const newValue = currentValue.slice(0, -1);
+            setSearchTerm(newValue);
+          } else if (e.key.length === 1) {
+            const newValue = searchTerm + e.key;
+            setSearchTerm(newValue);
+          }
         }
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen]);
+    if (isOpen) {
+      document.addEventListener('keydown', handleKeyDown, true);
+    }
+    
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown, true);
+    };
+  }, [isOpen, searchTerm]);
 
   return (
     <div className="relative">
