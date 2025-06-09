@@ -398,21 +398,7 @@ export function validateCURPWithBirthDate(curp: string, birthDate: string): bool
   // If year is 00-29, assume 2000s; if 30-99, assume 1900s
   const fullCurpYear = parseInt(curpYear) <= 29 ? 2000 + parseInt(curpYear) : 1900 + parseInt(curpYear);
   
-  // Debug logging
-  console.log('CURP Validation Debug:', {
-    curp,
-    birthDate,
-    curpYear,
-    curpMonth,
-    curpDay,
-    fullCurpYear,
-    birthYear,
-    birthMonth,
-    birthDay,
-    yearMatch: fullCurpYear === birthYear,
-    monthMatch: parseInt(curpMonth) === birthMonth,
-    dayMatch: parseInt(curpDay) === birthDay
-  });
+
   
   // Compare dates
   return (
