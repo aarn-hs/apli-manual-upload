@@ -46,12 +46,6 @@ export function SearchableSelect({
 
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
-    if (open && searchInputRef.current) {
-      // Focus the search input when opening
-      setTimeout(() => {
-        searchInputRef.current?.focus();
-      }, 100);
-    }
     if (!open) {
       setSearchTerm("");
     }
