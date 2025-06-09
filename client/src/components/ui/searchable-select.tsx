@@ -78,13 +78,35 @@ export function SearchableSelect({
     // Only focus if explicitly clicked, no automatic focusing
   };
 
-  // Only capture keystrokes when search input is focused
+  // Handle mouse enter on select items to allow focus change
+  const handleItemMouseEnter = (e: React.MouseEvent) => {
+    // Allow focus to change when hovering over items
+    const target = e.currentTarget as HTMLElement;
+    target.focus();
+  };
+
+  // Capture keystrokes when dropdown is open and redirect to search if needed
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (isOpen && searchInputRef.current && document.activeElement === searchInputRef.current) {
-        // Only handle keys when the search input is actually focused
-        if (e.key.length === 1 || e.key === 'Backspace') {
-          // Let the input handle the keystroke naturally
+      if (isOpen && searchInputRef.current) {
+        // If typing characters and search input is not focused, focus it and continue typing
+        if ((e.key.length === 1 || e.key === 'Backspace') && document.activeElement !== searchInputRef.current) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          // Focus the search input
+          searchInputRef.current.focus();
+          
+          // Simulate the keystroke
+          if (e.key === 'Backspace') {
+            const newValue = searchTerm.slice(0, -1);
+            setSearchTerm(newValue);
+          } else if (e.key.length === 1) {
+            const newValue = searchTerm + e.key;
+            setSearchTerm(newValue);
+          }
+        } else if (document.activeElement === searchInputRef.current) {
+          // Let the input handle keystrokes naturally when focused
           e.stopPropagation();
         }
       }
@@ -97,7 +119,7 @@ export function SearchableSelect({
     return () => {
       document.removeEventListener('keydown', handleKeyDown, true);
     };
-  }, [isOpen]);
+  }, [isOpen, searchTerm]);
 
   return (
     <div className="relative">
@@ -137,6 +159,7 @@ export function SearchableSelect({
                 <SelectItem 
                   key={option.value} 
                   value={option.value}
+                  onMouseEnter={handleItemMouseEnter}
                 >
                   {option.label}
                 </SelectItem>
