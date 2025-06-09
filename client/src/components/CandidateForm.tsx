@@ -143,28 +143,9 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
       <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8">
         <SimpleForm />
 
-        <div className="flex justify-start gap-4 pt-6">
-          <button 
-            type="submit" 
-            className="btn-primary"
-            disabled={isSubmitting || isFormSubmitting || !isFormReadyForSubmission || notificationState?.isVisible}
-          >
-            {(isSubmitting || isFormSubmitting) ? "Cargando..." : "Cargar candidato"}
-          </button>
-
-          <button 
-            type="button" 
-            className="btn-secondary"
-            onClick={handleClearForm}
-            disabled={isFormEmpty || isSubmitting}
-          >
-            Limpiar formulario
-          </button>
-        </div>
-
         {/* Notification panel */}
         {notificationState?.isVisible && (
-          <div className={`mt-4 p-4 rounded-lg border-2 ${
+          <div className={`p-4 rounded-lg border-2 ${
             notificationState.isSuccess 
               ? 'bg-cyan-50 border-cyan-400' 
               : 'bg-violet-50 border-violet-400'
@@ -219,6 +200,25 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
             </div>
           </div>
         )}
+
+        <div className="flex justify-start gap-4 pt-6">
+          <button 
+            type="submit" 
+            className="btn-primary"
+            disabled={isSubmitting || isFormSubmitting || !isFormReadyForSubmission || notificationState?.isVisible}
+          >
+            {(isSubmitting || isFormSubmitting) ? "Cargando..." : "Cargar candidato"}
+          </button>
+
+          <button 
+            type="button" 
+            className="btn-secondary"
+            onClick={handleClearForm}
+            disabled={isFormEmpty || isSubmitting}
+          >
+            Limpiar formulario
+          </button>
+        </div>
 
         <p className="text-sm text-gray-500">
           Asegúrate de llenar todos los campos obligatorios para poder continuar.
