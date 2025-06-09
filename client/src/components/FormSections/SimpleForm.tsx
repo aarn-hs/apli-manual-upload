@@ -5,6 +5,7 @@ import { CustomInput } from "@/components/ui/custom-input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
+import { SearchableSelect } from "@/components/ui/searchable-select";
 import {
   agencySources,
   positions,
@@ -225,20 +226,17 @@ export default function SimpleForm() {
             render={({ field, fieldState }) => (
               <FormItem className="form-item order-1">
                 <FormLabel className="body-text required">Fuente</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ""}>
-                  <FormControl>
-                    <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={1}>
-                      <SelectValue placeholder="Seleccionar" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {agencySources.map((source) => (
-                      <SelectItem key={source.value} value={source.value}>
-                        {source.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <FormControl>
+                  <SearchableSelect
+                    options={agencySources}
+                    placeholder="Seleccionar"
+                    searchPlaceholder="Buscar fuente..."
+                    value={field.value || ""}
+                    onValueChange={field.onChange}
+                    className={`form-control ${fieldState.error ? 'error' : ''}`}
+                    tabIndex={1}
+                  />
+                </FormControl>
                 <FormMessage className="error-message" />
               </FormItem>
             )}
