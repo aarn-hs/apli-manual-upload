@@ -42,6 +42,22 @@ export function SearchableSelect({
     onValueChange(newValue);
     setSearchTerm("");
     setIsOpen(false);
+    
+    // Move focus to next field after selection
+    setTimeout(() => {
+      const currentElement = document.activeElement;
+      if (currentElement) {
+        // Find the next focusable element
+        const focusableElements = document.querySelectorAll(
+          'input, select, textarea, button, [tabindex]:not([tabindex="-1"])'
+        );
+        const currentIndex = Array.from(focusableElements).indexOf(currentElement as Element);
+        const nextElement = focusableElements[currentIndex + 1] as HTMLElement;
+        if (nextElement) {
+          nextElement.focus();
+        }
+      }
+    }, 100);
   };
 
   const handleOpenChange = (open: boolean) => {
