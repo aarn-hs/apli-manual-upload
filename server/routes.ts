@@ -124,6 +124,64 @@ class IPRateLimiter {
 
 const ipLimiter = new IPRateLimiter();
 
+// Sistema de autenticación por API Keys
+class APIKeyManager {
+  private validKeys = new Set<string>();
+  private keyUsage = new Map<string, { count: number; lastUsed: number; }>();
+
+  constructor() {
+    // Cargar API keys desde variables de entorno
+    const envKeys = process.env.API_KEYS?.split(',').map(k => k.trim()).filter(k => k.length > 0);
+    if (envKeys && envKeys.length > 0) {
+      envKeys.forEach(key => this.validKeys.add(key));
+    }
+    
+    // Si no hay keys configuradas, generar una por defecto (solo en desarrollo)
+    if (this.validKeys.size === 0 && process.env.NODE_ENV !== 'production') {
+      const defaultKey = this.generateAPIKey();
+      this.validKeys.add(defaultKey);
+      console.log(`🔑 Generated development API key: ${defaultKey}`);
+    }
+  }
+
+  generateAPIKey(): string {
+    return 'ak_' + Math.random().toString(36).substring(2) + Date.now().toString(36);
+  }
+
+  isValidKey(key: string): boolean {
+    return this.validKeys.has(key);
+  }
+
+  addKey(key: string): void {
+    this.validKeys.add(key);
+  }
+
+  removeKey(key: string): void {
+    this.validKeys.delete(key);
+    this.keyUsage.delete(key);
+  }
+
+  trackUsage(key: string): void {
+    const usage = this.keyUsage.get(key) || { count: 0, lastUsed: 0 };
+    usage.count++;
+    usage.lastUsed = Date.now();
+    this.keyUsage.set(key, usage);
+  }
+
+  getStats() {
+    return {
+      totalKeys: this.validKeys.size,
+      usage: Object.fromEntries(this.keyUsage)
+    };
+  }
+
+  listKeys(): string[] {
+    return Array.from(this.validKeys);
+  }
+}
+
+const apiKeyManager = new APIKeyManager();
+
 // Limpiar resultados antiguos cada 30 minutos
 setInterval(() => {
   const thirtyMinutesAgo = Date.now() - (30 * 60 * 1000);
@@ -135,6 +193,33 @@ setInterval(() => {
   });
   idsToDelete.forEach(id => pendingResults.delete(id));
 }, 30 * 60 * 1000);
+
+// Middleware de autenticación por API Key
+function apiKeyMiddleware(req: any, res: any, next: any) {
+  const apiKey = req.get('X-API-Key') || req.get('x-api-key');
+  
+  if (!apiKey) {
+    return res.status(401).json({
+      error: 'Unauthorized',
+      message: 'API key required. Include X-API-Key header.'
+    });
+  }
+
+  if (!apiKeyManager.isValidKey(apiKey)) {
+    return res.status(401).json({
+      error: 'Unauthorized',
+      message: 'Invalid API key.'
+    });
+  }
+
+  // Rastrear uso de la API key
+  apiKeyManager.trackUsage(apiKey);
+  
+  // Agregar información del API key al request para logs
+  req.apiKey = apiKey;
+  
+  next();
+}
 
 // Middleware de rate limiting por IP
 function rateLimitMiddleware(req: any, res: any, next: any) {
@@ -177,19 +262,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       status: "ok", 
       timestamp: new Date().toISOString(),
       endpoints: [
-        "POST /api/candidates",
+        "POST /api/candidates (Auth Required)",
         "POST /api/webhook-result", 
-        "GET /api/check-status/:candidate_submission_id",
-        "POST /api/liquidate",
-        "POST /api/webhook",
+        "GET /api/check-status/:candidate_submission_id (Auth Required)",
+        "POST /api/liquidate (Auth Required)",
+        "POST /api/webhook (Auth Required)",
         "GET /api/admin/active-processings",
-        "GET /api/admin/queue-status"
+        "GET /api/admin/queue-status",
+        "POST /api/admin/api-keys/generate",
+        "GET /api/admin/api-keys/list",
+        "DELETE /api/admin/api-keys/:key"
       ]
     });
   });
 
   // API simplificada para validación del formulario
-  app.post("/api/candidates", rateLimitMiddleware, async (req, res) => {
+  app.post("/api/candidates", apiKeyMiddleware, rateLimitMiddleware, async (req, res) => {
     try {
       // Validar datos del formulario
       const validatedData = await insertCandidateSchema.parseAsync(req.body);
@@ -232,7 +320,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Endpoint para verificar el estado de un procesamiento (polling)
-  app.get("/api/check-status/:candidate_submission_id", rateLimitMiddleware, async (req, res) => {
+  app.get("/api/check-status/:candidate_submission_id", apiKeyMiddleware, rateLimitMiddleware, async (req, res) => {
     try {
       const { candidate_submission_id } = req.params;
       const result = pendingResults.get(candidate_submission_id);
@@ -309,9 +397,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const queueStatus = requestQueue.getStatus();
       const rateLimitStatus = ipLimiter.getStatus();
+      const apiKeyStats = apiKeyManager.getStats();
       res.json({
         queue: queueStatus,
         rateLimit: rateLimitStatus,
+        apiKeys: apiKeyStats,
         timestamp: new Date().toISOString()
       });
     } catch (error) {
@@ -319,8 +409,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Endpoints administrativos para gestión de API keys
+  app.post("/api/admin/api-keys/generate", async (req, res) => {
+    try {
+      const newKey = apiKeyManager.generateAPIKey();
+      apiKeyManager.addKey(newKey);
+      res.json({
+        success: true,
+        apiKey: newKey,
+        message: "API key generated successfully"
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Error interno del servidor" });
+    }
+  });
+
+  app.get("/api/admin/api-keys/list", async (req, res) => {
+    try {
+      const keys = apiKeyManager.listKeys();
+      const stats = apiKeyManager.getStats();
+      res.json({
+        keys: keys.map(key => ({
+          key: key,
+          usage: stats.usage[key] || { count: 0, lastUsed: 0 }
+        })),
+        total: keys.length
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Error interno del servidor" });
+    }
+  });
+
+  app.delete("/api/admin/api-keys/:key", async (req, res) => {
+    try {
+      const { key } = req.params;
+      apiKeyManager.removeKey(key);
+      res.json({
+        success: true,
+        message: "API key removed successfully"
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Error interno del servidor" });
+    }
+  });
+
   // Endpoint para limpiar todos los procesamientos (liquidar)
-  app.post("/api/liquidate", rateLimitMiddleware, async (req, res) => {
+  app.post("/api/liquidate", apiKeyMiddleware, rateLimitMiddleware, async (req, res) => {
     try {
       const beforeCount = pendingResults.size;
       pendingResults.clear();
@@ -336,7 +470,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Proxy endpoint para el webhook de n8n (asíncrono con rate limiting)
-  app.post("/api/webhook", rateLimitMiddleware, async (req, res) => {
+  app.post("/api/webhook", apiKeyMiddleware, rateLimitMiddleware, async (req, res) => {
     try {
       const webhookUrl = process.env.N8N_WEBHOOK_URL;
       const authToken = process.env.VITE_WEBHOOK_AUTH_TOKEN;
