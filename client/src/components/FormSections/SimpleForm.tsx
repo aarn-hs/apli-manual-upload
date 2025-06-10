@@ -276,7 +276,7 @@ export default function SimpleForm() {
           control={control}
           name="location"
           render={({ field, fieldState }) => (
-            <FormItem className="form-item">
+            <FormItem className={`form-item ${getOrderClass(3)}`}>
               <FormLabel className="body-text required">Ubicación</FormLabel>
               <FormControl>
                 <SearchableSelect
@@ -299,7 +299,7 @@ export default function SimpleForm() {
           control={control}
           name="pmx"
           render={({ field }) => (
-            <FormItem className="form-item">
+            <FormItem className={`form-item ${getOrderClass(4)}`}>
               <FormLabel className="body-text required">PMX</FormLabel>
               <FormControl>
                 <CustomInput
