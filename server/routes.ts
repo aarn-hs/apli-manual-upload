@@ -189,12 +189,18 @@ setInterval(() => {
 
 // Middleware de autenticación por API Key
 function apiKeyMiddleware(req: any, res: any, next: any) {
-  const apiKey = req.get('X-API-Key') || req.get('x-api-key');
+  const authHeader = req.get('Authorization');
+  let apiKey = null;
+  
+  // Extraer API key del header Authorization (formato: Bearer token)
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    apiKey = authHeader.substring(7); // Remover "Bearer "
+  }
   
   if (!apiKey) {
     return res.status(401).json({
       error: 'Unauthorized',
-      message: 'API key required. Include X-API-Key header.'
+      message: 'API key required. Include Authorization: Bearer <api_key> header.'
     });
   }
 
