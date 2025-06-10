@@ -238,6 +238,88 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Rutas de debug y testing para iframe protection
+  app.get("/api/debug/iframe-status", async (req, res) => {
+    const testingMode = process.env.TESTING_MODE === 'true';
+    
+    if (!testingMode) {
+      return res.status(404).json({ error: "Debug endpoint not available" });
+    }
+    
+    const allowedDomains = process.env.ALLOWED_IFRAME_DOMAINS?.split(',').map(d => d.trim()) || [];
+    const blockLocalhost = process.env.BLOCK_LOCALHOST === 'true';
+    const referer = req.get('Referer') || req.get('Referrer') || '';
+    const origin = req.get('Origin') || '';
+    const host = req.get('Host') || '';
+    
+    // Detectar si está en iframe
+    const isInIframe = referer !== '';
+    
+    // Verificar si el dominio está permitido
+    let isAllowed = false;
+    if (allowedDomains.length > 0) {
+      for (const domain of allowedDomains) {
+        if (referer.includes(domain) || origin.includes(domain)) {
+          isAllowed = true;
+          break;
+        }
+      }
+    }
+    
+    // Verificar localhost
+    const isLocalhost = /localhost|127\.0\.0\.1|0\.0\.0\.0|192\.168\.|10\.|file:\/\//.test(host + referer + origin);
+    
+    res.json({
+      isInIframe,
+      referer,
+      origin,
+      host,
+      isAllowed,
+      allowedDomains,
+      blockLocalhost,
+      isLocalhost,
+      testingMode,
+      headers: {
+        'user-agent': req.get('User-Agent'),
+        'x-forwarded-for': req.get('X-Forwarded-For'),
+        'x-real-ip': req.get('X-Real-IP')
+      }
+    });
+  });
+
+  // Endpoint para simular diferentes escenarios de iframe
+  app.get("/api/test/simulate-iframe", async (req, res) => {
+    const testingMode = process.env.TESTING_MODE === 'true';
+    
+    if (!testingMode) {
+      return res.status(404).json({ error: "Test endpoint not available" });
+    }
+    
+    const { referrer, origin } = req.query;
+    const allowedDomains = process.env.ALLOWED_IFRAME_DOMAINS?.split(',').map(d => d.trim()) || [];
+    
+    // Simular validación con parámetros dados
+    let isAllowed = false;
+    if (allowedDomains.length > 0 && (referrer || origin)) {
+      for (const domain of allowedDomains) {
+        if (String(referrer).includes(domain) || String(origin).includes(domain)) {
+          isAllowed = true;
+          break;
+        }
+      }
+    }
+    
+    res.json({
+      simulation: true,
+      referrer: referrer || '',
+      origin: origin || '',
+      isAllowed,
+      allowedDomains,
+      wouldBlock: !isAllowed && (referrer || origin),
+      message: isAllowed ? 'Domain would be allowed' : 'Domain would be blocked'
+    });
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

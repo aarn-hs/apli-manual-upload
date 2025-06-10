@@ -6,16 +6,90 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Configurar cabeceras para permitir iframe embedding
+// Middleware de protección iframe con dominios permitidos
 app.use((req, res, next) => {
-  // Permitir que la app sea embebida en iframes
-  res.removeHeader('X-Frame-Options');
-  res.setHeader('X-Frame-Options', 'ALLOWALL');
+  const allowedDomains = process.env.ALLOWED_IFRAME_DOMAINS?.split(',').map(d => d.trim()) || [];
+  const blockLocalhost = process.env.BLOCK_LOCALHOST === 'true';
+  const testingMode = process.env.TESTING_MODE === 'true';
   
-  // Configurar CORS para iframe
+  // Headers básicos de CORS
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  
+  // Obtener información del request
+  const referer = req.get('Referer') || req.get('Referrer') || '';
+  const origin = req.get('Origin') || '';
+  const userAgent = req.get('User-Agent') || '';
+  const host = req.get('Host') || '';
+  
+  // Log detallado en modo testing
+  if (testingMode) {
+    console.log('🔍 Iframe Protection Check:', {
+      path: req.path,
+      referer,
+      origin,
+      host,
+      allowedDomains,
+      blockLocalhost,
+      headers: {
+        'x-forwarded-for': req.get('X-Forwarded-For'),
+        'x-real-ip': req.get('X-Real-IP')
+      }
+    });
+  }
+  
+  // Verificar si está siendo accedido desde localhost cuando está bloqueado
+  if (blockLocalhost) {
+    const isLocalhost = /localhost|127\.0\.0\.1|0\.0\.0\.0|192\.168\.|10\.|file:\/\//.test(host + referer + origin);
+    if (isLocalhost && !testingMode) {
+      if (testingMode) console.log('❌ Blocked: Localhost access detected');
+      return res.status(403).json({ 
+        error: 'Access from localhost is not permitted',
+        code: 'LOCALHOST_BLOCKED'
+      });
+    }
+  }
+  
+  // Si hay dominios permitidos configurados
+  if (allowedDomains.length > 0) {
+    let isAllowed = false;
+    
+    // Verificar referer y origin contra dominios permitidos
+    for (const domain of allowedDomains) {
+      if (referer.includes(domain) || origin.includes(domain)) {
+        isAllowed = true;
+        break;
+      }
+    }
+    
+    // Si no está permitido y no es acceso directo (sin referer)
+    if (!isAllowed && (referer || origin)) {
+      if (testingMode) {
+        console.log('❌ Blocked: Domain not in allowed list', { referer, origin, allowedDomains });
+      }
+      return res.status(403).json({ 
+        error: 'Domain not authorized for iframe embedding',
+        code: 'DOMAIN_NOT_ALLOWED',
+        referer,
+        origin,
+        allowedDomains: testingMode ? allowedDomains : undefined
+      });
+    }
+    
+    // Configurar CSP header con dominios permitidos
+    const cspDomains = allowedDomains.join(' ');
+    res.setHeader('Content-Security-Policy', `frame-ancestors 'self' ${cspDomains}`);
+    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+    
+    if (testingMode) {
+      console.log('✅ Allowed: Domain authorized', { referer, origin });
+    }
+  } else {
+    // Sin dominios configurados, bloquear todos los iframes
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('Content-Security-Policy', 'frame-ancestors \'none\'');
+  }
   
   next();
 });
