@@ -92,13 +92,52 @@ app.use((req, res, next) => {
     let isAllowed = false;
     
     // Verificar referer y origin contra dominios permitidos
-    for (const domain of allowedDomains) {
-      if (referer.includes(domain) || origin.includes(domain)) {
-        isAllowed = true;
-        break;
+    const checkDomain = (url: string) => {
+      if (!url) return false;
+      
+      try {
+        const urlObj = new URL(url);
+        const urlDomain = urlObj.hostname;
+        
+        return allowedDomains.some(domain => {
+          const cleanDomain = domain.replace(/^https?:\/\//, '').replace(/\/$/, '');
+          
+          if (cleanDomain.startsWith('*.')) {
+            const baseDomain = cleanDomain.substring(2);
+            return urlDomain.endsWith(baseDomain);
+          }
+          return urlDomain === cleanDomain || urlDomain.includes(cleanDomain);
+        });
+      } catch (e) {
+        return allowedDomains.some(domain => url.includes(domain));
       }
+    };
+    
+    // Verificar dominios específicos de APLI y Replit
+    const apliDomains = ['manual-upload.apli.app', 'demo.apli.app', 'apli.app', 'recruitment.apli.app', 'manual-upload-apli.replit.app'];
+    const replitDomains = ['replit.dev', 'replit.app', 'replit.com'];
+    
+    isAllowed = checkDomain(referer) || checkDomain(origin);
+    
+    if (!isAllowed && (referer || origin)) {
+      const checkUrl = referer || origin;
+      isAllowed = apliDomains.some(domain => checkUrl.includes(domain)) ||
+                  replitDomains.some(domain => checkUrl.includes(domain));
     }
     
+    // Debug: mostrar estado de validación
+    if (testingMode && req.path === '/') {
+      console.log('🔍 Domain validation result:', { 
+        isAllowed, 
+        referer, 
+        origin, 
+        path: req.path,
+        allowedDomains,
+        apliCheck: referer ? ['manual-upload.apli.app', 'demo.apli.app', 'apli.app', 'recruitment.apli.app', 'manual-upload-apli.replit.app'].some(d => referer.includes(d)) : false,
+        replitCheck: referer ? ['replit.dev', 'replit.app', 'replit.com'].some(d => referer.includes(d)) : false
+      });
+    }
+
     // Si no está permitido y no es acceso directo (sin referer) y es la ruta principal
     if (!isAllowed && (referer || origin) && req.path === '/') {
       if (testingMode) {

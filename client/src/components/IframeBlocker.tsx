@@ -19,6 +19,9 @@ export default function IframeBlocker({ children }: { children: React.ReactNode 
                        window.location.hostname.includes('replit.app') ||
                        window.location.hostname.includes('localhost');
 
+  // Registro de depuración
+  console.log('IframeBlocker status:', { isInIframe, isAllowed, isDevelopment, parentDomain });
+
   if (isInIframe && !isAllowed && !isDevelopment) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-red-50">

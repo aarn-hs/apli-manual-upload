@@ -37,6 +37,7 @@ export function useIframeProtection() {
         const response = await fetch('/api/debug/iframe-status');
         if (response.ok) {
           const serverStatus = await response.json();
+          console.log('Iframe status response:', serverStatus);
           
           setStatus({
             isInIframe: serverStatus.isInIframe || isInIframe,
