@@ -9,9 +9,37 @@ const pendingResults = new Map<string, {
   timestamp: number;
 }>();
 
-// Limpiar resultados antiguos cada 30 minutos
+// Almacenamiento de tokens seguros para URLs temporales
+const secureTokens = new Map<string, {
+  allowedDomain: string;
+  expiresAt: number;
+  createdAt: number;
+  usageCount: number;
+  maxUsage: number;
+}>();
+
+// Funciones de utilidad para tokens seguros
+function generateSecureToken(): string {
+  return Array.from(crypto.getRandomValues(new Uint8Array(32)), byte => 
+    byte.toString(16).padStart(2, '0')).join('');
+}
+
+function cleanupExpiredTokens() {
+  const now = Date.now();
+  const expiredTokens: string[] = [];
+  secureTokens.forEach((data, token) => {
+    if (data.expiresAt < now) {
+      expiredTokens.push(token);
+    }
+  });
+  expiredTokens.forEach(token => secureTokens.delete(token));
+}
+
+// Limpiar datos antiguos cada 30 minutos
 setInterval(() => {
   const thirtyMinutesAgo = Date.now() - (30 * 60 * 1000);
+  
+  // Limpiar resultados pendientes
   const idsToDelete: string[] = [];
   pendingResults.forEach((data, id) => {
     if (data.timestamp < thirtyMinutesAgo) {
@@ -19,6 +47,9 @@ setInterval(() => {
     }
   });
   idsToDelete.forEach(id => pendingResults.delete(id));
+  
+  // Limpiar tokens expirados
+  cleanupExpiredTokens();
 }, 30 * 60 * 1000);
 
 export async function registerRoutes(app: Express): Promise<Server> {
