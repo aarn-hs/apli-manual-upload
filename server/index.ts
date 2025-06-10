@@ -23,146 +23,14 @@ if (!process.env.BLOCK_LOCALHOST) {
   process.env.BLOCK_LOCALHOST = 'false';
 }
 
-// Middleware de protección de dominios
+// Middleware simplificado de CORS para desarrollo
 app.use((req, res, next) => {
-  const allowedDomains = process.env.ALLOWED_DOMAINS?.split(',').map(d => d.trim()) || [];
-  const blockLocalhost = process.env.BLOCK_LOCALHOST === 'true';
-  const testingMode = process.env.TESTING_MODE === 'true';
-  
   // Headers básicos de CORS
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   
-  // Skip iframe protection for development assets and API endpoints
-  const skipPaths = [
-    '/src/',
-    '/@vite/',
-    '/@fs/',
-    '/@react-refresh',
-    '/node_modules/',
-    '/api/',
-    '/.vite/',
-    '/assets/',
-    '/favicon.ico'
-  ];
-  
-  const shouldSkip = skipPaths.some(path => req.path.startsWith(path));
-  
-  if (shouldSkip) {
-    return next();
-  }
-  
-  // Obtener información del request
-  const referer = req.get('Referer') || req.get('Referrer') || '';
-  const origin = req.get('Origin') || '';
-  const userAgent = req.get('User-Agent') || '';
-  const host = req.get('Host') || '';
-  
-  // Log detallado en modo testing (solo para rutas principales)
-  if (testingMode && req.path === '/') {
-    console.log('🔍 Iframe Protection Check:', {
-      path: req.path,
-      referer,
-      origin,
-      host,
-      allowedDomains,
-      blockLocalhost,
-      headers: {
-        'x-forwarded-for': req.get('X-Forwarded-For'),
-        'x-real-ip': req.get('X-Real-IP')
-      }
-    });
-  }
-  
-  // Verificar si está siendo accedido desde localhost cuando está bloqueado
-  if (blockLocalhost) {
-    const isLocalhost = /localhost|127\.0\.0\.1|0\.0\.0\.0|192\.168\.|10\.|file:\/\//.test(host + referer + origin);
-    if (isLocalhost && !testingMode) {
-      if (testingMode) console.log('❌ Blocked: Localhost access detected');
-      return res.status(403).json({ 
-        error: 'Server Access Blocked',
-        code: 'ACCESS_DENIED'
-      });
-    }
-  }
-  
-  // Si hay dominios permitidos configurados
-  if (allowedDomains.length > 0) {
-    let isAllowed = false;
-    
-    // Verificar referer y origin contra dominios permitidos
-    const checkDomain = (url: string) => {
-      if (!url) return false;
-      
-      try {
-        const urlObj = new URL(url);
-        const urlDomain = urlObj.hostname;
-        
-        return allowedDomains.some(domain => {
-          const cleanDomain = domain.replace(/^https?:\/\//, '').replace(/\/$/, '');
-          
-          if (cleanDomain.startsWith('*.')) {
-            const baseDomain = cleanDomain.substring(2);
-            return urlDomain.endsWith(baseDomain);
-          }
-          return urlDomain === cleanDomain || urlDomain.includes(cleanDomain);
-        });
-      } catch (e) {
-        return allowedDomains.some(domain => url.includes(domain));
-      }
-    };
-    
-    // Verificar dominios específicos de APLI y Replit
-    const apliDomains = ['manual-upload.apli.app', 'demo.apli.app', 'apli.app', 'recruitment.apli.app', 'manual-upload-apli.replit.app'];
-    const replitDomains = ['replit.dev', 'replit.app', 'replit.com'];
-    
-    isAllowed = checkDomain(referer) || checkDomain(origin);
-    
-    if (!isAllowed && (referer || origin)) {
-      const checkUrl = referer || origin;
-      isAllowed = apliDomains.some(domain => checkUrl.includes(domain)) ||
-                  replitDomains.some(domain => checkUrl.includes(domain));
-    }
-    
-    // Debug: mostrar estado de validación
-    if (testingMode && req.path === '/') {
-      console.log('🔍 Domain validation result:', { 
-        isAllowed, 
-        referer, 
-        origin, 
-        path: req.path,
-        allowedDomains,
-        apliCheck: referer ? ['manual-upload.apli.app', 'demo.apli.app', 'apli.app', 'recruitment.apli.app', 'manual-upload-apli.replit.app'].some(d => referer.includes(d)) : false,
-        replitCheck: referer ? ['replit.dev', 'replit.app', 'replit.com'].some(d => referer.includes(d)) : false
-      });
-    }
-
-    // Si no está permitido y no es acceso directo (sin referer) y es la ruta principal
-    if (!isAllowed && (referer || origin) && req.path === '/') {
-      if (testingMode) {
-        console.log('❌ Blocked: Domain not in allowed list', { referer, origin, allowedDomains });
-      }
-      return res.status(403).json({ 
-        error: 'Server Access Blocked',
-        code: 'ACCESS_DENIED'
-      });
-    }
-    
-    // Configurar CSP header con dominios permitidos
-    const cspDomains = allowedDomains.join(' ');
-    res.setHeader('Content-Security-Policy', `frame-ancestors 'self' ${cspDomains}`);
-    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
-    
-    if (testingMode && req.path === '/' && !referer && !origin) {
-      console.log('✅ Allowed: Direct access (no referer)', { referer, origin });
-    }
-  } else {
-    // Sin dominios configurados, bloquear todos los iframes
-    res.setHeader('X-Frame-Options', 'DENY');
-    res.setHeader('Content-Security-Policy', 'frame-ancestors \'none\'');
-  }
-  
+  // Permitir todos los accesos en desarrollo
   next();
 });
 
