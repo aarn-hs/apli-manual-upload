@@ -141,7 +141,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8">
-        <SimpleForm />
+        <SimpleForm control={methods.control} watch={methods.watch} setValue={methods.setValue} />
 
         {/* Notification panel */}
         {notificationState?.isVisible && (
