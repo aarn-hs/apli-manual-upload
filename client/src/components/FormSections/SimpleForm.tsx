@@ -210,25 +210,27 @@ export default function SimpleForm() {
     }
   };
 
-  // Función para obtener tabindex condicional
+  // Función para obtener tabindex condicional y clase order
   const getTabIndex = (order: number) => {
-    // En desktop usar los tabindex para navegación
-    // En móvil, el CSS grid se encargará del orden visual
     return order;
+  };
+
+  const getOrderClass = (order: number) => {
+    return isMobile ? `order-[${order}]` : '';
   };
 
   return (
     <section id="simple-form" className="bg-white p-6">
       <h2 className="important section-title">Registro de candidato</h2>
       
-      {/* Sistema Grid 2×n con orden automático */}
-      <div className={`grid grid-cols-1 gap-4 ${isMobile ? 'md:grid-cols-1' : 'md:grid-cols-2'} md:gap-6`}>
+      {/* Sistema Grid 2×n con reordenamiento móvil por tabindex */}
+      <div className={`grid grid-cols-1 gap-4 ${isMobile ? '' : 'md:grid-cols-2'} md:gap-6`}>
         {/* Campo 1 - Fuente */}
         <FormField
           control={control}
           name="source"
           render={({ field, fieldState }) => (
-            <FormItem className="form-item">
+            <FormItem className={`form-item ${getOrderClass(1)}`}>
               <FormLabel className="body-text required">Fuente</FormLabel>
               <FormControl>
                 <SearchableSelect
@@ -251,7 +253,7 @@ export default function SimpleForm() {
           control={control}
           name="position"
           render={({ field, fieldState }) => (
-            <FormItem className="form-item">
+            <FormItem className={`form-item ${getOrderClass(2)}`}>
               <FormLabel className="body-text required">Puesto</FormLabel>
               <FormControl>
                 <SearchableSelect
@@ -590,6 +592,300 @@ export default function SimpleForm() {
                   maxLength={18}
                 />
               </FormControl>
+              <FormMessage className="error-message" />
+            </FormItem>
+          )}
+        />
+
+        {/* Campo 16 - Colonia */}
+        <FormField
+          control={control}
+          name="neighborhood"
+          render={({ field }) => (
+            <FormItem className="form-item">
+              <FormLabel className="body-text required">Colonia</FormLabel>
+              <FormControl>
+                <CustomInput
+                  {...field}
+                  placeholder="Colonia"
+                  className="form-control"
+                  tabIndex={getTabIndex(16)}
+                  autoCleanSpaces={true}
+                />
+              </FormControl>
+              <FormMessage className="error-message" />
+            </FormItem>
+          )}
+        />
+
+        {/* Campo 17 - Calle y número */}
+        <FormField
+          control={control}
+          name="streetAndNumber"
+          render={({ field }) => (
+            <FormItem className="form-item">
+              <FormLabel className="body-text required">Calle y número de la vivienda</FormLabel>
+              <FormControl>
+                <CustomInput
+                  {...field}
+                  placeholder="Calle y número"
+                  className="form-control"
+                  tabIndex={getTabIndex(17)}
+                  autoCleanSpaces={true}
+                />
+              </FormControl>
+              <FormMessage className="error-message" />
+            </FormItem>
+          )}
+        />
+
+        {/* Campo 18 - Escolaridad */}
+        <FormField
+          control={control}
+          name="education"
+          render={({ field, fieldState }) => (
+            <FormItem className="form-item">
+              <FormLabel className="body-text required">Escolaridad</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value || ""}>
+                <FormControl>
+                  <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={getTabIndex(18)}>
+                    <SelectValue placeholder="Seleccionar" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {educationLevels.map((level) => (
+                    <SelectItem key={level} value={level}>
+                      {level}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage className="error-message" />
+            </FormItem>
+          )}
+        />
+
+        {/* Campo 19 - Estado civil */}
+        <FormField
+          control={control}
+          name="maritalStatus"
+          render={({ field, fieldState }) => (
+            <FormItem className="form-item">
+              <FormLabel className="body-text required">Estado civil</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value || ""}>
+                <FormControl>
+                  <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={getTabIndex(19)}>
+                    <SelectValue placeholder="Seleccionar" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {maritalStatuses.map((status) => (
+                    <SelectItem key={status} value={status}>
+                      {status}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage className="error-message" />
+            </FormItem>
+          )}
+        />
+
+        {/* Campo 20 - Último empleador */}
+        <FormField
+          control={control}
+          name="previousCompany"
+          render={({ field }) => (
+            <FormItem className="form-item">
+              <FormLabel className="body-text required">Último empleador o compañía en la que trabajó</FormLabel>
+              <FormControl>
+                <CustomInput
+                  {...field}
+                  placeholder="Compañía donde trabajó anteriormente"
+                  className="form-control"
+                  tabIndex={getTabIndex(20)}
+                  autoCleanSpaces={true}
+                />
+              </FormControl>
+              <FormMessage className="error-message" />
+            </FormItem>
+          )}
+        />
+
+        {/* Campo 21 - Puesto anterior */}
+        <FormField
+          control={control}
+          name="previousPosition"
+          render={({ field }) => (
+            <FormItem className="form-item">
+              <FormLabel className="body-text required">¿Cuál era su puesto?</FormLabel>
+              <FormControl>
+                <CustomInput
+                  {...field}
+                  placeholder="Puesto que ocupó anteriormente"
+                  className="form-control"
+                  tabIndex={getTabIndex(21)}
+                  autoCleanSpaces={true}
+                />
+              </FormControl>
+              <FormMessage className="error-message" />
+            </FormItem>
+          )}
+        />
+
+        {/* Campo 22 - Fecha de inicio de experiencia previa */}
+        <FormField
+          control={control}
+          name="previousJobStartDate"
+          render={({ field, fieldState }) => (
+            <FormItem className="form-item">
+              <FormLabel className="body-text required">Fecha de inicio de experiencia previa</FormLabel>
+              <FormControl>
+                <CustomInput
+                  {...field}
+                  type="text"
+                  placeholder={isBirthDateValidForWork() ? "dd/mm/aaaa" : "Primero ingrese fecha de nacimiento"}
+                  className={`form-control ${fieldState.error ? 'error' : ''}`}
+                  tabIndex={getTabIndex(22)}
+                  maxLength={10}
+                  disabled={!isBirthDateValidForWork()}
+                  onChange={handleDateInput(field.onChange, field.value)}
+                  onBlur={formatDateOnBlur(field.onChange, field.value)}
+                  onKeyDown={(e) => {
+                    // Allow: backspace, delete, tab, escape, enter
+                    if ([8, 9, 27, 13, 46].indexOf(e.keyCode) !== -1 ||
+                        // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                        (e.keyCode === 65 && e.ctrlKey === true) ||
+                        (e.keyCode === 67 && e.ctrlKey === true) ||
+                        (e.keyCode === 86 && e.ctrlKey === true) ||
+                        (e.keyCode === 88 && e.ctrlKey === true)) {
+                      return;
+                    }
+                    // Ensure that it is a number and stop the keypress
+                    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                      e.preventDefault();
+                    }
+                  }}
+                />
+              </FormControl>
+              <FormMessage className="error-message" />
+            </FormItem>
+          )}
+        />
+
+        {/* Campo 23 - Fecha de fin de experiencia previa */}
+        <FormField
+          control={control}
+          name="previousJobEndDate"
+          render={({ field, fieldState }) => (
+            <FormItem className="form-item">
+              <FormLabel className="body-text required">Fecha de fin de experiencia previa</FormLabel>
+              <FormControl>
+                <CustomInput
+                  {...field}
+                  type="text"
+                  placeholder={isBirthDateValidForWork() ? "dd/mm/aaaa" : "Primero ingrese fecha de nacimiento"}
+                  className={`form-control ${fieldState.error ? 'error' : ''}`}
+                  tabIndex={getTabIndex(23)}
+                  maxLength={10}
+                  disabled={!isBirthDateValidForWork()}
+                  onChange={handleDateInput(field.onChange, field.value)}
+                  onBlur={formatDateOnBlur(field.onChange, field.value)}
+                  onKeyDown={(e) => {
+                    // Allow: backspace, delete, tab, escape, enter
+                    if ([8, 9, 27, 13, 46].indexOf(e.keyCode) !== -1 ||
+                        // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                        (e.keyCode === 65 && e.ctrlKey === true) ||
+                        (e.keyCode === 67 && e.ctrlKey === true) ||
+                        (e.keyCode === 86 && e.ctrlKey === true) ||
+                        (e.keyCode === 88 && e.ctrlKey === true)) {
+                      return;
+                    }
+                    // Ensure that it is a number and stop the keypress
+                    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                      e.preventDefault();
+                    }
+                  }}
+                />
+              </FormControl>
+              <FormMessage className="error-message" />
+            </FormItem>
+          )}
+        />
+
+        {/* Campo 24 - Motivación al elegir trabajo */}
+        <FormField
+          control={control}
+          name="motivation"
+          render={({ field, fieldState }) => (
+            <FormItem className="form-item">
+              <FormLabel className="body-text required">Motivación al elegir trabajo</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value || ""}>
+                <FormControl>
+                  <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={getTabIndex(24)}>
+                    <SelectValue placeholder="Seleccionar" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {motivations.map((motivation) => (
+                    <SelectItem key={motivation} value={motivation}>
+                      {motivation}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage className="error-message" />
+            </FormItem>
+          )}
+        />
+
+        {/* Campo 25 - ¿Tiene experiencia en retail? */}
+        <FormField
+          control={control}
+          name="retailExperience"
+          render={({ field, fieldState }) => (
+            <FormItem className="form-item">
+              <FormLabel className="body-text required">¿Tiene experiencia en retail?</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value || ""}>
+                <FormControl>
+                  <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={getTabIndex(25)}>
+                    <SelectValue placeholder="Seleccionar" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {yesNoOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage className="error-message" />
+            </FormItem>
+          )}
+        />
+
+        {/* Campo 26 - Cantidad de trabajos en los últimos 24 meses */}
+        <FormField
+          control={control}
+          name="jobsLast24Months"
+          render={({ field, fieldState }) => (
+            <FormItem className="form-item">
+              <FormLabel className="body-text required">Cantidad de trabajos en los últimos 24 meses</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value || ""}>
+                <FormControl>
+                  <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={getTabIndex(26)}>
+                    <SelectValue placeholder="Seleccionar" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {jobsLast24MonthsOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage className="error-message" />
             </FormItem>
           )}
