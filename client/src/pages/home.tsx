@@ -147,7 +147,19 @@ export default function Home() {
   // Función para verificar el estado del procesamiento (polling)
   const checkProcessingStatus = async (candidateSubmissionId: string): Promise<any> => {
     try {
-      const response = await fetch(`/api/check-status/${candidateSubmissionId}`);
+      const apiKey = import.meta.env.VITE_WEBHOOK_AUTH_TOKEN;
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json'
+      };
+      
+      if (apiKey) {
+        headers['Authorization'] = `Bearer ${apiKey}`;
+      }
+      
+      const response = await fetch(`/api/check-status/${candidateSubmissionId}`, {
+        method: 'GET',
+        headers
+      });
       const data = await response.json();
       return data;
     } catch (error) {
@@ -256,11 +268,18 @@ export default function Home() {
       console.log('Enviando solicitud de postulación:', submissionRequestId);
 
       // Enviar solicitud de postulación
+      const apiKey = import.meta.env.VITE_WEBHOOK_AUTH_TOKEN;
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json'
+      };
+      
+      if (apiKey) {
+        headers['Authorization'] = `Bearer ${apiKey}`;
+      }
+      
       const response = await fetch("/api/webhook", {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify(webhookData)
       });
 
