@@ -263,7 +263,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const host = req.get('Host') || '';
       
       // Obtener dominios permitidos de variables de entorno
-      const allowedDomains = process.env.ALLOWED_DOMAINS?.split(',').map(d => d.trim()) || [];
+      const allowedDomains = process.env.ALLOWED_DOMAINS?.split(',').map(d => d.trim()) || [
+        'https://manual-upload.apli.app/',
+        'https://demo.apli.app/',
+        'https://apli.app/',
+        'https://recruitment.apli.app/',
+        'https://manual-upload-apli.replit.app/',
+        'https://replit.com/',
+        'replit.dev',
+        'replit.app'
+      ];
       
       // Determinar si está en iframe
       const isInIframe = referer && referer !== `${req.protocol}://${host}${req.originalUrl}`;
@@ -276,8 +285,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const referrerDomain = referrerUrl.hostname;
           
           isAllowed = allowedDomains.some(domain => {
-            // Remover protocolo si existe en el dominio permitido
-            const cleanDomain = domain.replace(/^https?:\/\//, '');
+            // Remover protocolo y trailing slash si existe en el dominio permitido
+            const cleanDomain = domain.replace(/^https?:\/\//, '').replace(/\/$/, '');
             
             if (cleanDomain.startsWith('*.')) {
               const baseDomain = cleanDomain.substring(2);
@@ -286,9 +295,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
             return referrerDomain === cleanDomain || referrerDomain.includes(cleanDomain);
           });
           
-          // Siempre permitir dominios de Replit en desarrollo
-          if (!isAllowed && (referrerDomain.includes('replit.dev') || referrerDomain.includes('replit.app'))) {
-            isAllowed = true;
+          // Verificar dominios específicos de APLI y Replit
+          const apliDomains = ['manual-upload.apli.app', 'demo.apli.app', 'apli.app', 'recruitment.apli.app', 'manual-upload-apli.replit.app'];
+          const replitDomains = ['replit.dev', 'replit.app', 'replit.com'];
+          
+          if (!isAllowed) {
+            isAllowed = apliDomains.some(domain => referrerDomain.includes(domain)) ||
+                       replitDomains.some(domain => referrerDomain.includes(domain));
           }
         } catch (e) {
           // Si hay error parseando la URL, asumir que está permitido
