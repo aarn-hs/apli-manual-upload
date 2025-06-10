@@ -2,6 +2,14 @@ import React, { useState, useRef, useEffect } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CustomInput } from "@/components/ui/custom-input";
 
+// Función para normalizar texto removiendo acentos
+function normalizeText(text: string): string {
+  return text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}
+
 interface Option {
   value: string;
   label: string;
@@ -34,7 +42,7 @@ export function SearchableSelect({
   const containerRef = useRef<HTMLDivElement>(null);
 
   const filteredOptions = options.filter(option =>
-    option.label.toLowerCase().includes(searchTerm.toLowerCase())
+    normalizeText(option.label).includes(normalizeText(searchTerm))
   );
 
   const selectedOption = options.find(option => option.value === value);
