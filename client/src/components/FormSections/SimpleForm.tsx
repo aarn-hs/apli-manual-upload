@@ -68,7 +68,7 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
       <h2 className="important section-title">Registro de candidato</h2>
       
       {/* Sistema Grid 2×n con orden según especificación */}
-      <div className={`grid grid-cols-1 gap-2 ${isMobile ? '' : 'md:grid-cols-2'} md:gap-3`}>
+      <div className={`grid grid-cols-1 gap-x-4 gap-y-2 ${isMobile ? '' : 'md:grid-cols-2'} md:gap-x-6 md:gap-y-3`}>
         {/* Campo 1 - Fuente */}
         <FormField
           control={control}
