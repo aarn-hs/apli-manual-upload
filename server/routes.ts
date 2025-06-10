@@ -124,44 +124,36 @@ class IPRateLimiter {
 
 const ipLimiter = new IPRateLimiter();
 
-// Sistema de autenticación por API Keys
+// Sistema de autenticación por API Keys (solo lectura desde env)
 class APIKeyManager {
   private validKeys = new Set<string>();
   private keyUsage = new Map<string, { count: number; lastUsed: number; }>();
 
   constructor() {
-    // Cargar API keys desde variables de entorno
-    const envKeys = process.env.API_KEYS?.split(',').map(k => k.trim()).filter(k => k.length > 0);
-    if (envKeys && envKeys.length > 0) {
-      envKeys.forEach(key => this.validKeys.add(key));
-    }
-    
-    // Si no hay keys configuradas, generar una por defecto (solo en desarrollo)
-    if (this.validKeys.size === 0 && process.env.NODE_ENV !== 'production') {
-      const defaultKey = this.generateAPIKey();
-      this.validKeys.add(defaultKey);
-      console.log(`🔑 Generated development API key: ${defaultKey}`);
-    }
+    this.loadKeysFromEnv();
   }
 
-  generateAPIKey(): string {
-    return 'ak_' + Math.random().toString(36).substring(2) + Date.now().toString(36);
+  private loadKeysFromEnv(): void {
+    // Cargar API keys desde variables de entorno
+    const envKeys = process.env.API_KEYS?.split(',').map(k => k.trim()).filter(k => k.length > 0);
+    
+    this.validKeys.clear(); // Limpiar keys existentes
+    
+    if (envKeys && envKeys.length > 0) {
+      envKeys.forEach(key => this.validKeys.add(key));
+      console.log(`🔑 Loaded ${envKeys.length} API keys from environment`);
+    } else {
+      console.warn('⚠️ No API keys configured in API_KEYS environment variable');
+    }
   }
 
   isValidKey(key: string): boolean {
     return this.validKeys.has(key);
   }
 
-  addKey(key: string): void {
-    this.validKeys.add(key);
-  }
-
-  removeKey(key: string): void {
-    this.validKeys.delete(key);
-    this.keyUsage.delete(key);
-  }
-
   trackUsage(key: string): void {
+    if (!this.isValidKey(key)) return;
+    
     const usage = this.keyUsage.get(key) || { count: 0, lastUsed: 0 };
     usage.count++;
     usage.lastUsed = Date.now();
@@ -175,8 +167,9 @@ class APIKeyManager {
     };
   }
 
-  listKeys(): string[] {
-    return Array.from(this.validKeys);
+  // Método para recargar keys desde variables de entorno (útil para updates)
+  reloadKeys(): void {
+    this.loadKeysFromEnv();
   }
 }
 
@@ -269,9 +262,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         "POST /api/webhook (Auth Required)",
         "GET /api/admin/active-processings",
         "GET /api/admin/queue-status",
-        "POST /api/admin/api-keys/generate",
-        "GET /api/admin/api-keys/list",
-        "DELETE /api/admin/api-keys/:key"
+        "GET /api/admin/api-keys/stats",
+        "POST /api/admin/api-keys/reload"
       ]
     });
   });
@@ -409,44 +401,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Endpoints administrativos para gestión de API keys
-  app.post("/api/admin/api-keys/generate", async (req, res) => {
+  // Endpoint administrativo para consultar estadísticas de API keys
+  app.get("/api/admin/api-keys/stats", async (req, res) => {
     try {
-      const newKey = apiKeyManager.generateAPIKey();
-      apiKeyManager.addKey(newKey);
-      res.json({
-        success: true,
-        apiKey: newKey,
-        message: "API key generated successfully"
-      });
-    } catch (error) {
-      res.status(500).json({ error: "Error interno del servidor" });
-    }
-  });
-
-  app.get("/api/admin/api-keys/list", async (req, res) => {
-    try {
-      const keys = apiKeyManager.listKeys();
       const stats = apiKeyManager.getStats();
       res.json({
-        keys: keys.map(key => ({
-          key: key,
-          usage: stats.usage[key] || { count: 0, lastUsed: 0 }
-        })),
-        total: keys.length
+        totalKeys: stats.totalKeys,
+        usage: stats.usage,
+        timestamp: new Date().toISOString()
       });
     } catch (error) {
       res.status(500).json({ error: "Error interno del servidor" });
     }
   });
 
-  app.delete("/api/admin/api-keys/:key", async (req, res) => {
+  // Endpoint para recargar API keys desde variables de entorno
+  app.post("/api/admin/api-keys/reload", async (req, res) => {
     try {
-      const { key } = req.params;
-      apiKeyManager.removeKey(key);
+      apiKeyManager.reloadKeys();
+      const stats = apiKeyManager.getStats();
       res.json({
         success: true,
-        message: "API key removed successfully"
+        message: "API keys reloaded from environment variables",
+        totalKeys: stats.totalKeys,
+        timestamp: new Date().toISOString()
       });
     } catch (error) {
       res.status(500).json({ error: "Error interno del servidor" });
