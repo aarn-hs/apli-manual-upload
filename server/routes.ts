@@ -246,7 +246,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return res.status(404).json({ error: "Debug endpoint not available" });
     }
     
-    const allowedDomains = process.env.ALLOWED_IFRAME_DOMAINS?.split(',').map(d => d.trim()) || [];
+    const allowedDomains = process.env.ALLOWED_DOMAINS?.split(',').map(d => d.trim()) || [];
     const blockLocalhost = process.env.BLOCK_LOCALHOST === 'true';
     const referer = req.get('Referer') || req.get('Referrer') || '';
     const origin = req.get('Origin') || '';
@@ -296,7 +296,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
     
     const { referrer, origin } = req.query;
-    const allowedDomains = process.env.ALLOWED_IFRAME_DOMAINS?.split(',').map(d => d.trim()) || [];
+    const allowedDomains = process.env.ALLOWED_DOMAINS?.split(',').map(d => d.trim()) || [];
     
     // Simular validación con parámetros dados
     let isAllowed = false;

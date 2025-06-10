@@ -6,26 +6,26 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Configuración de protección iframe mediante variables de entorno
+// Configuración de protección de dominios mediante variables de entorno
 // Configura estas variables en la sección "Secrets" de Replit:
 // TESTING_MODE=false (para producción)
-// ALLOWED_IFRAME_DOMAINS=https://tudominio.com,https://app.tudominio.com
+// ALLOWED_DOMAINS=https://tudominio.com,https://app.tudominio.com
 // BLOCK_LOCALHOST=true (para producción)
 
 // Valores por defecto solo para desarrollo en Replit
 if (!process.env.TESTING_MODE) {
   process.env.TESTING_MODE = 'true';
 }
-if (!process.env.ALLOWED_IFRAME_DOMAINS) {
-  process.env.ALLOWED_IFRAME_DOMAINS = 'https://a0846e20-5ed9-446b-a265-bdd6d36e57f8-00-31e29bhx9duhu.worf.replit.dev';
+if (!process.env.ALLOWED_DOMAINS) {
+  process.env.ALLOWED_DOMAINS = 'https://a0846e20-5ed9-446b-a265-bdd6d36e57f8-00-31e29bhx9duhu.worf.replit.dev';
 }
 if (!process.env.BLOCK_LOCALHOST) {
   process.env.BLOCK_LOCALHOST = 'false';
 }
 
-// Middleware de protección iframe con dominios permitidos
+// Middleware de protección de dominios
 app.use((req, res, next) => {
-  const allowedDomains = process.env.ALLOWED_IFRAME_DOMAINS?.split(',').map(d => d.trim()) || [];
+  const allowedDomains = process.env.ALLOWED_DOMAINS?.split(',').map(d => d.trim()) || [];
   const blockLocalhost = process.env.BLOCK_LOCALHOST === 'true';
   const testingMode = process.env.TESTING_MODE === 'true';
   
