@@ -23,14 +23,57 @@ if (!process.env.BLOCK_LOCALHOST) {
   process.env.BLOCK_LOCALHOST = 'false';
 }
 
-// Middleware simplificado de CORS para desarrollo
+// Middleware de protección de dominios simplificado
 app.use((req, res, next) => {
+  const testingMode = process.env.TESTING_MODE === 'true';
+  
   // Headers básicos de CORS
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   
-  // Permitir todos los accesos en desarrollo
+  // En modo testing, permitir todo y configurar headers permisivos
+  if (testingMode) {
+    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+    res.setHeader('Content-Security-Policy', 'frame-ancestors *');
+    return next();
+  }
+  
+  // En producción, aplicar validación de dominios
+  const allowedDomains = process.env.ALLOWED_DOMAINS?.split(',').map(d => d.trim()) || [];
+  const referer = req.get('Referer') || req.get('Referrer') || '';
+  const origin = req.get('Origin') || '';
+  
+  // Skip para assets y APIs
+  const skipPaths = ['/src/', '/@vite/', '/@fs/', '/@react-refresh', '/node_modules/', '/api/', '/.vite/', '/assets/', '/favicon.ico'];
+  if (skipPaths.some(path => req.path.startsWith(path))) {
+    return next();
+  }
+  
+  // Verificar dominios APLI y Replit para producción
+  const apliDomains = ['manual-upload.apli.app', 'demo.apli.app', 'apli.app', 'recruitment.apli.app', 'manual-upload-apli.replit.app'];
+  const replitDomains = ['replit.dev', 'replit.app', 'replit.com'];
+  
+  let isAllowed = !referer && !origin; // Permitir acceso directo
+  
+  if ((referer || origin) && !isAllowed) {
+    const checkUrl = referer || origin;
+    isAllowed = allowedDomains.some(domain => checkUrl.includes(domain)) ||
+                apliDomains.some(domain => checkUrl.includes(domain)) ||
+                replitDomains.some(domain => checkUrl.includes(domain));
+  }
+  
+  if (!isAllowed && (referer || origin) && req.path === '/') {
+    return res.status(403).json({ 
+      error: 'Server Access Blocked',
+      code: 'ACCESS_DENIED'
+    });
+  }
+  
+  // Configurar headers de seguridad para producción
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('Content-Security-Policy', `frame-ancestors 'self' ${allowedDomains.join(' ')}`);
+  
   next();
 });
 
