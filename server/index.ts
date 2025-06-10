@@ -6,6 +6,17 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Set default environment variables for testing if not configured
+if (!process.env.TESTING_MODE) {
+  process.env.TESTING_MODE = 'true';
+}
+if (!process.env.ALLOWED_IFRAME_DOMAINS) {
+  process.env.ALLOWED_IFRAME_DOMAINS = 'https://portal.empresa.com,https://app.empresa.com,https://dashboard.empresa.com,https://a0846e20-5ed9-446b-a265-bdd6d36e57f8-00-31e29bhx9duhu.worf.replit.dev';
+}
+if (!process.env.BLOCK_LOCALHOST) {
+  process.env.BLOCK_LOCALHOST = 'false';
+}
+
 // Middleware de protección iframe con dominios permitidos
 app.use((req, res, next) => {
   const allowedDomains = process.env.ALLOWED_IFRAME_DOMAINS?.split(',').map(d => d.trim()) || [];
@@ -17,14 +28,33 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   
+  // Skip iframe protection for development assets and API endpoints
+  const skipPaths = [
+    '/src/',
+    '/@vite/',
+    '/@fs/',
+    '/@react-refresh',
+    '/node_modules/',
+    '/api/',
+    '/.vite/',
+    '/assets/',
+    '/favicon.ico'
+  ];
+  
+  const shouldSkip = skipPaths.some(path => req.path.startsWith(path));
+  
+  if (shouldSkip) {
+    return next();
+  }
+  
   // Obtener información del request
   const referer = req.get('Referer') || req.get('Referrer') || '';
   const origin = req.get('Origin') || '';
   const userAgent = req.get('User-Agent') || '';
   const host = req.get('Host') || '';
   
-  // Log detallado en modo testing
-  if (testingMode) {
+  // Log detallado en modo testing (solo para rutas principales)
+  if (testingMode && req.path === '/') {
     console.log('🔍 Iframe Protection Check:', {
       path: req.path,
       referer,
@@ -63,8 +93,8 @@ app.use((req, res, next) => {
       }
     }
     
-    // Si no está permitido y no es acceso directo (sin referer)
-    if (!isAllowed && (referer || origin)) {
+    // Si no está permitido y no es acceso directo (sin referer) y es la ruta principal
+    if (!isAllowed && (referer || origin) && req.path === '/') {
       if (testingMode) {
         console.log('❌ Blocked: Domain not in allowed list', { referer, origin, allowedDomains });
       }
@@ -82,8 +112,8 @@ app.use((req, res, next) => {
     res.setHeader('Content-Security-Policy', `frame-ancestors 'self' ${cspDomains}`);
     res.setHeader('X-Frame-Options', 'SAMEORIGIN');
     
-    if (testingMode) {
-      console.log('✅ Allowed: Domain authorized', { referer, origin });
+    if (testingMode && req.path === '/' && !referer && !origin) {
+      console.log('✅ Allowed: Direct access (no referer)', { referer, origin });
     }
   } else {
     // Sin dominios configurados, bloquear todos los iframes

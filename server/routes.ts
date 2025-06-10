@@ -320,6 +320,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // Serve test iframe page in testing mode
+  app.get("/test-iframe", (req, res) => {
+    const testingMode = process.env.TESTING_MODE === 'true';
+    
+    if (!testingMode) {
+      return res.status(404).json({ error: "Test page not available" });
+    }
+    
+    const fs = require('fs');
+    const path = require('path');
+    
+    try {
+      const testFile = fs.readFileSync(path.join(process.cwd(), 'test-iframe.html'), 'utf8');
+      res.setHeader('Content-Type', 'text/html');
+      res.send(testFile);
+    } catch (error) {
+      res.status(500).json({ error: "Test page not found" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
