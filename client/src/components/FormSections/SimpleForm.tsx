@@ -224,7 +224,7 @@ export default function SimpleForm() {
             control={control}
             name="source"
             render={({ field, fieldState }) => (
-              <FormItem className="form-item order-1">
+              <FormItem className="form-item">
                 <FormLabel className="body-text required">Fuente</FormLabel>
                 <FormControl>
                   <SearchableSelect
@@ -235,6 +235,29 @@ export default function SimpleForm() {
                     onValueChange={field.onChange}
                     className={`form-control ${fieldState.error ? 'error' : ''}`}
                     tabIndex={1}
+                  />
+                </FormControl>
+                <FormMessage className="error-message" />
+              </FormItem>
+            )}
+          />
+
+          {/* Campo 2 - Puesto */}
+          <FormField
+            control={control}
+            name="position"
+            render={({ field, fieldState }) => (
+              <FormItem className="form-item">
+                <FormLabel className="body-text required">Puesto</FormLabel>
+                <FormControl>
+                  <SearchableSelect
+                    options={positions.map(position => ({ value: position, label: position }))}
+                    placeholder="Seleccionar"
+                    searchPlaceholder="Buscar puesto..."
+                    value={field.value || ""}
+                    onValueChange={field.onChange}
+                    className={`form-control ${fieldState.error ? 'error' : ''}`}
+                    tabIndex={2}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -561,25 +584,22 @@ export default function SimpleForm() {
             )}
           />
 
-        </div>
-        
-        <div className="space-y-4">
-          {/* Campo 2 - Columna derecha */}
+          {/* Campo 3 - Ubicación */}
           <FormField
             control={control}
-            name="position"
+            name="location"
             render={({ field, fieldState }) => (
               <FormItem className="form-item">
-                <FormLabel className="body-text required">Puesto</FormLabel>
+                <FormLabel className="body-text required">Ubicación</FormLabel>
                 <FormControl>
                   <SearchableSelect
-                    options={positions.map(position => ({ value: position, label: position }))}
+                    options={locations.map(location => ({ value: location, label: location }))}
                     placeholder="Seleccionar"
-                    searchPlaceholder="Buscar puesto..."
+                    searchPlaceholder="Buscar ubicación..."
                     value={field.value || ""}
                     onValueChange={field.onChange}
                     className={`form-control ${fieldState.error ? 'error' : ''}`}
-                    tabIndex={2}
+                    tabIndex={3}
                   />
                 </FormControl>
                 <FormMessage className="error-message" />
@@ -587,7 +607,7 @@ export default function SimpleForm() {
             )}
           />
           
-          {/* Campo 4 - Columna derecha */}
+          {/* Campo 4 - PMX */}
           <FormField
             control={control}
             name="pmx"
