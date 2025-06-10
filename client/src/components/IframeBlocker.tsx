@@ -1,23 +1,24 @@
 import { useIframeProtection } from '@/hooks/use-iframe-protection';
 
 export default function IframeBlocker({ children }: { children: React.ReactNode }) {
-  const { isInIframe, isAllowed, parentDomain, error, isLoading } = useIframeProtection();
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Verificando permisos de acceso...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // In testing mode, be more permissive to allow testing
-  const testingMode = import.meta.env.VITE_TESTING_MODE === 'true' || true; // Force testing mode for now
+  // Deshabilitar protección iframe en desarrollo
+  const isDevelopment = import.meta.env.DEV || window.location.hostname.includes('replit.dev') || window.location.hostname.includes('replit.app');
   
-  if (isInIframe && !isAllowed && !testingMode) {
+  if (!isDevelopment) {
+    const { isInIframe, isAllowed, parentDomain, error, isLoading } = useIframeProtection();
+
+    if (isLoading) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Verificando permisos de acceso...</p>
+          </div>
+        </div>
+      );
+    }
+
+    if (isInIframe && !isAllowed) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-red-50">
         <div className="max-w-md mx-auto text-center p-6">

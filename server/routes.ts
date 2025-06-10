@@ -255,6 +255,61 @@ function rateLimitMiddleware(req: any, res: any, next: any) {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Endpoint para verificar estado de iframe y dominios permitidos
+  app.get("/api/debug/iframe-status", async (req, res) => {
+    try {
+      const referer = req.get('Referer') || '';
+      const origin = req.get('Origin') || '';
+      const host = req.get('Host') || '';
+      
+      // Obtener dominios permitidos de variables de entorno
+      const allowedDomains = process.env.ALLOWED_DOMAINS?.split(',').map(d => d.trim()) || [];
+      
+      // Determinar si está en iframe
+      const isInIframe = referer && referer !== `${req.protocol}://${host}${req.originalUrl}`;
+      
+      // Verificar si el dominio está permitido
+      let isAllowed = true;
+      if (isInIframe && referer) {
+        try {
+          const referrerUrl = new URL(referer);
+          const referrerDomain = referrerUrl.hostname;
+          
+          isAllowed = allowedDomains.some(domain => {
+            // Remover protocolo si existe en el dominio permitido
+            const cleanDomain = domain.replace(/^https?:\/\//, '');
+            
+            if (cleanDomain.startsWith('*.')) {
+              const baseDomain = cleanDomain.substring(2);
+              return referrerDomain.endsWith(baseDomain);
+            }
+            return referrerDomain === cleanDomain || referrerDomain.includes(cleanDomain);
+          });
+          
+          // Siempre permitir dominios de Replit en desarrollo
+          if (!isAllowed && (referrerDomain.includes('replit.dev') || referrerDomain.includes('replit.app'))) {
+            isAllowed = true;
+          }
+        } catch (e) {
+          // Si hay error parseando la URL, asumir que está permitido
+          isAllowed = true;
+        }
+      }
+      
+      res.json({
+        isInIframe,
+        referer,
+        origin,
+        host,
+        isAllowed,
+        allowedDomains,
+        testingMode: process.env.TESTING_MODE === 'true'
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Error checking iframe status" });
+    }
+  });
+
   // Endpoint de diagnóstico para verificar rutas disponibles (sin rate limit)
   app.get("/api/health", async (req, res) => {
     res.json({ 
