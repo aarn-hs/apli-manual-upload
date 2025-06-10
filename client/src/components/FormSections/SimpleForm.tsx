@@ -5,7 +5,7 @@ import { CustomInput } from "@/components/ui/custom-input";
 import { SearchableSelect } from "@/components/ui/searchable-select";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { simplifiedCandidateSchema } from "@/lib/simplified-schema";
-import { agencySources, positions, locations, genders, nationalities, mexicanStates, getMunicipalitiesForState, educationLevels, maritalStatuses, motivations, yesNoOptions } from "@/lib/data";
+import { agencySources, positions, locations, genders, nationalities, mexicanStates, getMunicipalitiesForState, educationLevels, maritalStatuses, motivations, yesNoOptions, jobsLast24MonthsOptions } from "@/lib/data";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface SimpleFormProps {
@@ -748,12 +748,38 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
           )}
         />
 
-        {/* Campo 27 - CURP */}
+        {/* Campo 27 - Cantidad de trabajos en los últimos 24 meses */}
+        <FormField
+          control={control}
+          name="jobsLast24Months"
+          render={({ field, fieldState }) => (
+            <FormItem className={`form-item ${getOrderClass(27)}`}>
+              <FormLabel className="body-text required">Cantidad de trabajos en los últimos 24 meses</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value || ""}>
+                <FormControl>
+                  <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={getTabIndex(27)}>
+                    <SelectValue placeholder="Seleccionar" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {jobsLast24MonthsOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage className="error-message" />
+            </FormItem>
+          )}
+        />
+
+        {/* Campo 28 - CURP */}
         <FormField
           control={control}
           name="curp"
           render={({ field, fieldState }) => (
-            <FormItem className={`form-item ${getOrderClass(27)}`}>
+            <FormItem className={`form-item ${getOrderClass(28)}`}>
               <FormLabel className="body-text required">CURP</FormLabel>
               <FormControl>
                 <CustomInput
@@ -761,7 +787,7 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
                   placeholder={isCURPEnabled() ? "18 caracteres" : "Complete fecha de nacimiento y nacionalidad primero"}
                   className={`form-control ${fieldState.error ? 'error' : ''}`}
                   autoUppercase={true}
-                  tabIndex={getTabIndex(27)}
+                  tabIndex={getTabIndex(28)}
                   disabled={!isCURPEnabled()}
                   maxLength={18}
                 />
