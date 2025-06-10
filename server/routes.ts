@@ -9,6 +9,55 @@ const pendingResults = new Map<string, {
   timestamp: number;
 }>();
 
+// Sistema de rate limiting con cola de espera
+class RequestQueue {
+  private activeRequests = 0;
+  private readonly maxConcurrent = 10;
+  private queue: Array<() => void> = [];
+
+  async executeWithLimit<T>(operation: () => Promise<T>): Promise<T> {
+    return new Promise((resolve, reject) => {
+      const execute = async () => {
+        this.activeRequests++;
+        try {
+          const result = await operation();
+          resolve(result);
+        } catch (error) {
+          reject(error);
+        } finally {
+          this.activeRequests--;
+          this.processQueue();
+        }
+      };
+
+      if (this.activeRequests < this.maxConcurrent) {
+        execute();
+      } else {
+        this.queue.push(execute);
+      }
+    });
+  }
+
+  private processQueue() {
+    if (this.queue.length > 0 && this.activeRequests < this.maxConcurrent) {
+      const nextRequest = this.queue.shift();
+      if (nextRequest) {
+        nextRequest();
+      }
+    }
+  }
+
+  getStatus() {
+    return {
+      activeRequests: this.activeRequests,
+      queuedRequests: this.queue.length,
+      maxConcurrent: this.maxConcurrent
+    };
+  }
+}
+
+const requestQueue = new RequestQueue();
+
 // Limpiar resultados antiguos cada 30 minutos
 setInterval(() => {
   const thirtyMinutesAgo = Date.now() - (30 * 60 * 1000);
@@ -32,7 +81,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         "POST /api/webhook-result", 
         "GET /api/check-status/:candidate_submission_id",
         "POST /api/liquidate",
-        "POST /api/webhook"
+        "POST /api/webhook",
+        "GET /api/admin/active-processings",
+        "GET /api/admin/queue-status"
       ]
     });
   });
@@ -153,6 +204,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Endpoint para monitorear el estado del rate limiting
+  app.get("/api/admin/queue-status", async (req, res) => {
+    try {
+      const queueStatus = requestQueue.getStatus();
+      res.json({
+        ...queueStatus,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Error interno del servidor" });
+    }
+  });
+
   // Endpoint para limpiar todos los procesamientos (liquidar)
   app.post("/api/liquidate", async (req, res) => {
     try {
@@ -169,7 +233,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Proxy endpoint para el webhook de n8n (asíncrono)
+  // Proxy endpoint para el webhook de n8n (asíncrono con rate limiting)
   app.post("/api/webhook", async (req, res) => {
     try {
       const webhookUrl = process.env.N8N_WEBHOOK_URL;
@@ -211,14 +275,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         callback_url: `${protocol}://${req.get('host')}/api/webhook-result`
       };
 
-      // Enviar a n8n de forma asíncrona
-      fetch(webhookUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`,
-        },
-        body: JSON.stringify(dataForN8n)
+      // Enviar a n8n con rate limiting
+      requestQueue.executeWithLimit(async () => {
+        return fetch(webhookUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken}`,
+          },
+          body: JSON.stringify(dataForN8n)
+        });
       }).catch((error) => {
         pendingResults.set(candidate_submission_id, {
           status: 'error',
