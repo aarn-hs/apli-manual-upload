@@ -81,8 +81,8 @@ app.use((req, res, next) => {
     if (isLocalhost && !testingMode) {
       if (testingMode) console.log('❌ Blocked: Localhost access detected');
       return res.status(403).json({ 
-        error: 'Access from localhost is not permitted',
-        code: 'LOCALHOST_BLOCKED'
+        error: 'Server Access Blocked',
+        code: 'ACCESS_DENIED'
       });
     }
   }
@@ -105,11 +105,8 @@ app.use((req, res, next) => {
         console.log('❌ Blocked: Domain not in allowed list', { referer, origin, allowedDomains });
       }
       return res.status(403).json({ 
-        error: 'Domain not authorized for iframe embedding',
-        code: 'DOMAIN_NOT_ALLOWED',
-        referer,
-        origin,
-        allowedDomains: testingMode ? allowedDomains : undefined
+        error: 'Server Access Blocked',
+        code: 'ACCESS_DENIED'
       });
     }
     

@@ -27,22 +27,13 @@ export default function IframeBlocker({ children }: { children: React.ReactNode 
             </svg>
           </div>
           
-          <h1 className="text-2xl font-bold text-red-700 mb-2">Acceso No Autorizado</h1>
+          <h1 className="text-2xl font-bold text-red-700 mb-2">Server Access Blocked</h1>
           <p className="text-red-600 mb-4">
-            Esta aplicación no puede ser mostrada desde el dominio actual.
+            El acceso a esta aplicación ha sido restringido.
           </p>
           
-          {parentDomain && (
-            <div className="bg-red-100 border border-red-300 rounded p-3 mb-4">
-              <p className="text-sm text-red-700">
-                <strong>Dominio origen:</strong> {parentDomain}
-              </p>
-            </div>
-          )}
-          
           <p className="text-sm text-gray-600">
-            Para acceder a esta aplicación, utilice uno de los dominios autorizados 
-            o contacte al administrador del sistema.
+            Si necesita acceso, contacte al administrador del sistema.
           </p>
           
           <button
