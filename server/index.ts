@@ -6,16 +6,21 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Configuración de protección iframe - EDITAR AQUÍ
+// Configuración de protección iframe mediante variables de entorno
+// Configura estas variables en la sección "Secrets" de Replit:
+// TESTING_MODE=false (para producción)
+// ALLOWED_IFRAME_DOMAINS=https://tudominio.com,https://app.tudominio.com
+// BLOCK_LOCALHOST=true (para producción)
+
+// Valores por defecto solo para desarrollo en Replit
 if (!process.env.TESTING_MODE) {
-  process.env.TESTING_MODE = 'false';  // Cambiar a 'false' para producción
+  process.env.TESTING_MODE = 'true';
 }
 if (!process.env.ALLOWED_IFRAME_DOMAINS) {
-  // CONFIGURAR TUS DOMINIOS AQUÍ:
-  process.env.ALLOWED_IFRAME_DOMAINS = 'https://tudominio.com,https://app.tudominio.com,https://portal.tudominio.com';
+  process.env.ALLOWED_IFRAME_DOMAINS = 'https://a0846e20-5ed9-446b-a265-bdd6d36e57f8-00-31e29bhx9duhu.worf.replit.dev';
 }
 if (!process.env.BLOCK_LOCALHOST) {
-  process.env.BLOCK_LOCALHOST = 'true';  // Cambiar a 'true' para bloquear localhost
+  process.env.BLOCK_LOCALHOST = 'false';
 }
 
 // Middleware de protección iframe con dominios permitidos
