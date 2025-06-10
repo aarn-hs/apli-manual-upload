@@ -58,6 +58,72 @@ class RequestQueue {
 
 const requestQueue = new RequestQueue();
 
+// Sistema de rate limiting por IP
+class IPRateLimiter {
+  private requests = new Map<string, Array<number>>();
+  private readonly maxRequests = 5; // máximo 5 peticiones
+  private readonly windowMs = 60 * 1000; // por minuto
+  private readonly cleanupInterval = 5 * 60 * 1000; // limpiar cada 5 minutos
+
+  constructor() {
+    // Limpiar IPs antiguos periódicamente
+    setInterval(() => {
+      const now = Date.now();
+      this.requests.forEach((timestamps, ip) => {
+        const validTimestamps = timestamps.filter(t => now - t < this.windowMs);
+        if (validTimestamps.length === 0) {
+          this.requests.delete(ip);
+        } else {
+          this.requests.set(ip, validTimestamps);
+        }
+      });
+    }, this.cleanupInterval);
+  }
+
+  isAllowed(ip: string): boolean {
+    const now = Date.now();
+    const ipRequests = this.requests.get(ip) || [];
+    
+    // Filtrar peticiones dentro de la ventana de tiempo
+    const recentRequests = ipRequests.filter(timestamp => now - timestamp < this.windowMs);
+    
+    if (recentRequests.length >= this.maxRequests) {
+      return false;
+    }
+
+    // Agregar esta petición
+    recentRequests.push(now);
+    this.requests.set(ip, recentRequests);
+    return true;
+  }
+
+  getRemainingRequests(ip: string): number {
+    const now = Date.now();
+    const ipRequests = this.requests.get(ip) || [];
+    const recentRequests = ipRequests.filter(timestamp => now - timestamp < this.windowMs);
+    return Math.max(0, this.maxRequests - recentRequests.length);
+  }
+
+  getResetTime(ip: string): number {
+    const ipRequests = this.requests.get(ip) || [];
+    if (ipRequests.length === 0) return 0;
+    
+    const oldestRequest = Math.min(...ipRequests);
+    return oldestRequest + this.windowMs;
+  }
+
+  getStatus() {
+    return {
+      maxRequests: this.maxRequests,
+      windowMs: this.windowMs,
+      activeIPs: this.requests.size,
+      totalTrackedRequests: Array.from(this.requests.values()).reduce((sum, arr) => sum + arr.length, 0)
+    };
+  }
+}
+
+const ipLimiter = new IPRateLimiter();
+
 // Limpiar resultados antiguos cada 30 minutos
 setInterval(() => {
   const thirtyMinutesAgo = Date.now() - (30 * 60 * 1000);
@@ -70,8 +136,42 @@ setInterval(() => {
   idsToDelete.forEach(id => pendingResults.delete(id));
 }, 30 * 60 * 1000);
 
+// Middleware de rate limiting por IP
+function rateLimitMiddleware(req: any, res: any, next: any) {
+  // Obtener IP real del cliente
+  const ip = req.ip || 
+           req.connection.remoteAddress || 
+           req.socket.remoteAddress ||
+           (req.connection.socket ? req.connection.socket.remoteAddress : null) ||
+           req.get('X-Forwarded-For')?.split(',')[0]?.trim() ||
+           req.get('X-Real-IP') ||
+           'unknown';
+
+  if (!ipLimiter.isAllowed(ip)) {
+    const resetTime = ipLimiter.getResetTime(ip);
+    const retryAfter = Math.ceil((resetTime - Date.now()) / 1000);
+    
+    return res.status(429).json({
+      error: 'Too Many Requests',
+      message: 'Rate limit exceeded. Try again later.',
+      retryAfter: retryAfter > 0 ? retryAfter : 60,
+      limit: 5,
+      window: '1 minute'
+    });
+  }
+
+  // Agregar headers informativos
+  res.set({
+    'X-RateLimit-Limit': '5',
+    'X-RateLimit-Remaining': ipLimiter.getRemainingRequests(ip).toString(),
+    'X-RateLimit-Reset': new Date(ipLimiter.getResetTime(ip)).toISOString()
+  });
+
+  next();
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Endpoint de diagnóstico para verificar rutas disponibles
+  // Endpoint de diagnóstico para verificar rutas disponibles (sin rate limit)
   app.get("/api/health", async (req, res) => {
     res.json({ 
       status: "ok", 
@@ -89,7 +189,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // API simplificada para validación del formulario
-  app.post("/api/candidates", async (req, res) => {
+  app.post("/api/candidates", rateLimitMiddleware, async (req, res) => {
     try {
       // Validar datos del formulario
       const validatedData = await insertCandidateSchema.parseAsync(req.body);
@@ -132,7 +232,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Endpoint para verificar el estado de un procesamiento (polling)
-  app.get("/api/check-status/:candidate_submission_id", async (req, res) => {
+  app.get("/api/check-status/:candidate_submission_id", rateLimitMiddleware, async (req, res) => {
     try {
       const { candidate_submission_id } = req.params;
       const result = pendingResults.get(candidate_submission_id);
@@ -208,8 +308,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/admin/queue-status", async (req, res) => {
     try {
       const queueStatus = requestQueue.getStatus();
+      const rateLimitStatus = ipLimiter.getStatus();
       res.json({
-        ...queueStatus,
+        queue: queueStatus,
+        rateLimit: rateLimitStatus,
         timestamp: new Date().toISOString()
       });
     } catch (error) {
@@ -218,7 +320,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Endpoint para limpiar todos los procesamientos (liquidar)
-  app.post("/api/liquidate", async (req, res) => {
+  app.post("/api/liquidate", rateLimitMiddleware, async (req, res) => {
     try {
       const beforeCount = pendingResults.size;
       pendingResults.clear();
@@ -234,7 +336,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Proxy endpoint para el webhook de n8n (asíncrono con rate limiting)
-  app.post("/api/webhook", async (req, res) => {
+  app.post("/api/webhook", rateLimitMiddleware, async (req, res) => {
     try {
       const webhookUrl = process.env.N8N_WEBHOOK_URL;
       const authToken = process.env.VITE_WEBHOOK_AUTH_TOKEN;
