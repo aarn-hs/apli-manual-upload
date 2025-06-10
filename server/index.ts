@@ -6,15 +6,16 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Set default environment variables for testing if not configured
+// Configuración de protección iframe - EDITAR AQUÍ
 if (!process.env.TESTING_MODE) {
-  process.env.TESTING_MODE = 'true';
+  process.env.TESTING_MODE = 'false';  // Cambiar a 'false' para producción
 }
 if (!process.env.ALLOWED_IFRAME_DOMAINS) {
-  process.env.ALLOWED_IFRAME_DOMAINS = 'https://portal.empresa.com,https://app.empresa.com,https://dashboard.empresa.com,https://a0846e20-5ed9-446b-a265-bdd6d36e57f8-00-31e29bhx9duhu.worf.replit.dev';
+  // CONFIGURAR TUS DOMINIOS AQUÍ:
+  process.env.ALLOWED_IFRAME_DOMAINS = 'https://tudominio.com,https://app.tudominio.com,https://portal.tudominio.com';
 }
 if (!process.env.BLOCK_LOCALHOST) {
-  process.env.BLOCK_LOCALHOST = 'false';
+  process.env.BLOCK_LOCALHOST = 'true';  // Cambiar a 'true' para bloquear localhost
 }
 
 // Middleware de protección iframe con dominios permitidos
