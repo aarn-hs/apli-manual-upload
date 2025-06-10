@@ -61,7 +61,7 @@ const requestQueue = new RequestQueue();
 // Sistema de rate limiting por IP
 class IPRateLimiter {
   private requests = new Map<string, Array<number>>();
-  private readonly maxRequests = 5; // máximo 5 peticiones
+  private readonly maxRequests = 25; // máximo 25 peticiones para permitir polling
   private readonly windowMs = 60 * 1000; // por minuto
   private readonly cleanupInterval = 5 * 60 * 1000; // limpiar cada 5 minutos
 
@@ -263,7 +263,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       endpoints: [
         "POST /api/candidates (Auth Required)",
         "POST /api/webhook-result", 
-        "GET /api/check-status/:candidate_submission_id (Auth Required)",
+        "GET /api/check-status/:candidate_submission_id (Auth Required, No Rate Limit)",
         "POST /api/liquidate (Auth Required)",
         "POST /api/webhook (Auth Required)",
         "GET /api/admin/active-processings",
@@ -318,7 +318,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Endpoint para verificar el estado de un procesamiento (polling)
-  app.get("/api/check-status/:candidate_submission_id", apiKeyMiddleware, rateLimitMiddleware, async (req, res) => {
+  app.get("/api/check-status/:candidate_submission_id", apiKeyMiddleware, async (req, res) => {
     try {
       const { candidate_submission_id } = req.params;
       const result = pendingResults.get(candidate_submission_id);

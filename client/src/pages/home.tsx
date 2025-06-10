@@ -172,7 +172,7 @@ export default function Home() {
   const pollForResult = async (candidateSubmissionId: string, submissionRequestId: string) => {
     const startTime = Date.now();
     const maxWaitTime = 10 * 60 * 1000; // 10 minutos máximo
-    const pollInterval = 3000; // 3 segundos
+    const pollInterval = 5000; // 5 segundos (reducido de 3 para evitar rate limiting)
 
     const poll = async (): Promise<void> => {
       const elapsed = Date.now() - startTime;
