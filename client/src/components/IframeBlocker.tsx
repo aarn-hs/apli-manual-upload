@@ -1,33 +1,7 @@
 import { useIframeProtection } from '@/hooks/use-iframe-protection';
-import { useEffect } from 'react';
 
 export default function IframeBlocker({ children }: { children: React.ReactNode }) {
   const { isInIframe, isAllowed, parentDomain, error, isLoading } = useIframeProtection();
-
-  // Aplicar clases CSS para iframe
-  useEffect(() => {
-    if (isInIframe && isAllowed) {
-      document.body.classList.add('iframe-mode');
-      const rootElement = document.getElementById('root');
-      if (rootElement) {
-        rootElement.classList.add('iframe-container');
-      }
-    } else {
-      document.body.classList.remove('iframe-mode');
-      const rootElement = document.getElementById('root');
-      if (rootElement) {
-        rootElement.classList.remove('iframe-container');
-      }
-    }
-
-    return () => {
-      document.body.classList.remove('iframe-mode');
-      const rootElement = document.getElementById('root');
-      if (rootElement) {
-        rootElement.classList.remove('iframe-container');
-      }
-    };
-  }, [isInIframe, isAllowed]);
 
   if (isLoading) {
     return (
