@@ -97,6 +97,21 @@
     min-height: 100vh;
   }
 
+  /* Espaciado personalizado para iframe */
+  .px-18 {
+    padding-left: 72px;
+    padding-right: 72px;
+  }
+
+  .py-18 {
+    padding-top: 72px;
+    padding-bottom: 72px;
+  }
+
+  .p-18 {
+    padding: 72px;
+  }
+
   .title {
     @apply font-bold text-4xl leading-[48px];
   }

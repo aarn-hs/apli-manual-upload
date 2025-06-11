@@ -332,8 +332,8 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col min-h-full bg-white">
-      <main className="w-full px-18 py-18 flex-grow">
+    <div className="flex flex-col min-h-full bg-white p-18">
+      <main className="w-full flex-grow">
         <div className="mb-6">
           <h1 className="title mb-2">Carga manual de candidato</h1>
           <p className="subtitle text-dark-grey">Completa el formulario con los datos del candidato que deseas cargar. Todos los campos marcados con <span className="text-red">*</span> son obligatorios. Una vez completado, haz clic en "Enviar Candidato" para mandar la información.</p>
