@@ -333,18 +333,20 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-full bg-white">
-      <main className="w-full px-4 py-6 flex-grow">
-        <div className="mb-6">
-          <h1 className="title mb-2">Carga manual de candidato</h1>
+      <main className="w-full px-6 py-8 flex-grow max-w-4xl mx-auto">
+        <div className="mb-8 px-2">
+          <h1 className="title mb-4">Carga manual de candidato</h1>
           <p className="subtitle text-dark-grey">Completa el formulario con los datos del candidato que deseas cargar. Todos los campos marcados con <span className="text-red">*</span> son obligatorios. Una vez completado, haz clic en "Enviar Candidato" para mandar la información.</p>
         </div>
 
-        <CandidateForm 
-          onSubmit={handleFormSubmit} 
-          isSubmitting={isSubmitting}
-          notificationState={notificationState}
-          onDismissNotification={() => setNotificationState(undefined)}
-        />
+        <div className="px-2">
+          <CandidateForm 
+            onSubmit={handleFormSubmit} 
+            isSubmitting={isSubmitting}
+            notificationState={notificationState}
+            onDismissNotification={() => setNotificationState(undefined)}
+          />
+        </div>
       </main>
     </div>
   );

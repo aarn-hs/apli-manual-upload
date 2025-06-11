@@ -64,11 +64,11 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
   };
 
   return (
-    <section id="simple-form" className="bg-white p-6">
-      <h2 className="important section-title">Registro de candidato</h2>
+    <section id="simple-form" className="bg-white p-8">
+      <h2 className="important section-title mb-8">Registro de candidato</h2>
       
       {/* Sistema Grid 2×n con orden según especificación */}
-      <div className={`grid grid-cols-1 gap-x-8 gap-y-1 ${isMobile ? '' : 'md:grid-cols-2'} md:gap-x-10 md:gap-y-2`}>
+      <div className={`grid grid-cols-1 gap-x-8 gap-y-6 ${isMobile ? '' : 'md:grid-cols-2'} md:gap-x-12 md:gap-y-8`}>
         {/* Campo 1 - Fuente */}
         <FormField
           control={control}

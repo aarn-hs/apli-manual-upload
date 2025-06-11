@@ -140,12 +140,12 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8">
+      <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8 bg-white p-6 rounded-lg shadow-sm border border-gray-100">
         <SimpleForm control={methods.control} watch={methods.watch} setValue={methods.setValue} />
 
         {/* Notification panel */}
         {notificationState?.isVisible && (
-          <div className={`p-4 rounded-lg border-2 ${
+          <div className={`p-6 rounded-lg border-2 ${
             notificationState.isSuccess 
               ? 'bg-cyan-50 border-cyan-400' 
               : 'bg-violet-50 border-violet-400'
