@@ -118,7 +118,7 @@
   }
 
   .btn-primary {
-    @apply bg-black text-white border border-black px-6 py-3 hover:bg-dark-grey transition-colors font-medium;
+    @apply bg-black text-white border border-black px-4 py-2 hover:bg-dark-grey transition-colors;
   }
 
   .btn-primary:disabled {
@@ -126,7 +126,7 @@
   }
 
   .btn-secondary {
-    @apply bg-white text-black border border-black px-6 py-3 hover:bg-light-grey transition-colors font-medium;
+    @apply bg-white text-black border border-black px-4 py-2 hover:bg-light-grey transition-colors;
   }
 
   .btn-secondary:disabled {
@@ -134,7 +134,7 @@
   }
 
   .btn-tertiary {
-    @apply bg-transparent text-black border-none px-6 py-3 hover:text-dark-grey transition-colors font-medium;
+    @apply bg-transparent text-black border-none px-4 py-2 hover:text-dark-grey transition-colors;
   }
 
   .form-control[aria-invalid="true"], .form-control.error {
@@ -168,10 +168,6 @@
   
   /* Add consistent spacing for form fields */
   .form-item {
-    @apply min-h-[115px] mb-4 flex flex-col px-1 py-2;
-  }
-  
-  .form-control {
-    @apply px-4 py-3 text-base border-2 border-grey rounded-md focus:border-turquoise focus:outline-none transition-colors;
+    @apply min-h-[105px] mb-2 flex flex-col;
   }
 }
