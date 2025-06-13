@@ -366,16 +366,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Endpoint para recibir resultados de n8n (callback asíncrono)
   app.post("/api/webhook-result", async (req, res) => {
     try {
-      const { candidate_submission_id, status, result, error } = req.body;
+      const { candidate_submission_id, status, result } = req.body;
       
       if (!candidate_submission_id) {
         return res.status(400).json({ error: "candidate_submission_id requerido" });
       }
 
-      // Actualizar el resultado en memoria
+      // Actualizar el resultado en memoria preservando la estructura completa
       pendingResults.set(candidate_submission_id, {
         status: status === 'success' ? 'completed' : 'error',
-        result: status === 'success' ? result : { error },
+        result: result || req.body.result || req.body,
         timestamp: Date.now()
       });
 
