@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { validatePMX, validateName, validatePhone, validatePostalCode, validateAddress, validateBirthDate, validateCURPWithBirthDate, validateCURPComplete, validateCURPWithDetails, validatePastDate, validateDateWithDetails, validateBirthDateWithDetails, validateStreetColonyWithDetails, validateEmployerPositionWithDetails, validateNameWithDetails, validateEmailWithDetails, validateTextNotOnlySpaces, cleanAndFormatText, validateWorkStartDate, validateWorkEndDate, validateSecondLastNameWithDetails } from "./validation";
+import { validatePMX, validateName, validatePhone, validatePostalCode, validateAddress, validateBirthDate, validateCURPWithBirthDate, validateCURPComplete, validateCURPWithDetails, validatePastDate, validateDateWithDetails, validateBirthDateWithDetails, validateStreetColonyWithDetails, validateEmployerPositionWithDetails, validateNameWithDetails, validateEmailWithDetails, validateTextNotOnlySpaces, cleanAndFormatText, validateWorkStartDate, validateWorkEndDate } from "./validation";
 
 // Esquema simplificado del candidato según los campos obligatorios
 export const simplifiedCandidateSchema = z.object({
@@ -40,10 +40,12 @@ export const simplifiedCandidateSchema = z.object({
   secondLastName: z.string().optional()
     .transform((val) => val ? cleanAndFormatText(val) : val)
     .refine((val) => {
-      const validation = validateSecondLastNameWithDetails(val || "");
+      if (!val) return true;
+      const validation = validateNameWithDetails(val);
       return validation.isValid;
     }, (val) => {
-      const validation = validateSecondLastNameWithDetails(val || "");
+      if (!val) return { message: "Apellido inválido" };
+      const validation = validateNameWithDetails(val);
       return { message: validation.error || "Apellido inválido" };
     }),
   
@@ -57,6 +59,7 @@ export const simplifiedCandidateSchema = z.object({
     }),
   
   email: z.string({ required_error: "Ingrese el correo electrónico" })
+    .transform(cleanAndFormatText)
     .refine((email) => {
       const validation = validateEmailWithDetails(email);
       return validation.isValid;
