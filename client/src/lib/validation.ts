@@ -86,7 +86,7 @@ export function validateTextNotOnlySpaces(text: string): { isValid: boolean; err
   return { isValid: true };
 }
 
-// Validación específica para nombres y apellidos
+// Validación específica para nombres y apellidos (usando misma lógica que empleador)
 export function validateNameWithDetails(name: string): { isValid: boolean; error?: string } {
   if (!name) return { isValid: false, error: "Este campo es requerido" };
   
@@ -95,15 +95,22 @@ export function validateNameWithDetails(name: string): { isValid: boolean; error
     return { isValid: false, error: "No puede contener solo espacios" };
   }
   
-  // Verificar longitud mínima después de limpiar
   const cleanName = cleanAndFormatText(name);
-  if (cleanName.length < 2) {
-    return { isValid: false, error: "Debe tener al menos 2 caracteres" };
+  
+  // Debe tener al menos 2 letras
+  const letterCount = (cleanName.match(/[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]/g) || []).length;
+  if (letterCount < 2) {
+    return { isValid: false, error: "Debe contener al menos 2 letras" };
   }
   
   // Solo permite letras y espacios
   if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/.test(cleanName)) {
     return { isValid: false, error: "Solo se permiten letras y espacios" };
+  }
+  
+  // Verificar longitud mínima
+  if (cleanName.length < 2) {
+    return { isValid: false, error: "Debe tener al menos 2 caracteres" };
   }
   
   return { isValid: true };

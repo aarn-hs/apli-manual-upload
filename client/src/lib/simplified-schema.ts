@@ -40,7 +40,7 @@ export const simplifiedCandidateSchema = z.object({
   secondLastName: z.string().optional()
     .transform((val) => val ? cleanAndFormatText(val) : val)
     .refine((val) => {
-      if (!val) return true;
+      if (!val || val.trim() === "") return true; // Es opcional, pero si se llena no puede ser solo espacios
       const validation = validateNameWithDetails(val);
       return validation.isValid;
     }, (val) => {
