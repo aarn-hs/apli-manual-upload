@@ -111,13 +111,17 @@ export function validateNameWithDetails(name: string): { isValid: boolean; error
 
 // Validación específica para apellido materno (opcional pero si se ingresa no puede ser solo espacios)
 export function validateSecondLastNameWithDetails(secondLastName: string): { isValid: boolean; error?: string } {
+  console.log('validateSecondLastNameWithDetails called with:', `"${secondLastName}"`);
+  
   // Si está vacío, es válido (campo opcional)
   if (!secondLastName || secondLastName.length === 0) {
+    console.log('Empty value, returning valid');
     return { isValid: true };
   }
   
   // Si se ingresó algo, verificar que no sea solo espacios
   if (secondLastName.trim().length === 0) {
+    console.log('Only spaces detected, returning invalid');
     return { isValid: false, error: "No puede contener solo espacios" };
   }
   
@@ -137,15 +141,19 @@ export function validateSecondLastNameWithDetails(secondLastName: string): { isV
 
 // Validación robusta para email con reglas específicas
 export function validateEmailWithDetails(email: string): { isValid: boolean; error?: string } {
+  console.log('validateEmailWithDetails called with:', `"${email}"`);
+  
   if (!email) return { isValid: false, error: "Este campo es requerido" };
   
   // No permitir espacios en absoluto en el email
   if (email.includes(' ')) {
+    console.log('Email contains spaces, returning invalid');
     return { isValid: false, error: "El email no puede contener espacios" };
   }
   
   // Verificar que no sea solo espacios
   if (email.trim().length === 0) {
+    console.log('Email is only spaces, returning invalid');
     return { isValid: false, error: "Este campo es requerido" };
   }
   

@@ -215,7 +215,6 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
                   placeholder="Apellido materno (opcional)"
                   className="form-control"
                   tabIndex={getTabIndex(7)}
-                  autoCleanSpaces={true}
                 />
               </FormControl>
               <FormMessage className="error-message" />
