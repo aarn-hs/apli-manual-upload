@@ -277,6 +277,7 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
                   className={`form-control ${fieldState.error ? 'error' : ''}`}
                   tabIndex={getTabIndex(9)}
                   autoLowercase={true}
+                  noSpaces={true}
                 />
               </FormControl>
               <FormMessage className="error-message" />

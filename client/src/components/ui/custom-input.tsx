@@ -7,17 +7,23 @@ export interface CustomInputProps extends React.InputHTMLAttributes<HTMLInputEle
   autoUppercase?: boolean;
   autoLowercase?: boolean;
   autoCleanSpaces?: boolean;
+  noSpaces?: boolean;
   fieldName?: string;
   maxLength?: number;
 }
 
 export const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
-  ({ className, type, value, autoUppercase, autoLowercase, autoCleanSpaces, onChange, ...props }, ref) => {
+  ({ className, type, value, autoUppercase, autoLowercase, autoCleanSpaces, noSpaces, onChange, ...props }, ref) => {
     // Ensure value is never undefined to avoid controlled/uncontrolled warning
     const safeValue = value === undefined ? "" : value;
     
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       let newValue = e.target.value;
+      
+      if (noSpaces) {
+        // Remover todos los espacios para campos como email
+        newValue = newValue.replace(/\s/g, '');
+      }
       
       if (autoUppercase) {
         newValue = newValue.toUpperCase();
@@ -27,7 +33,7 @@ export const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
         newValue = newValue.toLowerCase();
       }
       
-      if (autoCleanSpaces) {
+      if (autoCleanSpaces && !noSpaces) {
         // Solo limpiar espacios múltiples, pero permitir espacios al inicio para que el usuario pueda escribir
         newValue = newValue.replace(/\s{2,}/g, ' ');
       }
