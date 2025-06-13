@@ -109,13 +109,44 @@ export function validateNameWithDetails(name: string): { isValid: boolean; error
   return { isValid: true };
 }
 
+// Validación específica para apellido materno (opcional pero si se ingresa no puede ser solo espacios)
+export function validateSecondLastNameWithDetails(secondLastName: string): { isValid: boolean; error?: string } {
+  // Si está vacío, es válido (campo opcional)
+  if (!secondLastName || secondLastName.length === 0) {
+    return { isValid: true };
+  }
+  
+  // Si se ingresó algo, verificar que no sea solo espacios
+  if (secondLastName.trim().length === 0) {
+    return { isValid: false, error: "No puede contener solo espacios" };
+  }
+  
+  // Verificar longitud mínima después de limpiar
+  const cleanName = cleanAndFormatText(secondLastName);
+  if (cleanName.length < 2) {
+    return { isValid: false, error: "Debe tener al menos 2 caracteres" };
+  }
+  
+  // Solo permite letras y espacios
+  if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/.test(cleanName)) {
+    return { isValid: false, error: "Solo se permiten letras y espacios" };
+  }
+  
+  return { isValid: true };
+}
+
 // Validación robusta para email con reglas específicas
 export function validateEmailWithDetails(email: string): { isValid: boolean; error?: string } {
   if (!email) return { isValid: false, error: "Este campo es requerido" };
   
+  // No permitir espacios en absoluto en el email
+  if (email.includes(' ')) {
+    return { isValid: false, error: "El email no puede contener espacios" };
+  }
+  
   // Verificar que no sea solo espacios
   if (email.trim().length === 0) {
-    return { isValid: false, error: "No puede contener solo espacios" };
+    return { isValid: false, error: "Este campo es requerido" };
   }
   
   const cleanEmail = email.trim().toLowerCase();
