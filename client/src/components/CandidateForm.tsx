@@ -144,90 +144,62 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
         <SimpleForm control={methods.control} watch={methods.watch} setValue={methods.setValue} />
 
         {/* Notification panel */}
-        {notificationState?.isVisible && (() => {
-          // Determinar si el mensaje requiere modal no cerrable
-          const isNonClosableError = notificationState.message.includes('No autorizado') ||
-                                    notificationState.message.includes('El candidato es un reingreso no viable');
-          
-          const handleDismiss = () => {
-            if (!isNonClosableError && onDismissNotification) {
-              onDismissNotification();
-            }
-          };
-
-          return (
-            <div className={`p-4 rounded-lg border-2 ${
-              notificationState.isSuccess 
-                ? 'bg-cyan-50 border-cyan-400' 
-                : isNonClosableError 
-                  ? 'bg-red-50 border-red-400' 
-                  : 'bg-violet-50 border-violet-400'
-            }`}>
-              <div className="flex justify-between items-start">
-                <div className="flex-1">
-                  <p className={`text-sm font-medium mb-2 ${
-                    notificationState.isSuccess 
-                      ? 'text-cyan-600' 
-                      : isNonClosableError 
-                        ? 'text-red-700' 
-                        : 'text-violet-700'
-                  }`}>
-                    {isNonClosableError ? 'Acción Requerida: ' : ''}{notificationState.message}
-                  </p>
-                  
-                  {isNonClosableError && (
-                    <div className="p-3 bg-red-100 border border-red-200 rounded-md mt-3">
-                      <p className="text-sm text-red-800 font-medium mb-2">
-                        Debes limpiar el formulario para continuar
-                      </p>
-                      <p className="text-xs text-red-600">
-                        Esta notificación permanecerá visible hasta que recargues la página o limpies todos los campos del formulario.
-                      </p>
-                    </div>
-                  )}
-                  
-                  {notificationState.submissionRequestId && (
-                    <p className="text-xs mb-1">
-                      <span className="font-medium">ID de solicitud:</span>{' '}
-                      <span className={notificationState.isSuccess ? 'text-cyan-600' : isNonClosableError ? 'text-red-600' : 'text-violet-600'}>
-                        {notificationState.submissionRequestId}
-                      </span>
-                    </p>
-                  )}
-                  
-                  {notificationState.applicationId && (
-                    <p className="text-xs">
-                      <span className="font-medium">ID de postulación:</span>{' '}
-                      <a
-                        href={`${baseUrl}/${notificationState.applicationId}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`underline hover:no-underline ${
-                          notificationState.isSuccess ? 'text-cyan-600 hover:text-cyan-800' : 'text-violet-600 hover:text-violet-800'
-                        }`}
-                      >
-                        {`${baseUrl}/${notificationState.applicationId}`}
-                      </a>
-                    </p>
-                  )}
-                </div>
+        {notificationState?.isVisible && (
+          <div className={`p-4 rounded-lg border-2 ${
+            notificationState.isSuccess 
+              ? 'bg-cyan-50 border-cyan-400' 
+              : 'bg-violet-50 border-violet-400'
+          }`}>
+            <div className="flex justify-between items-start">
+              <div className="flex-1">
+                <p className={`text-sm font-medium mb-2 ${
+                  notificationState.isSuccess ? 'text-cyan-600' : 'text-violet-700'
+                }`}>
+                  {notificationState.message}
+                </p>
                 
-                {!notificationState.isSuccess && !isNonClosableError && (
-                  <button
-                    onClick={handleDismiss}
-                    className={`ml-4 px-3 py-1 rounded hover:bg-gray-200 transition-colors text-gray-500 hover:text-gray-700 flex items-center gap-2`}
-                    aria-label="Corregir y reintentar"
-                  >
-                    <span className="text-sm">Corregir y reintentar</span>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
+                {notificationState.submissionRequestId && (
+                  <p className="text-xs mb-1">
+                    <span className="font-medium">ID de solicitud:</span>{' '}
+                    <span className={notificationState.isSuccess ? 'text-cyan-600' : 'text-violet-600'}>
+                      {notificationState.submissionRequestId}
+                    </span>
+                  </p>
+                )}
+                
+                {notificationState.applicationId && (
+                  <p className="text-xs">
+                    <span className="font-medium">ID de postulación:</span>{' '}
+                    <a
+                      href={`${baseUrl}/${notificationState.applicationId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`underline hover:no-underline ${
+                        notificationState.isSuccess ? 'text-cyan-600 hover:text-cyan-800' : 'text-violet-600 hover:text-violet-800'
+                      }`}
+                    >
+                      {`${baseUrl}/${notificationState.applicationId}`}
+                    </a>
+                  </p>
                 )}
               </div>
+              
+              {!notificationState.isSuccess && (
+                <button
+                  onClick={onDismissNotification}
+                  className={`ml-4 p-1 rounded-full hover:bg-gray-200 transition-colors ${
+                    notificationState.isSuccess ? 'text-cyan-600 hover:text-cyan-800' : 'text-violet-600 hover:text-violet-800'
+                  }`}
+                  aria-label="Cerrar notificación"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
             </div>
-          );
-        })()}
+          </div>
+        )}
 
         <div className="flex justify-start gap-4 pt-6">
           <button 

@@ -73,9 +73,8 @@ export default function WebhookResponseModal({
                 variant="ghost"
                 size="sm"
                 onClick={onClose}
-                className="h-auto px-3 py-1 text-gray-500 hover:text-gray-700"
+                className="h-6 w-6 p-0"
               >
-                <span className="text-sm mr-2">Corregir y reintentar</span>
                 <X className="h-4 w-4" />
               </Button>
             )}
