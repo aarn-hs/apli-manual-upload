@@ -188,17 +188,6 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
                     </a>
                   </p>
                 )}
-                
-                {isNonClosableError && (
-                  <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-md">
-                    <p className="text-sm text-red-800 font-medium mb-1">
-                      Acción requerida: Debes limpiar el formulario
-                    </p>
-                    <p className="text-xs text-red-600">
-                      Esta notificación permanecerá visible hasta que uses el botón "Limpiar formulario" o recargues la página.
-                    </p>
-                  </div>
-                )}
               </div>
               
               {!notificationState.isSuccess && !isNonClosableError && (
