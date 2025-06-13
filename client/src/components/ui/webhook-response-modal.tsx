@@ -34,8 +34,19 @@ export default function WebhookResponseModal({
                            message.includes('servicio no está disponible') ||
                            message.includes('conexión a internet');
 
+  // Determinar si el modal debe ser no cerrable
+  const isNonClosableError = message.includes('No autorizado') ||
+                            message.includes('El candidato es un reingreso no viable');
+
+  // Función para manejar el cierre del modal
+  const handleModalClose = () => {
+    if (!isNonClosableError) {
+      onClose();
+    }
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={handleModalClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <div className="flex items-center justify-between">
@@ -53,18 +64,20 @@ export default function WebhookResponseModal({
               ) : (
                 <>
                   <AlertCircle className="h-5 w-5 text-red-600" />
-                  Error al Enviar
+                  {isNonClosableError ? 'Acción Requerida' : 'Error al Enviar'}
                 </>
               )}
             </DialogTitle>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onClose}
-              className="h-6 w-6 p-0"
-            >
-              <X className="h-4 w-4" />
-            </Button>
+            {!isNonClosableError && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onClose}
+                className="h-6 w-6 p-0"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            )}
           </div>
         </DialogHeader>
         
@@ -72,6 +85,17 @@ export default function WebhookResponseModal({
           <p className="text-sm text-gray-700">
             {message}
           </p>
+          
+          {isNonClosableError && (
+            <div className="p-3 bg-red-50 border border-red-200 rounded-md">
+              <p className="text-sm text-red-800 font-medium mb-2">
+                Debes limpiar el formulario para continuar
+              </p>
+              <p className="text-xs text-red-600">
+                Esta ventana permanecerá abierta hasta que recargues la página o limpies todos los campos del formulario.
+              </p>
+            </div>
+          )}
           
           {applicationId && (
             <div className="p-3 bg-gray-50 rounded-md">
