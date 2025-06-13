@@ -45,6 +45,17 @@ export const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
       }
     };
     
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (noSpaces && e.key === ' ') {
+        e.preventDefault();
+        return;
+      }
+      
+      if (props.onKeyDown) {
+        props.onKeyDown(e);
+      }
+    };
+
     const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
       if (autoCleanSpaces) {
         // Al perder el foco, hacer limpieza completa incluyendo trim
@@ -81,6 +92,7 @@ export const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
         ref={ref}
         value={safeValue}
         onChange={handleChange}
+        onKeyDown={handleKeyDown}
         onBlur={handleBlur}
         {...props}
       />
