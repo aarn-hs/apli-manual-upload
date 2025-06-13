@@ -18,6 +18,12 @@ interface CandidateFormProps {
 
 export default function CandidateForm({ onSubmit, isSubmitting = false, notificationState, onDismissNotification }: CandidateFormProps) {
   const baseUrl = import.meta.env.VITE_APLI_CANDIDATES_BASE_URL || 'https://demo.apli.app/candidates';
+  
+  // Determinar si el error es no cerrable
+  const isNonClosableError = notificationState?.message && (
+    notificationState.message.includes('No autorizado') ||
+    notificationState.message.includes('El candidato es un reingreso no viable')
+  );
   const methods = useForm({
     resolver: zodResolver(simplifiedCandidateSchema),
     mode: "onChange",
@@ -182,9 +188,20 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
                     </a>
                   </p>
                 )}
+                
+                {isNonClosableError && (
+                  <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-md">
+                    <p className="text-sm text-red-800 font-medium mb-1">
+                      Acción requerida: Debes limpiar el formulario
+                    </p>
+                    <p className="text-xs text-red-600">
+                      Esta notificación permanecerá visible hasta que uses el botón "Limpiar formulario" o recargues la página.
+                    </p>
+                  </div>
+                )}
               </div>
               
-              {!notificationState.isSuccess && (
+              {!notificationState.isSuccess && !isNonClosableError && (
                 <button
                   onClick={onDismissNotification}
                   className={`ml-4 p-1 rounded-full hover:bg-gray-200 transition-colors ${

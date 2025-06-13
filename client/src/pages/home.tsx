@@ -214,12 +214,15 @@ export default function Home() {
         const error = statusData.result;
 
         let message = 'Error durante el procesamiento';
+        let applicationId = undefined;
         
         // La estructura es: result.error.message
         if (typeof error?.error?.message === 'string') {
           message = error.error.message;
+          applicationId = error.error.application_id;
         } else if (typeof error?.message === 'string') {
           message = error.message;
+          applicationId = error.application_id;
         } else if (typeof error?.error === 'string') {
           message = error.error;
         } else if (typeof error === 'string') {
@@ -231,7 +234,7 @@ export default function Home() {
           isSuccess: false,
           message,
           submissionRequestId: submissionRequestId,
-          applicationId: undefined
+          applicationId: applicationId
         });
         setIsSubmitting(false);
         
