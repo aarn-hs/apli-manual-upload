@@ -20,34 +20,34 @@ export const simplifiedCandidateSchema = z.object({
   firstName: z.string({ required_error: "Ingrese el nombre" })
     .transform(cleanAndFormatText)
     .refine((name) => {
-      const validation = validateEmployerPositionWithDetails(name);
+      const validation = validateNameWithDetails(name);
       return validation.isValid;
     }, (name) => {
-      const validation = validateEmployerPositionWithDetails(name);
+      const validation = validateNameWithDetails(name);
       return { message: validation.error || "Nombre inválido" };
     }),
   
   firstLastName: z.string({ required_error: "Ingrese el apellido paterno" })
     .transform(cleanAndFormatText)
     .refine((name) => {
-      const validation = validateEmployerPositionWithDetails(name);
+      const validation = validateNameWithDetails(name);
       return validation.isValid;
     }, (name) => {
-      const validation = validateEmployerPositionWithDetails(name);
+      const validation = validateNameWithDetails(name);
       return { message: validation.error || "Apellido inválido" };
     }),
   
-  secondLastName: z.string().optional()
-    .transform((val) => val ? cleanAndFormatText(val) : val)
+  secondLastName: z.string()
+    .transform((val) => val ? cleanAndFormatText(val) : "")
     .refine((val) => {
-      if (!val || val.trim() === "") return true; // Es opcional, pero si se llena no puede ser solo espacios
-      const validation = validateEmployerPositionWithDetails(val);
+      if (!val || val.trim() === "") return true; // Es opcional
+      const validation = validateNameWithDetails(val);
       return validation.isValid;
     }, (val) => {
-      if (!val) return { message: "Apellido inválido" };
-      const validation = validateEmployerPositionWithDetails(val);
+      const validation = validateNameWithDetails(val || "");
       return { message: validation.error || "Apellido inválido" };
-    }),
+    })
+    .optional(),
   
   birthDate: z.string({ required_error: "Ingrese la fecha de nacimiento" })
     .refine((date) => {

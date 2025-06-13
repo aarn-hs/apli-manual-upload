@@ -86,7 +86,7 @@ export function validateTextNotOnlySpaces(text: string): { isValid: boolean; err
   return { isValid: true };
 }
 
-// Validación específica para nombres y apellidos (usando misma lógica que empleador)
+// Validación específica para nombres y apellidos (sin números, solo espacios produce error específico)
 export function validateNameWithDetails(name: string): { isValid: boolean; error?: string } {
   if (!name) return { isValid: false, error: "Este campo es requerido" };
   
@@ -96,6 +96,11 @@ export function validateNameWithDetails(name: string): { isValid: boolean; error
   }
   
   const cleanName = cleanAndFormatText(name);
+  
+  // No debe contener números
+  if (/\d/.test(cleanName)) {
+    return { isValid: false, error: "No se permiten números" };
+  }
   
   // Debe tener al menos 2 letras
   const letterCount = (cleanName.match(/[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]/g) || []).length;
