@@ -20,20 +20,20 @@ export const simplifiedCandidateSchema = z.object({
   firstName: z.string({ required_error: "Ingrese el nombre" })
     .transform(cleanAndFormatText)
     .refine((name) => {
-      const validation = validateNameWithDetails(name);
+      const validation = validateEmployerPositionWithDetails(name);
       return validation.isValid;
     }, (name) => {
-      const validation = validateNameWithDetails(name);
+      const validation = validateEmployerPositionWithDetails(name);
       return { message: validation.error || "Nombre inválido" };
     }),
   
   firstLastName: z.string({ required_error: "Ingrese el apellido paterno" })
     .transform(cleanAndFormatText)
     .refine((name) => {
-      const validation = validateNameWithDetails(name);
+      const validation = validateEmployerPositionWithDetails(name);
       return validation.isValid;
     }, (name) => {
-      const validation = validateNameWithDetails(name);
+      const validation = validateEmployerPositionWithDetails(name);
       return { message: validation.error || "Apellido inválido" };
     }),
   
@@ -41,11 +41,11 @@ export const simplifiedCandidateSchema = z.object({
     .transform((val) => val ? cleanAndFormatText(val) : val)
     .refine((val) => {
       if (!val || val.trim() === "") return true; // Es opcional, pero si se llena no puede ser solo espacios
-      const validation = validateNameWithDetails(val);
+      const validation = validateEmployerPositionWithDetails(val);
       return validation.isValid;
     }, (val) => {
       if (!val) return { message: "Apellido inválido" };
-      const validation = validateNameWithDetails(val);
+      const validation = validateEmployerPositionWithDetails(val);
       return { message: validation.error || "Apellido inválido" };
     }),
   
