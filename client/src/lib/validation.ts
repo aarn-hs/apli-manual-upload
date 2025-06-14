@@ -139,6 +139,11 @@ export function validateSecondLastNameWithDetails(name: string): { isValid: bool
   return { isValid: true };
 }
 
+// Dominios de email bloqueados específicamente
+const blockedEmailDomains = [
+  'walmart.com'
+];
+
 // Dominios de email válidos
 const validEmailDomains = [
   // Proveedores públicos internacionales
@@ -150,7 +155,7 @@ const validEmailDomains = [
   'terra.com.mx', 'prodigy.net.mx', 'latinmail.com', 'mexicomail.com',
   
   // Universidades públicas mexicanas principales
-  'unam.mx', 'ipn.mx', 'uanl.mx', 'udg.mx', 'buap.mx', 'uv.mx', 'uabc.mx',
+  'unam.mx', 'comunidad.unam.mx', 'ipn.mx', 'uanl.mx', 'udg.mx', 'buap.mx', 'uv.mx', 'uabc.mx',
   'uas.edu.mx', 'uach.mx', 'uaem.mx', 'uat.edu.mx', 'uabjo.mx', 'unicach.mx',
   'ujed.mx', 'uadec.edu.mx', 'uaslp.mx', 'ugto.mx', 'umich.mx', 'unison.mx',
   'uson.mx', 'uacj.mx', 'uacam.mx', 'uqroo.mx', 'unach.mx', 'uaz.edu.mx',
@@ -252,6 +257,11 @@ export function validateEmailWithDetails(email: string): { isValid: boolean; err
   const tld = subdomains[subdomains.length - 1];
   if (tld.length < 2) {
     return { isValid: false, error: "La extensión del dominio debe tener al menos 2 caracteres" };
+  }
+  
+  // Verificar si el dominio está específicamente bloqueado
+  if (blockedEmailDomains.includes(domainPart)) {
+    return { isValid: false, error: "Este dominio de email no está permitido" };
   }
   
   // Verificar si el dominio está en la lista de dominios válidos
