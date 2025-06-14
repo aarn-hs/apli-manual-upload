@@ -95,6 +95,11 @@ export function validateNameWithDetails(name: string): { isValid: boolean; error
     return { isValid: false, error: "No puede contener solo espacios" };
   }
   
+  // Verificar longitud máxima antes de limpiar
+  if (name.length > 40) {
+    return { isValid: false, error: "No se pueden ingresar más de 40 caracteres" };
+  }
+  
   // Verificar longitud mínima después de limpiar
   const cleanName = cleanAndFormatText(name);
   if (cleanName.length < 2) {
@@ -123,6 +128,11 @@ export function validateSecondLastNameWithDetails(name: string): { isValid: bool
   if (name.length > 0 && name.trim().length === 0) {
     console.log('Only spaces detected, returning error');
     return { isValid: false, error: "Este campo es requerido" };
+  }
+  
+  // Verificar longitud máxima antes de limpiar
+  if (name.length > 40) {
+    return { isValid: false, error: "No se pueden ingresar más de 40 caracteres" };
   }
   
   // Verificar longitud mínima después de limpiar
@@ -300,6 +310,11 @@ export function validateStreetColonyWithDetails(text: string): { isValid: boolea
     return { isValid: false, error: "No puede contener solo espacios" };
   }
   
+  // Verificar longitud máxima antes de limpiar
+  if (text.length > 40) {
+    return { isValid: false, error: "No se pueden ingresar más de 40 caracteres" };
+  }
+  
   const cleanText = cleanAndFormatText(text);
   
   // No debe contener únicamente números
@@ -335,6 +350,11 @@ export function validateEmployerPositionWithDetails(text: string): { isValid: bo
     return { isValid: false, error: "No puede contener solo espacios" };
   }
   
+  // Verificar longitud máxima antes de limpiar
+  if (text.length > 40) {
+    return { isValid: false, error: "No se pueden ingresar más de 40 caracteres" };
+  }
+  
   const cleanText = cleanAndFormatText(text);
   
   // No debe contener únicamente números
@@ -356,6 +376,33 @@ export function validateEmployerPositionWithDetails(text: string): { isValid: bo
   // Verificar longitud mínima
   if (cleanText.length < 3) {
     return { isValid: false, error: "El texto es demasiado corto" };
+  }
+  
+  return { isValid: true };
+}
+
+// Validación específica para número interior (5 caracteres máximo)
+export function validateInteriorNumberWithDetails(text: string): { isValid: boolean; error?: string } {
+  // Campo opcional, si está vacío es válido
+  if (!text) {
+    return { isValid: true };
+  }
+  
+  // Verificar que no sea solo espacios
+  if (text.trim().length === 0) {
+    return { isValid: false, error: "Este campo es requerido" };
+  }
+  
+  // Verificar longitud máxima antes de limpiar
+  if (text.length > 5) {
+    return { isValid: false, error: "No se pueden ingresar más de 5 caracteres" };
+  }
+  
+  const cleanText = text.trim();
+  
+  // Solo permite letras, números y algunos caracteres especiales básicos
+  if (!/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s\-]+$/.test(cleanText)) {
+    return { isValid: false, error: "Solo se permiten letras, números y guiones" };
   }
   
   return { isValid: true };

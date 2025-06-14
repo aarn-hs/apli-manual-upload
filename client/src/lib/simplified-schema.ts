@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { validatePMX, validateName, validatePhone, validatePostalCode, validateAddress, validateBirthDate, validateCURPWithBirthDate, validateCURPComplete, validateCURPWithDetails, validatePastDate, validateDateWithDetails, validateBirthDateWithDetails, validateStreetColonyWithDetails, validateEmployerPositionWithDetails, validateNameWithDetails, validateSecondLastNameWithDetails, validateEmailWithDetails, validateTextNotOnlySpaces, cleanAndFormatText, validateWorkStartDate, validateWorkEndDate } from "./validation";
+import { validatePMX, validateName, validatePhone, validatePostalCode, validateAddress, validateBirthDate, validateCURPWithBirthDate, validateCURPComplete, validateCURPWithDetails, validatePastDate, validateDateWithDetails, validateBirthDateWithDetails, validateStreetColonyWithDetails, validateEmployerPositionWithDetails, validateNameWithDetails, validateSecondLastNameWithDetails, validateEmailWithDetails, validateTextNotOnlySpaces, validateInteriorNumberWithDetails, cleanAndFormatText, validateWorkStartDate, validateWorkEndDate } from "./validation";
 
 // Esquema simplificado del candidato según los campos obligatorios
 export const simplifiedCandidateSchema = z.object({
