@@ -89,9 +89,19 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
 
   // Date input handlers
   const handleDateInput = (fieldOnChange: any, currentValue: string) => (e: any) => {
-    let value = e.target.value;
-    value = value.replace(/[^0-9]/g, '');
+    const inputValue = e.target.value;
+    const previousValue = currentValue || '';
     
+    // Si está borrando (nuevo valor es más corto), permitir borrado libre
+    if (inputValue.length < previousValue.length) {
+      fieldOnChange(inputValue);
+      return;
+    }
+    
+    // Solo extraer números para formateo
+    let value = inputValue.replace(/[^0-9]/g, '');
+    
+    // Aplicar formato automáticamente mientras escribe
     if (value.length >= 2 && value.length <= 4) {
       value = value.slice(0, 2) + '/' + value.slice(2);
     } else if (value.length > 4) {
