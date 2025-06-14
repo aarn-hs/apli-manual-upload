@@ -22,6 +22,8 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
   const birthDate = watch('birthDate');
   const nationality = watch('nationality');
   const curp = watch('curp');
+  const previousJobStartDate = watch('previousJobStartDate');
+  const previousJobEndDate = watch('previousJobEndDate');
 
   // Referencias para detectar cambios previos
   const prevBirthDate = useRef(birthDate);
@@ -47,10 +49,20 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
       setValue('curp', curp, { shouldValidate: true, shouldTouch: true });
     }
 
+    // Revalidar fechas de experiencia previa si cambia fecha de nacimiento
+    if (birthDateChanged) {
+      if (previousJobStartDate) {
+        setValue('previousJobStartDate', previousJobStartDate, { shouldValidate: true, shouldTouch: true });
+      }
+      if (previousJobEndDate) {
+        setValue('previousJobEndDate', previousJobEndDate, { shouldValidate: true, shouldTouch: true });
+      }
+    }
+
     // Actualizar referencias
     prevBirthDate.current = birthDate;
     prevNationality.current = nationality;
-  }, [birthDate, nationality, curp, setValue]);
+  }, [birthDate, nationality, curp, previousJobStartDate, previousJobEndDate, setValue]);
 
   // Helper functions for field dependencies
   const isCURPEnabled = () => {
