@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useRef } from "react";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { CustomInput } from "@/components/ui/custom-input";
 import { SearchableSelect } from "@/components/ui/searchable-select";
@@ -17,10 +18,41 @@ interface SimpleFormProps {
 export default function SimpleForm({ control, watch, setValue }: SimpleFormProps) {
   const isMobile = useIsMobile();
 
+  // Watch para detectar cambios en fecha de nacimiento y nacionalidad
+  const birthDate = watch('birthDate');
+  const nationality = watch('nationality');
+  const curp = watch('curp');
+
+  // Referencias para detectar cambios previos
+  const prevBirthDate = useRef(birthDate);
+  const prevNationality = useRef(nationality);
+  const isInitialLoad = useRef(true);
+
+  // Efecto para borrar CURP cuando cambian fecha de nacimiento o nacionalidad
+  useEffect(() => {
+    // No ejecutar en la carga inicial
+    if (isInitialLoad.current) {
+      isInitialLoad.current = false;
+      prevBirthDate.current = birthDate;
+      prevNationality.current = nationality;
+      return;
+    }
+
+    // Solo limpiar CURP si tiene valor y alguno de los campos dependientes cambió
+    const birthDateChanged = prevBirthDate.current !== birthDate;
+    const nationalityChanged = prevNationality.current !== nationality;
+    
+    if (curp && (birthDateChanged || nationalityChanged)) {
+      setValue('curp', '');
+    }
+
+    // Actualizar referencias
+    prevBirthDate.current = birthDate;
+    prevNationality.current = nationality;
+  }, [birthDate, nationality, curp, setValue]);
+
   // Helper functions for field dependencies
   const isCURPEnabled = () => {
-    const birthDate = watch('birthDate');
-    const nationality = watch('nationality');
     return birthDate && nationality;
   };
 
