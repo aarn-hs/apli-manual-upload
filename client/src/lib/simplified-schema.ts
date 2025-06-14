@@ -81,7 +81,8 @@ export const simplifiedCandidateSchema = z.object({
     }, (text) => {
       const validation = validateStreetColonyWithDetails(text);
       return { message: validation.error || "Dirección inválida" };
-    }),
+    })
+    .transform(cleanAndFormatText),
   
   interiorNumber: z.string().optional()
     .refine((val) => {
@@ -100,7 +101,8 @@ export const simplifiedCandidateSchema = z.object({
     }, (text) => {
       const validation = validateStreetColonyWithDetails(text);
       return { message: validation.error || "Colonia inválida" };
-    }),
+    })
+    .transform(cleanAndFormatText),
   
   state: z.string({ required_error: "Debes seleccionar una opción" }),
   
@@ -121,7 +123,8 @@ export const simplifiedCandidateSchema = z.object({
     }, (text) => {
       const validation = validateEmployerPositionWithDetails(text);
       return { message: validation.error || "Compañía inválida" };
-    }),
+    })
+    .transform(cleanAndFormatText),
   
   previousPosition: z.string({ required_error: "Ingrese el puesto de experiencia previa" })
     .refine((text) => {
@@ -130,7 +133,8 @@ export const simplifiedCandidateSchema = z.object({
     }, (text) => {
       const validation = validateEmployerPositionWithDetails(text);
       return { message: validation.error || "Puesto inválido" };
-    }),
+    })
+    .transform(cleanAndFormatText),
   
 
   
