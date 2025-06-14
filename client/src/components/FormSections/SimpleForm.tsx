@@ -355,15 +355,16 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
           control={control}
           name="curp"
           render={({ field, fieldState }) => (
-            <FormItem className={`form-item ${getOrderClass(12)}`}>
+            <FormItem className={`form-item ${getOrderClass(28)}`}>
               <FormLabel className="body-text required">CURP</FormLabel>
               <FormControl>
                 <CustomInput
                   {...field}
-                  placeholder="18 caracteres"
+                  placeholder={isCURPEnabled() ? "18 caracteres" : "Completa fecha de nacimiento y nacionalidad"}
                   className={`form-control ${fieldState.error ? 'error' : ''}`}
-                  tabIndex={getTabIndex(12)}
                   autoUppercase={true}
+                  tabIndex={getTabIndex(28)}
+                  disabled={!isCURPEnabled()}
                   maxLength={18}
                 />
               </FormControl>
@@ -779,28 +780,7 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
           )}
         />
 
-        {/* Campo 28 - CURP */}
-        <FormField
-          control={control}
-          name="curp"
-          render={({ field, fieldState }) => (
-            <FormItem className={`form-item ${getOrderClass(28)}`}>
-              <FormLabel className="body-text required">CURP</FormLabel>
-              <FormControl>
-                <CustomInput
-                  {...field}
-                  placeholder={isCURPEnabled() ? "18 caracteres" : "Completa fecha de nacimiento y nacionalidad"}
-                  className={`form-control ${fieldState.error ? 'error' : ''}`}
-                  autoUppercase={true}
-                  tabIndex={getTabIndex(28)}
-                  disabled={!isCURPEnabled()}
-                  maxLength={18}
-                />
-              </FormControl>
-              <FormMessage className="error-message" />
-            </FormItem>
-          )}
-        />
+        
       </div>
     </section>
   );
