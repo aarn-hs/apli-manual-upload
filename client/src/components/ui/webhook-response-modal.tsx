@@ -115,6 +115,12 @@ export default function WebhookResponseModal({
             </div>
           )}
           
+          {/* Mensaje de soporte en la parte inferior */}
+          <div className="mt-6 pt-3 border-t border-gray-200">
+            <p className="text-xs text-gray-500 text-center">
+              ¿Algo falló? Puedes escribirnos y compartir el ID de la solicitud para ayudarte más rápido
+            </p>
+          </div>
 
         </div>
       </DialogContent>
