@@ -90,17 +90,17 @@ export function validateTextNotOnlySpaces(text: string): { isValid: boolean; err
 export function validateNameWithDetails(name: string): { isValid: boolean; error?: string } {
   if (!name) return { isValid: false, error: "Este campo es requerido" };
   
-  // Verificar que no sea solo espacios
+  // Verificar que no sea solo espacios ANTES de limpiar
   if (name.trim().length === 0) {
     return { isValid: false, error: "No puede contener solo espacios" };
   }
   
-  const cleanName = cleanAndFormatText(name);
-  
-  // No debe contener números
-  if (/\d/.test(cleanName)) {
+  // No debe contener números ANTES de limpiar
+  if (/\d/.test(name)) {
     return { isValid: false, error: "No se permiten números" };
   }
+  
+  const cleanName = cleanAndFormatText(name);
   
   // Debe tener al menos 2 letras
   const letterCount = (cleanName.match(/[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]/g) || []).length;

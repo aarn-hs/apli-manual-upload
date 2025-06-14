@@ -173,7 +173,6 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
                   placeholder="Nombre(s)"
                   className="form-control"
                   tabIndex={getTabIndex(5)}
-                  autoCleanSpaces={true}
                 />
               </FormControl>
               <FormMessage className="error-message" />
@@ -194,7 +193,6 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
                   placeholder="Apellido paterno"
                   className="form-control"
                   tabIndex={getTabIndex(6)}
-                  autoCleanSpaces={true}
                 />
               </FormControl>
               <FormMessage className="error-message" />
@@ -215,7 +213,6 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
                   placeholder="Apellido materno (opcional)"
                   className="form-control"
                   tabIndex={getTabIndex(7)}
-                  autoCleanSpaces={true}
                 />
               </FormControl>
               <FormMessage className="error-message" />
