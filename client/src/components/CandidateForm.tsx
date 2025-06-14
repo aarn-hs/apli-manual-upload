@@ -196,6 +196,13 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
                     </a>
                   </p>
                 )}
+                
+                {/* Mensaje de soporte */}
+                <div className="mt-3">
+                  <p className="text-xs text-gray-500">
+                    ¿Algo falló? Puedes escribirnos y compartir el ID de la solicitud para ayudarte más rápido
+                  </p>
+                </div>
               </div>
               
               {!notificationState.isSuccess && !isNonClosableError && (
