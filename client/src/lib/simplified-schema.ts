@@ -84,16 +84,14 @@ export const simplifiedCandidateSchema = z.object({
     }),
   
   interiorNumber: z.string().optional()
-    .transform((val) => val ? cleanAndFormatText(val) : val)
     .refine((val) => {
-      if (!val) return true;
-      const validation = validateTextNotOnlySpaces(val);
+      const validation = validateInteriorNumberWithDetails(val || "");
       return validation.isValid;
     }, (val) => {
-      if (!val) return { message: "Número interior inválido" };
-      const validation = validateTextNotOnlySpaces(val);
+      const validation = validateInteriorNumberWithDetails(val || "");
       return { message: validation.error || "Número interior inválido" };
-    }),
+    })
+    .transform((val) => val ? cleanAndFormatText(val) : val),
   
   neighborhood: z.string({ required_error: "Ingrese la colonia" })
     .refine((text) => {
