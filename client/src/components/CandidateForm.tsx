@@ -1,6 +1,7 @@
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { simplifiedCandidateSchema } from "@/lib/simplified-schema";
+import { extractGenderFromCURP } from "@/lib/validation";
 import SimpleForm from "@/components/FormSections/SimpleForm";
 
 interface CandidateFormProps {
@@ -76,10 +77,10 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
   // Check if all required fields are completed AND valid
   const requiredFields = [
     'source', 'position', 'location', 'pmx', 'firstName', 'firstLastName', 
-    'birthDate', 'email', 'phone', 'gender', 'nationality',
+    'birthDate', 'email', 'phone', 'nationality', 'curp',
     'streetAndNumber', 'neighborhood', 'state', 'municipality', 'postalCode',
     'education', 'maritalStatus', 'previousCompany', 'previousPosition', 
-    'retailExperience', 'motivation', 'curp',
+    'retailExperience', 'motivation',
     'jobsLast24Months', 'previousJobStartDate', 'previousJobEndDate'
   ];
 
@@ -104,7 +105,16 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
 
 
   const handleFormSubmit = (data: any) => {
-    onSubmit(data);
+    // Extraer automáticamente el género de la CURP
+    const extractedGender = extractGenderFromCURP(data.curp || '');
+    
+    // Agregar el género extraído a los datos
+    const dataWithGender = {
+      ...data,
+      gender: extractedGender
+    };
+    
+    onSubmit(dataWithGender);
   };
 
   const handleClearForm = () => {
