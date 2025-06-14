@@ -17,7 +17,7 @@ export const simplifiedCandidateSchema = z.object({
     .refine(validatePMX, "Formato inválido. Debe ser PMX seguido de 8 dígitos"),
   
   // Información personal (Obligatorio)
-  firstName: z.string()
+  firstName: z.string({ required_error: "Ingrese el nombre" })
     .transform(cleanAndFormatText)
     .refine((name) => {
       const validation = validateNameWithDetails(name);
@@ -27,7 +27,7 @@ export const simplifiedCandidateSchema = z.object({
       return { message: validation.error || "Nombre inválido" };
     }),
   
-  firstLastName: z.string()
+  firstLastName: z.string({ required_error: "Ingrese el apellido paterno" })
     .transform(cleanAndFormatText)
     .refine((name) => {
       const validation = validateNameWithDetails(name);
@@ -40,7 +40,7 @@ export const simplifiedCandidateSchema = z.object({
   secondLastName: z.string().optional()
     .transform((val) => val ? cleanAndFormatText(val) : val)
     .refine((val) => {
-      if (!val) return true; // Es opcional
+      if (!val) return true;
       const validation = validateNameWithDetails(val);
       return validation.isValid;
     }, (val) => {
