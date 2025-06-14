@@ -69,9 +69,19 @@ export const simplifiedCandidateSchema = z.object({
   phone: z.string({ required_error: "Ingrese el número de teléfono" })
     .refine(validatePhone, "El número debe tener exactamente 10 dígitos"),
   
-  gender: z.string({ required_error: "Debes seleccionar una opción" }),
+
   
   nationality: z.string({ required_error: "Debes seleccionar una opción" }),
+  
+  curp: z.string({ required_error: "Ingrese la CURP" })
+    .refine((val) => {
+      const validation = validateCURPWithDetails(val);
+      return validation.isValid;
+    }, (val) => {
+      const validation = validateCURPWithDetails(val);
+      return { message: validation.error || "CURP inválida" };
+    })
+    .transform((val) => val.toUpperCase()),
   
   // Información de dirección (Obligatorio)
   streetAndNumber: z.string({ required_error: "Ingrese la calle y número" })
@@ -143,14 +153,6 @@ export const simplifiedCandidateSchema = z.object({
   motivation: z.string({ required_error: "Debes seleccionar una opción" }),
   
   // Información legal (Obligatorio)
-  curp: z.string({ required_error: "Ingrese el CURP" })
-    .refine((curp) => {
-      const validation = validateCURPWithDetails(curp);
-      return validation.isValid;
-    }, (curp) => {
-      const validation = validateCURPWithDetails(curp);
-      return { message: validation.error || "CURP inválido" };
-    }),
   
   // Información laboral adicional (Obligatorio)
   jobsLast24Months: z.string({ required_error: "Debes seleccionar una opción" }),

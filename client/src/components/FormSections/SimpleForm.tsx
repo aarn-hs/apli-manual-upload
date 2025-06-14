@@ -324,42 +324,16 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
           )}
         />
 
-        {/* Campo 11 - Género */}
-        <FormField
-          control={control}
-          name="gender"
-          render={({ field, fieldState }) => (
-            <FormItem className={`form-item ${getOrderClass(11)}`}>
-              <FormLabel className="body-text required">Género</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value || ""}>
-                <FormControl>
-                  <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={getTabIndex(11)}>
-                    <SelectValue placeholder="Seleccionar" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {genders.map((gender) => (
-                    <SelectItem key={gender.value} value={gender.value}>
-                      {gender.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage className="error-message" />
-            </FormItem>
-          )}
-        />
-
-        {/* Campo 12 - Nacionalidad */}
+        {/* Campo 11 - Nacionalidad */}
         <FormField
           control={control}
           name="nationality"
           render={({ field, fieldState }) => (
-            <FormItem className={`form-item ${getOrderClass(12)}`}>
+            <FormItem className={`form-item ${getOrderClass(11)}`}>
               <FormLabel className="body-text required">Nacionalidad</FormLabel>
               <Select onValueChange={field.onChange} value={field.value || ""}>
                 <FormControl>
-                  <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={getTabIndex(12)}>
+                  <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={getTabIndex(11)}>
                     <SelectValue placeholder="Seleccionar" />
                   </SelectTrigger>
                 </FormControl>
@@ -371,6 +345,28 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
                   ))}
                 </SelectContent>
               </Select>
+              <FormMessage className="error-message" />
+            </FormItem>
+          )}
+        />
+
+        {/* Campo 12 - CURP */}
+        <FormField
+          control={control}
+          name="curp"
+          render={({ field, fieldState }) => (
+            <FormItem className={`form-item ${getOrderClass(12)}`}>
+              <FormLabel className="body-text required">CURP</FormLabel>
+              <FormControl>
+                <CustomInput
+                  {...field}
+                  placeholder="18 caracteres"
+                  className={`form-control ${fieldState.error ? 'error' : ''}`}
+                  tabIndex={getTabIndex(12)}
+                  autoUppercase={true}
+                  maxLength={18}
+                />
+              </FormControl>
               <FormMessage className="error-message" />
             </FormItem>
           )}
