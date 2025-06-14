@@ -174,7 +174,6 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
                   className="form-control"
                   tabIndex={getTabIndex(5)}
                   autoCleanSpaces={true}
-                  maxLength={40}
                 />
               </FormControl>
               <FormMessage className="error-message" />
@@ -196,7 +195,6 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
                   className="form-control"
                   tabIndex={getTabIndex(6)}
                   autoCleanSpaces={true}
-                  maxLength={40}
                 />
               </FormControl>
               <FormMessage className="error-message" />
