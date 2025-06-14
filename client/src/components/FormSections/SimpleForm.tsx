@@ -206,16 +206,26 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
         <FormField
           control={control}
           name="secondLastName"
-          render={({ field }) => (
+          render={({ field, fieldState }) => (
             <FormItem className={`form-item ${getOrderClass(7)}`}>
               <FormLabel className="body-text">Apellido materno</FormLabel>
               <FormControl>
                 <CustomInput
                   {...field}
                   placeholder="Apellido materno (opcional)"
-                  className="form-control"
+                  className={`form-control ${fieldState.error ? 'error' : ''}`}
                   tabIndex={getTabIndex(7)}
                   autoCleanSpaces={true}
+                  onBlur={(e) => {
+                    // Validar cuando pierde el foco para detectar solo espacios
+                    const value = e.target.value;
+                    console.log('onBlur - value:', JSON.stringify(value));
+                    if (value.length > 0 && value.trim().length === 0) {
+                      console.log('Setting error for spaces only');
+                      // Disparar validación
+                      field.onChange(value);
+                    }
+                  }}
                 />
               </FormControl>
               <FormMessage className="error-message" />

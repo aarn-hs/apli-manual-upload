@@ -120,7 +120,8 @@ export function validateSecondLastNameWithDetails(name: string): { isValid: bool
   }
   
   // Verificar que no sea solo espacios - aquí debe ser requerido si se intenta llenar
-  if (name.trim().length === 0) {
+  if (name.length > 0 && name.trim().length === 0) {
+    console.log('Only spaces detected, returning error');
     return { isValid: false, error: "Este campo es requerido" };
   }
   
