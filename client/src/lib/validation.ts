@@ -109,6 +109,35 @@ export function validateNameWithDetails(name: string): { isValid: boolean; error
   return { isValid: true };
 }
 
+// Validación específica para apellido materno (opcional pero debe validarse si se ingresa)
+export function validateSecondLastNameWithDetails(name: string): { isValid: boolean; error?: string } {
+  console.log('validateSecondLastNameWithDetails called with:', JSON.stringify(name));
+  
+  // Si está vacío, es válido (campo opcional)
+  if (!name) {
+    console.log('Empty value, returning valid');
+    return { isValid: true };
+  }
+  
+  // Verificar que no sea solo espacios - aquí debe ser requerido si se intenta llenar
+  if (name.trim().length === 0) {
+    return { isValid: false, error: "Este campo es requerido" };
+  }
+  
+  // Verificar longitud mínima después de limpiar
+  const cleanName = cleanAndFormatText(name);
+  if (cleanName.length < 2) {
+    return { isValid: false, error: "Debe tener al menos 2 caracteres" };
+  }
+  
+  // Solo permite letras y espacios
+  if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/.test(cleanName)) {
+    return { isValid: false, error: "Solo se permiten letras y espacios" };
+  }
+  
+  return { isValid: true };
+}
+
 // Validación robusta para email con reglas específicas
 export function validateEmailWithDetails(email: string): { isValid: boolean; error?: string } {
   if (!email) return { isValid: false, error: "Este campo es requerido" };
