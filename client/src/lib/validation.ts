@@ -139,7 +139,40 @@ export function validateSecondLastNameWithDetails(name: string): { isValid: bool
   return { isValid: true };
 }
 
-// Validación robusta para email con reglas específicas
+// Dominios de email válidos
+const validEmailDomains = [
+  // Proveedores públicos internacionales
+  'gmail.com', 'outlook.com', 'hotmail.com', 'yahoo.com', 'yahoo.es', 'yahoo.com.mx',
+  'live.com', 'msn.com', 'aol.com', 'icloud.com', 'me.com', 'mac.com',
+  'protonmail.com', 'tutanota.com', 'zoho.com', 'mail.com', 'gmx.com',
+  
+  // Proveedores mexicanos
+  'terra.com.mx', 'prodigy.net.mx', 'latinmail.com', 'mexicomail.com',
+  
+  // Universidades públicas mexicanas principales
+  'unam.mx', 'ipn.mx', 'uanl.mx', 'udg.mx', 'buap.mx', 'uv.mx', 'uabc.mx',
+  'uas.edu.mx', 'uach.mx', 'uaem.mx', 'uat.edu.mx', 'uabjo.mx', 'unicach.mx',
+  'ujed.mx', 'uadec.edu.mx', 'uaslp.mx', 'ugto.mx', 'umich.mx', 'unison.mx',
+  'uson.mx', 'uacj.mx', 'uacam.mx', 'uqroo.mx', 'unach.mx', 'uaz.edu.mx',
+  'uaeh.edu.mx', 'uaemex.mx', 'utleon.edu.mx', 'itesm.mx',
+  'tec.mx', 'tecnm.mx', 'itm.edu.mx', 'itsm.edu.mx',
+  
+  // Universidades estatales por estado
+  'cecyteg.edu.mx', 'uaaan.mx', 'uabcs.mx', 'uacoah.mx',
+  'uagro.mx', 'uahgo.edu.mx', 'uady.mx', 'uaemor.mx',
+  'uan.edu.mx', 'uabc.edu.mx', 'uach.edu.mx',
+  
+  // Tecnológicos públicos
+  'itcelaya.edu.mx', 'itmorelia.edu.mx', 'ittoluca.edu.mx',
+  'itchihuahua.edu.mx', 'ittepic.edu.mx', 'itpuebla.edu.mx', 'itsur.edu.mx',
+  'itver.edu.mx', 'itmexicali.edu.mx', 'itlp.edu.mx', 'itcd.edu.mx',
+  
+  // Centros de investigación públicos
+  'cinvestav.mx', 'conacyt.mx', 'cide.edu', 'colmex.mx', 'ecosur.mx',
+  'ciesas.edu.mx', 'colsan.edu.mx', 'cimat.mx', 'inecol.mx'
+];
+
+// Validación robusta para email con reglas específicas y validación de dominio
 export function validateEmailWithDetails(email: string): { isValid: boolean; error?: string } {
   if (!email) return { isValid: false, error: "Este campo es requerido" };
   
@@ -219,6 +252,11 @@ export function validateEmailWithDetails(email: string): { isValid: boolean; err
   const tld = subdomains[subdomains.length - 1];
   if (tld.length < 2) {
     return { isValid: false, error: "La extensión del dominio debe tener al menos 2 caracteres" };
+  }
+  
+  // Verificar si el dominio está en la lista de dominios válidos
+  if (!validEmailDomains.includes(domainPart)) {
+    return { isValid: false, error: "Dominio de email no válido. Use un proveedor público o universidad reconocida" };
   }
   
   return { isValid: true };
