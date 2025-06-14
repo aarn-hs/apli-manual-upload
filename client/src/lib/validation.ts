@@ -266,7 +266,7 @@ export function validateEmailWithDetails(email: string): { isValid: boolean; err
   
   // Verificar si el dominio está en la lista de dominios válidos
   if (!validEmailDomains.includes(domainPart)) {
-    return { isValid: false, error: "Dominio de email no válido. Use un proveedor público o universidad reconocida" };
+    return { isValid: false, error: "Dominio de email no válido" };
   }
   
   return { isValid: true };
