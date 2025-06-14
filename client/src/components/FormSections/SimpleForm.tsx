@@ -28,6 +28,7 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
   // Referencias para detectar cambios previos
   const prevBirthDate = useRef(birthDate);
   const prevNationality = useRef(nationality);
+  const prevPreviousJobStartDate = useRef(previousJobStartDate);
   const isInitialLoad = useRef(true);
 
   // Efecto para revalidar CURP cuando cambian fecha de nacimiento o nacionalidad
@@ -37,12 +38,14 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
       isInitialLoad.current = false;
       prevBirthDate.current = birthDate;
       prevNationality.current = nationality;
+      prevPreviousJobStartDate.current = previousJobStartDate;
       return;
     }
 
     // Solo revalidar si CURP tiene valor y alguno de los campos dependientes cambió
     const birthDateChanged = prevBirthDate.current !== birthDate;
     const nationalityChanged = prevNationality.current !== nationality;
+    const previousJobStartDateChanged = prevPreviousJobStartDate.current !== previousJobStartDate;
     
     if (curp && (birthDateChanged || nationalityChanged)) {
       // Forzar revalidación del campo CURP
@@ -59,9 +62,15 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
       }
     }
 
+    // Revalidar fecha de fin de experiencia previa si cambia fecha de inicio
+    if (previousJobStartDateChanged && previousJobEndDate) {
+      setValue('previousJobEndDate', previousJobEndDate, { shouldValidate: true, shouldTouch: true });
+    }
+
     // Actualizar referencias
     prevBirthDate.current = birthDate;
     prevNationality.current = nationality;
+    prevPreviousJobStartDate.current = previousJobStartDate;
   }, [birthDate, nationality, curp, previousJobStartDate, previousJobEndDate, setValue]);
 
   // Helper functions for field dependencies
