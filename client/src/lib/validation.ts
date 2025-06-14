@@ -196,6 +196,11 @@ export function validateEmailWithDetails(email: string): { isValid: boolean; err
     return { isValid: false, error: "No puede contener solo espacios" };
   }
   
+  // Verificar longitud máxima antes de limpiar
+  if (email.length > 40) {
+    return { isValid: false, error: "No se pueden ingresar más de 40 caracteres" };
+  }
+  
   const cleanEmail = email.trim().toLowerCase();
   
   // Verificar que contenga exactamente un @

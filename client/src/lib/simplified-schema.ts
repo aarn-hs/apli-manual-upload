@@ -18,24 +18,24 @@ export const simplifiedCandidateSchema = z.object({
   
   // Información personal (Obligatorio)
   firstName: z.string({ required_error: "Ingrese el nombre" })
-    .transform(cleanAndFormatText)
     .refine((name) => {
       const validation = validateNameWithDetails(name);
       return validation.isValid;
     }, (name) => {
       const validation = validateNameWithDetails(name);
       return { message: validation.error || "Nombre inválido" };
-    }),
+    })
+    .transform(cleanAndFormatText),
   
   firstLastName: z.string({ required_error: "Ingrese el apellido paterno" })
-    .transform(cleanAndFormatText)
     .refine((name) => {
       const validation = validateNameWithDetails(name);
       return validation.isValid;
     }, (name) => {
       const validation = validateNameWithDetails(name);
       return { message: validation.error || "Apellido inválido" };
-    }),
+    })
+    .transform(cleanAndFormatText),
   
   secondLastName: z.string().optional()
     .refine((val) => {
@@ -57,14 +57,14 @@ export const simplifiedCandidateSchema = z.object({
     }),
   
   email: z.string({ required_error: "Ingrese el correo electrónico" })
-    .transform(cleanAndFormatText)
     .refine((email) => {
       const validation = validateEmailWithDetails(email);
       return validation.isValid;
     }, (email) => {
       const validation = validateEmailWithDetails(email);
       return { message: validation.error || "Email inválido" };
-    }),
+    })
+    .transform(cleanAndFormatText),
   
   phone: z.string({ required_error: "Ingrese el número de teléfono" })
     .refine(validatePhone, "El número debe tener exactamente 10 dígitos"),
