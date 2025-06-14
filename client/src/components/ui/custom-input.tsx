@@ -1,4 +1,4 @@
-import { forwardRef } from "react";
+import { forwardRef, useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { cleanAndFormatText } from "@/lib/validation";
 
@@ -17,7 +17,32 @@ export const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
     // Ensure value is never undefined to avoid controlled/uncontrolled warning
     const safeValue = value === undefined ? "" : value;
     
+    // Referencias para mantener posición del cursor
+    const cursorPosition = useRef<number | null>(null);
+    const wasTyping = useRef(false);
+    const inputElementRef = useRef<HTMLInputElement | null>(null);
+    
+    // Efecto para restaurar posición del cursor después de revalidación
+    useEffect(() => {
+      if (wasTyping.current && cursorPosition.current !== null && inputElementRef.current) {
+        const position = cursorPosition.current;
+        setTimeout(() => {
+          if (inputElementRef.current) {
+            inputElementRef.current.setSelectionRange(position, position);
+          }
+        }, 0);
+        wasTyping.current = false;
+        cursorPosition.current = null;
+      }
+    }, [safeValue]);
+    
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      // Guardar posición del cursor antes de los cambios
+      if (e.target) {
+        cursorPosition.current = e.target.selectionStart;
+        wasTyping.current = true;
+      }
+      
       let newValue = e.target.value;
       
       if (noSpaces) {
@@ -85,6 +110,18 @@ export const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
       }
     };
     
+    // Función para combinar refs
+    const setRefs = (element: HTMLInputElement | null) => {
+      inputElementRef.current = element;
+      if (ref) {
+        if (typeof ref === 'function') {
+          ref(element);
+        } else {
+          (ref as React.MutableRefObject<HTMLInputElement | null>).current = element;
+        }
+      }
+    };
+
     return (
       <input
         {...props}
@@ -93,7 +130,7 @@ export const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
           "form-control",
           className
         )}
-        ref={ref}
+        ref={setRefs}
         value={safeValue}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
