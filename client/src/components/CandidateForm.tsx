@@ -53,7 +53,6 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
       previousPosition: "",
       retailExperience: "",
       motivation: "",
-      curp: "",
       jobsLast24Months: "",
       previousJobStartDate: "",
       previousJobEndDate: ""
@@ -143,7 +142,6 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
       previousPosition: "",
       retailExperience: "",
       motivation: "",
-      curp: "",
       jobsLast24Months: "",
       previousJobStartDate: "",
       previousJobEndDate: ""

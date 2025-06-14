@@ -481,19 +481,19 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
           )}
         />
 
-        {/* Campo 17 - Calle y número de la vivienda */}
+        {/* Campo 16 - Calle y número de la vivienda */}
         <FormField
           control={control}
           name="streetAndNumber"
           render={({ field }) => (
-            <FormItem className={`form-item ${getOrderClass(17)}`}>
+            <FormItem className={`form-item ${getOrderClass(16)}`}>
               <FormLabel className="body-text required">Calle y número de la vivienda</FormLabel>
               <FormControl>
                 <CustomInput
                   {...field}
                   placeholder="Calle y número"
                   className="form-control"
-                  tabIndex={getTabIndex(17)}
+                  tabIndex={getTabIndex(16)}
                   autoCleanSpaces={true}
                   maxLength={41}
                 />
@@ -503,19 +503,19 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
           )}
         />
 
-        {/* Campo 18 - Número interior */}
+        {/* Campo 17 - Número interior */}
         <FormField
           control={control}
           name="interiorNumber"
           render={({ field }) => (
-            <FormItem className={`form-item ${getOrderClass(18)}`}>
+            <FormItem className={`form-item ${getOrderClass(17)}`}>
               <FormLabel className="body-text">Número interior</FormLabel>
               <FormControl>
                 <CustomInput
                   {...field}
                   placeholder="Número interior (opcional)"
                   className="form-control"
-                  tabIndex={getTabIndex(18)}
+                  tabIndex={getTabIndex(17)}
                   autoCleanSpaces={true}
                   maxLength={6}
                 />
