@@ -149,7 +149,7 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
                 <CustomInput
                   {...field}
                   autoUppercase={true}
-                  placeholder="PMX12345678"
+                  placeholder="PMX + 8 dígitos"
                   className="form-control"
                   tabIndex={getTabIndex(4)}
                   maxLength={11}
@@ -410,7 +410,7 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
               <FormControl>
                 <SearchableSelect
                   options={getMunicipalitiesForState(watch('state') || '').map(mun => ({ value: mun, label: mun }))}
-                  placeholder={watch('state') ? "Seleccionar municipio" : "Primero seleccione un estado"}
+                  placeholder={watch('state') ? "Seleccionar municipio" : "Primero selecciona un estado"}
                   searchPlaceholder="Buscar municipio..."
                   value={field.value || ""}
                   onValueChange={field.onChange}
@@ -628,7 +628,7 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
                 <CustomInput
                   {...field}
                   type="text"
-                  placeholder={isBirthDateValidForWork() ? "dd/mm/aaaa" : "Primero ingrese fecha de nacimiento"}
+                  placeholder={isBirthDateValidForWork() ? "dd/mm/aaaa" : "Primero ingresa fecha de nacimiento"}
                   className={`form-control ${fieldState.error ? 'error' : ''}`}
                   tabIndex={getTabIndex(23)}
                   maxLength={10}
@@ -668,7 +668,7 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
                 <CustomInput
                   {...field}
                   type="text"
-                  placeholder={isBirthDateValidForWork() ? "dd/mm/aaaa" : "Primero ingrese fecha de nacimiento"}
+                  placeholder={isBirthDateValidForWork() ? "dd/mm/aaaa" : "Primero ingresa fecha de nacimiento"}
                   className={`form-control ${fieldState.error ? 'error' : ''}`}
                   tabIndex={getTabIndex(24)}
                   maxLength={10}
@@ -785,7 +785,7 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
               <FormControl>
                 <CustomInput
                   {...field}
-                  placeholder={isCURPEnabled() ? "18 caracteres" : "Complete fecha de nacimiento y nacionalidad primero"}
+                  placeholder={isCURPEnabled() ? "18 caracteres" : "Completa fecha de nacimiento y nacionalidad"}
                   className={`form-control ${fieldState.error ? 'error' : ''}`}
                   autoUppercase={true}
                   tabIndex={getTabIndex(28)}
