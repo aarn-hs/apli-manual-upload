@@ -346,7 +346,6 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
                   placeholder="correo@ejemplo.com"
                   className={`form-control ${fieldState.error ? 'error' : ''}`}
                   tabIndex={getTabIndex(9)}
-                  autoLowercase={true}
                   noSpaces={true}
                 />
               </FormControl>
