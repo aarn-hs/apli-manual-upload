@@ -28,7 +28,7 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
   const prevNationality = useRef(nationality);
   const isInitialLoad = useRef(true);
 
-  // Efecto para borrar CURP cuando cambian fecha de nacimiento o nacionalidad
+  // Efecto para revalidar CURP cuando cambian fecha de nacimiento o nacionalidad
   useEffect(() => {
     // No ejecutar en la carga inicial
     if (isInitialLoad.current) {
@@ -38,12 +38,13 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
       return;
     }
 
-    // Solo limpiar CURP si tiene valor y alguno de los campos dependientes cambió
+    // Solo revalidar si CURP tiene valor y alguno de los campos dependientes cambió
     const birthDateChanged = prevBirthDate.current !== birthDate;
     const nationalityChanged = prevNationality.current !== nationality;
     
     if (curp && (birthDateChanged || nationalityChanged)) {
-      setValue('curp', '');
+      // Forzar revalidación del campo CURP
+      setValue('curp', curp, { shouldValidate: true, shouldTouch: true });
     }
 
     // Actualizar referencias
