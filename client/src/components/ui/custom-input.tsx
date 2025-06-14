@@ -87,6 +87,7 @@ export const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
     
     return (
       <input
+        {...props}
         type={type}
         className={cn(
           "form-control",
@@ -97,7 +98,6 @@ export const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         onBlur={handleBlur}
-        {...props}
       />
     );
   }
