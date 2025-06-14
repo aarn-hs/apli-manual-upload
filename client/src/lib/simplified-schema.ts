@@ -38,14 +38,14 @@ export const simplifiedCandidateSchema = z.object({
     }),
   
   secondLastName: z.string().optional()
-    .transform((val) => val ? cleanAndFormatText(val) : val)
     .refine((val) => {
       const validation = validateSecondLastNameWithDetails(val || "");
       return validation.isValid;
     }, (val) => {
       const validation = validateSecondLastNameWithDetails(val || "");
       return { message: validation.error || "Apellido inválido" };
-    }),
+    })
+    .transform((val) => val ? cleanAndFormatText(val) : val),
   
   birthDate: z.string({ required_error: "Ingrese la fecha de nacimiento" })
     .refine((date) => {

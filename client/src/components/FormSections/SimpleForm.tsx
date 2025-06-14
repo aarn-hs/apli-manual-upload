@@ -215,21 +215,7 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
                   placeholder="Apellido materno (opcional)"
                   className={`form-control ${fieldState.error ? 'error' : ''}`}
                   tabIndex={getTabIndex(7)}
-                  autoCleanSpaces={false}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    console.log('onChange - raw value:', JSON.stringify(value));
-                    
-                    // Si es solo espacios, mantener el valor para que la validación lo detecte
-                    if (value.length > 0 && value.trim().length === 0) {
-                      console.log('Spaces only detected, keeping value for validation');
-                      field.onChange(value);
-                    } else {
-                      // Limpiar espacios solo si no es solo espacios
-                      const cleanValue = value.replace(/\s+/g, ' ').trim();
-                      field.onChange(cleanValue);
-                    }
-                  }}
+                  autoCleanSpaces={true}
                 />
               </FormControl>
               <FormMessage className="error-message" />
