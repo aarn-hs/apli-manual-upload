@@ -567,10 +567,14 @@ export function validateCURPComplete(curp: string, birthDate: string, nationalit
 // CURP validation with detailed error messages
 // Función para extraer el género de la CURP
 export function extractGenderFromCURP(curp: string): string {
-  if (!curp || curp.length < 11) return "Masculino"; // Default fallback
+  if (!curp || curp.length < 11) return "H"; // Default fallback
   
   const genderChar = curp.charAt(10).toUpperCase();
-  return genderChar === 'M' ? "Femenino" : "Masculino";
+  
+  // Retornar la letra directamente según estándar CURP
+  if (genderChar === 'M') return 'M'; // Mujer
+  if (genderChar === 'H') return 'H'; // Hombre  
+  return 'X'; // No especificado o valor inválido
 }
 
 export function validateCURPWithDetails(curp: string, birthDate?: string, nationality?: string): { isValid: boolean; error?: string } {
