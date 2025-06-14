@@ -63,8 +63,11 @@ export const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
         const cleanedValue = cleanAndFormatText(originalValue);
         
         if (cleanedValue !== originalValue) {
+          // Actualizar el valor del input directamente
+          e.target.value = cleanedValue;
+          
           // Crear un nuevo evento de cambio con el valor limpio
-          const event = {
+          const changeEvent = {
             target: {
               value: cleanedValue,
               name: e.target.name
@@ -72,7 +75,7 @@ export const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
           } as React.ChangeEvent<HTMLInputElement>;
           
           if (onChange) {
-            onChange(event);
+            onChange(changeEvent);
           }
         }
       }
