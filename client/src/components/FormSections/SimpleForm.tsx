@@ -416,7 +416,7 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
                   placeholder={isCURPEnabled() ? "18 caracteres" : "Completa fecha de nacimiento y nacionalidad"}
                   className={`form-control ${fieldState.error ? 'error' : ''}`}
                   autoUppercase={true}
-                  tabIndex={getTabIndex(28)}
+                  tabIndex={getTabIndex(12)}
                   disabled={!isCURPEnabled()}
                   maxLength={18}
                 />
