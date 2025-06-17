@@ -5,6 +5,7 @@ import { simplifiedCandidateSchema } from "@/lib/simplified-schema";
 import { extractGenderFromCURP } from "@/lib/validation";
 import SimpleForm from "@/components/FormSections/SimpleForm";
 import LoadingModal, { completeLoadingProgress } from "@/components/ui/loading-modal";
+import ModalTestPanel from "@/components/ui/modal-test-panel";
 
 interface CandidateFormProps {
   onSubmit: (data: any) => void;
@@ -236,6 +237,9 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
             </div>
           </div>
         )}
+
+        {/* Panel de prueba de modales */}
+        <ModalTestPanel showInForm={true} />
 
         <div className="flex justify-start gap-4 pt-6">
           <button 
