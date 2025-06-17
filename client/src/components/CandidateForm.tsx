@@ -172,8 +172,8 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
           onComplete={() => setIsLoadingModalOpen(false)}
         />
 
-        {/* Notification panel */}
-        {notificationState?.isVisible && (
+        {/* Notification panel - Disabled in favor of WebhookResponseModal */}
+        {false && notificationState?.isVisible && (
           <div className={`p-4 rounded-lg border-2 ${
             notificationState.isSuccess 
               ? 'bg-green-50 border-green-400' 
