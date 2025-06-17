@@ -166,13 +166,82 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
       <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8">
         <SimpleForm control={methods.control} watch={methods.watch} setValue={methods.setValue} />
 
-        {/* Modal de carga */}
-        <LoadingModal 
-          isVisible={isLoadingModalOpen}
-          onComplete={() => setIsLoadingModalOpen(false)}
-        />
+        {/* PRUEBA TEMPORAL - Mostrar todos los estados inline */}
+        <div className="space-y-4">
+          <div className="p-3 bg-blue-50 border border-blue-300 rounded-md">
+            <h4 className="font-bold text-sm mb-2">TESTING - Modal de Carga:</h4>
+            <LoadingModal 
+              isVisible={true}
+              onComplete={() => {}}
+            />
+          </div>
 
-        {/* Notification panel - Disabled in favor of WebhookResponseModal */}
+          <div className="p-3 bg-green-50 border border-green-300 rounded-md">
+            <h4 className="font-bold text-sm mb-2">TESTING - Modal de Éxito:</h4>
+            <div className="p-4 rounded-lg border-2 bg-emerald-100 border-emerald-300">
+              <div className="flex justify-between items-start">
+                <div className="flex-1">
+                  <p className="text-sm font-medium mb-2 text-green-600">
+                    Candidato cargado exitosamente
+                  </p>
+                  
+                  <p className="text-xs mb-1">
+                    <span className="font-medium">ID de solicitud:</span>{' '}
+                    <span className="text-green-600">
+                      REQ-1f6673f4-1750146382
+                    </span>
+                  </p>
+                  
+                  <p className="text-xs">
+                    <span className="font-medium">ID de postulación:</span>{' '}
+                    <a
+                      href="https://demo.apli.app/candidates/139360"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline hover:no-underline text-blue-600 hover:text-blue-800"
+                    >
+                      https://demo.apli.app/candidates/139360
+                    </a>
+                  </p>
+                  
+                  <div className="mt-3">
+                    <p className="text-xs text-gray-500">
+                      ¿Algo falló? Puedes escribirnos y compartir el ID de la solicitud para ayudarte más rápido
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-3 bg-red-50 border border-red-300 rounded-md">
+            <h4 className="font-bold text-sm mb-2">TESTING - Modal de Error:</h4>
+            <div className="p-4 rounded-lg border-2 bg-red-50 border-red-400">
+              <div className="flex justify-between items-start">
+                <div className="flex-1">
+                  <p className="text-sm font-medium mb-2 text-red-600">
+                    El candidato es un reingreso no viable para este puesto. No puede participar nuevamente.
+                  </p>
+                  
+                  <p className="text-xs mb-1">
+                    <span className="font-medium">ID de solicitud:</span>{' '}
+                    <span className="text-red-600">
+                      REQ-2a8834b2-1750146500
+                    </span>
+                  </p>
+                  
+                  <div className="mt-3">
+                    <p className="text-xs text-gray-500">
+                      ¿Algo falló? Puedes escribirnos y compartir el ID de la solicitud para ayudarte más rápido
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Notification panel original - Disabled in favor of WebhookResponseModal */}
         {false && notificationState?.isVisible && (
           <div className={`p-4 rounded-lg border-2 ${
             notificationState.isSuccess 
