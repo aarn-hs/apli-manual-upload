@@ -80,7 +80,7 @@ export default function LoadingModal({ isVisible, onComplete }: LoadingModalProp
       <div className="flex justify-between items-start">
         <div className="flex-1">
           <p className="text-sm font-medium mb-4 text-gray-700">
-            Cargando candidato en Apli
+            Procesando datos, por favor espera
           </p>
           
           {/* Barra de progreso */}
