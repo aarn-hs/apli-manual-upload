@@ -189,10 +189,4 @@
   .form-item {
     @apply min-h-[105px] mb-2 flex flex-col;
   }
-
-  /* Force emerald colors for success modal */
-  .success-modal {
-    background-color: rgb(209 250 229) !important; /* emerald-100 */
-    border-color: rgb(110 231 183) !important; /* emerald-300 */
-  }
 }

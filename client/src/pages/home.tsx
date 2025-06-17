@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import CandidateForm from "@/components/CandidateForm";
 import { useToast } from "@/hooks/use-toast";
 import { completeLoadingProgress } from "@/components/ui/loading-modal";
+import WebhookResponseModal from "@/components/ui/webhook-response-modal";
 
 export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -367,6 +368,15 @@ export default function Home() {
           isSubmitting={isSubmitting}
           notificationState={notificationState}
           onDismissNotification={() => setNotificationState(undefined)}
+        />
+
+        {/* Modal de respuesta del webhook */}
+        <WebhookResponseModal
+          isOpen={notificationState?.isVisible || false}
+          onClose={() => setNotificationState(undefined)}
+          isSuccess={notificationState?.isSuccess || false}
+          message={notificationState?.message || ''}
+          applicationId={notificationState?.applicationId}
         />
       </main>
     </div>
