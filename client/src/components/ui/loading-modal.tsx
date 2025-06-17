@@ -40,16 +40,23 @@ export default function LoadingModal({ isVisible, onComplete }: LoadingModalProp
   }, [isVisible]);
 
   // Función pública para completar el progreso cuando se reciba respuesta
-  const completeProgress = (shouldReach100: boolean = true) => {
+  const completeProgress = (shouldReach100: boolean = false) => {
     setIsCompleting(true);
-    setProgress(100);
     
-    // Esperar un momento para mostrar el 100% y luego cerrar
-    setTimeout(() => {
+    if (shouldReach100) {
+      setProgress(100);
+      // Esperar un momento para mostrar el 100% y luego cerrar
+      setTimeout(() => {
+        if (onComplete) {
+          onComplete();
+        }
+      }, 1000);
+    } else {
+      // No llegar al 100%, mantener el progreso actual y cerrar inmediatamente
       if (onComplete) {
         onComplete();
       }
-    }, 1000);
+    }
   };
 
   // Exponer la función completeProgress al componente padre
@@ -91,7 +98,7 @@ export default function LoadingModal({ isVisible, onComplete }: LoadingModalProp
 }
 
 // Función helper para completar el progreso desde cualquier lugar
-export const completeLoadingProgress = (shouldReach100: boolean = true) => {
+export const completeLoadingProgress = (shouldReach100: boolean = false) => {
   if ((window as any).completeLoadingProgress) {
     (window as any).completeLoadingProgress(shouldReach100);
   }
