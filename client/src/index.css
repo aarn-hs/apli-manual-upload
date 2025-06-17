@@ -192,7 +192,7 @@
 
   /* Progress Modal Styles */
   .progress-modal-inline {
-    @apply bg-white border border-gray-300 p-6 w-full mb-6;
+    @apply bg-white border-2 border-gray-300 p-6 w-full mb-6;
   }
 
   .progress-modal-content {
@@ -216,6 +216,7 @@
   }
 
   .progress-modal-bar {
-    @apply h-2 transition-all duration-300 ease-in-out bg-violet-400;
+    @apply h-2 transition-all duration-300 ease-in-out;
+    background-color: #8533ff;
   }
 }
