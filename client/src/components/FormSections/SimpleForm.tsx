@@ -371,12 +371,12 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
           )}
         />
 
-        {/* Campo 12 - CURP */}
+        {/* Campo 11 - CURP */}
         <FormField
           control={control}
           name="curp"
           render={({ field, fieldState }) => (
-            <FormItem className={`form-item ${getOrderClass(28)}`}>
+            <FormItem className={`form-item ${getOrderClass(11)}`}>
               <FormLabel className="body-text required">CURP</FormLabel>
               <FormControl>
                 <CustomInput
@@ -384,11 +384,37 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
                   placeholder={isCURPEnabled() ? "18 caracteres" : "Completa fecha de nacimiento"}
                   className={`form-control ${fieldState.error ? 'error' : ''}`}
                   autoUppercase={true}
-                  tabIndex={getTabIndex(12)}
+                  tabIndex={getTabIndex(11)}
                   disabled={!isCURPEnabled()}
                   maxLength={18}
                 />
               </FormControl>
+              <FormMessage className="error-message" />
+            </FormItem>
+          )}
+        />
+
+        {/* Campo 12 - Escolaridad */}
+        <FormField
+          control={control}
+          name="education"
+          render={({ field, fieldState }) => (
+            <FormItem className={`form-item ${getOrderClass(12)}`}>
+              <FormLabel className="body-text required">Escolaridad</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value || ""}>
+                <FormControl>
+                  <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={getTabIndex(12)}>
+                    <SelectValue placeholder="Seleccionar" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {educationLevels.map((level) => (
+                    <SelectItem key={level} value={level}>
+                      {level}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage className="error-message" />
             </FormItem>
           )}
@@ -489,19 +515,19 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
           )}
         />
 
-        {/* Campo 16 - Calle y número de la vivienda */}
+        {/* Campo 17 - Calle y número de la vivienda */}
         <FormField
           control={control}
           name="streetAndNumber"
           render={({ field }) => (
-            <FormItem className={`form-item ${getOrderClass(16)}`}>
+            <FormItem className={`form-item ${getOrderClass(17)}`}>
               <FormLabel className="body-text required">Calle y número de la vivienda</FormLabel>
               <FormControl>
                 <CustomInput
                   {...field}
                   placeholder="Calle y número"
                   className="form-control"
-                  tabIndex={getTabIndex(16)}
+                  tabIndex={getTabIndex(17)}
                   autoCleanSpaces={true}
                   maxLength={41}
                 />
@@ -511,19 +537,19 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
           )}
         />
 
-        {/* Campo 17 - Número interior */}
+        {/* Campo 18 - Número interior */}
         <FormField
           control={control}
           name="interiorNumber"
           render={({ field }) => (
-            <FormItem className={`form-item ${getOrderClass(17)}`}>
+            <FormItem className={`form-item ${getOrderClass(18)}`}>
               <FormLabel className="body-text">Número interior</FormLabel>
               <FormControl>
                 <CustomInput
                   {...field}
                   placeholder="Número interior (opcional)"
                   className="form-control"
-                  tabIndex={getTabIndex(17)}
+                  tabIndex={getTabIndex(18)}
                   autoCleanSpaces={true}
                   maxLength={6}
                 />
@@ -533,47 +559,20 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
           )}
         />
 
-        {/* Campo 19 - Escolaridad */}
-        <FormField
-          control={control}
-          name="education"
-          render={({ field, fieldState }) => (
-            <FormItem className={`form-item ${getOrderClass(19)}`}>
-              <FormLabel className="body-text required">Escolaridad</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value || ""}>
-                <FormControl>
-                  <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={getTabIndex(19)}>
-                    <SelectValue placeholder="Seleccionar" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {educationLevels.map((level) => (
-                    <SelectItem key={level} value={level}>
-                      {level}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage className="error-message" />
-            </FormItem>
-          )}
-        />
 
-
-
-        {/* Campo 21 - Último empleador o compañía en la que trabajó */}
+        {/* Campo 19 - Último empleador o compañía en la que trabajó */}
         <FormField
           control={control}
           name="previousCompany"
           render={({ field }) => (
-            <FormItem className={`form-item ${getOrderClass(21)}`}>
+            <FormItem className={`form-item ${getOrderClass(19)}`}>
               <FormLabel className="body-text required">Último empleador o compañía en la que trabajó</FormLabel>
               <FormControl>
                 <CustomInput
                   {...field}
                   placeholder="Compañía donde trabajó anteriormente"
                   className="form-control"
-                  tabIndex={getTabIndex(21)}
+                  tabIndex={getTabIndex(19)}
                   autoCleanSpaces={true}
                   maxLength={41}
                 />
@@ -583,19 +582,19 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
           )}
         />
 
-        {/* Campo 22 - ¿Cuál era su puesto? */}
+        {/* Campo 20 - ¿Cuál era su puesto? */}
         <FormField
           control={control}
           name="previousPosition"
           render={({ field }) => (
-            <FormItem className={`form-item ${getOrderClass(22)}`}>
+            <FormItem className={`form-item ${getOrderClass(20)}`}>
               <FormLabel className="body-text required">¿Cuál era su puesto?</FormLabel>
               <FormControl>
                 <CustomInput
                   {...field}
                   placeholder="Puesto que ocupó anteriormente"
                   className="form-control"
-                  tabIndex={getTabIndex(22)}
+                  tabIndex={getTabIndex(20)}
                   autoCleanSpaces={true}
                   maxLength={41}
                 />
@@ -605,12 +604,12 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
           )}
         />
 
-        {/* Campo 23 - Fecha de inicio de experiencia previa */}
+        {/* Campo 21 - Fecha de inicio de experiencia previa */}
         <FormField
           control={control}
           name="previousJobStartDate"
           render={({ field, fieldState }) => (
-            <FormItem className={`form-item ${getOrderClass(23)}`}>
+            <FormItem className={`form-item ${getOrderClass(21)}`}>
               <FormLabel className="body-text required">Fecha de inicio de experiencia previa</FormLabel>
               <FormControl>
                 <CustomInput
@@ -618,7 +617,7 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
                   type="text"
                   placeholder={isBirthDateValidForWork() ? "dd/mm/aaaa" : "Primero ingresa fecha de nacimiento"}
                   className={`form-control ${fieldState.error ? 'error' : ''}`}
-                  tabIndex={getTabIndex(23)}
+                  tabIndex={getTabIndex(21)}
                   maxLength={10}
                   disabled={!isBirthDateValidForWork()}
                   onChange={handleDateInput(field.onChange, field.value)}
@@ -631,12 +630,12 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
           )}
         />
 
-        {/* Campo 24 - Fecha de fin de experiencia previa */}
+        {/* Campo 22 - Fecha de fin de experiencia previa */}
         <FormField
           control={control}
           name="previousJobEndDate"
           render={({ field, fieldState }) => (
-            <FormItem className={`form-item ${getOrderClass(24)}`}>
+            <FormItem className={`form-item ${getOrderClass(22)}`}>
               <FormLabel className="body-text required">Fecha de fin de experiencia previa</FormLabel>
               <FormControl>
                 <CustomInput
@@ -644,7 +643,7 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
                   type="text"
                   placeholder={isBirthDateValidForWork() ? "dd/mm/aaaa" : "Primero ingresa fecha de nacimiento"}
                   className={`form-control ${fieldState.error ? 'error' : ''}`}
-                  tabIndex={getTabIndex(24)}
+                  tabIndex={getTabIndex(22)}
                   maxLength={10}
                   disabled={!isBirthDateValidForWork()}
                   onChange={handleDateInput(field.onChange, field.value)}
@@ -657,16 +656,16 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
           )}
         />
 
-        {/* Campo 25 - Motivación al elegir trabajo */}
+        {/* Campo 23 - Motivación al elegir trabajo */}
         <FormField
           control={control}
           name="motivation"
           render={({ field, fieldState }) => (
-            <FormItem className={`form-item ${getOrderClass(25)}`}>
+            <FormItem className={`form-item ${getOrderClass(23)}`}>
               <FormLabel className="body-text required">Motivación al elegir trabajo</FormLabel>
               <Select onValueChange={field.onChange} value={field.value || ""}>
                 <FormControl>
-                  <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={getTabIndex(25)}>
+                  <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={getTabIndex(23)}>
                     <SelectValue placeholder="Seleccionar" />
                   </SelectTrigger>
                 </FormControl>
@@ -683,16 +682,16 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
           )}
         />
 
-        {/* Campo 26 - ¿Tiene experiencia en retail? */}
+        {/* Campo 24 - ¿Tiene experiencia en retail? */}
         <FormField
           control={control}
           name="retailExperience"
           render={({ field, fieldState }) => (
-            <FormItem className={`form-item ${getOrderClass(26)}`}>
+            <FormItem className={`form-item ${getOrderClass(24)}`}>
               <FormLabel className="body-text required">¿Tiene experiencia en retail?</FormLabel>
               <Select onValueChange={field.onChange} value={field.value || ""}>
                 <FormControl>
-                  <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={getTabIndex(26)}>
+                  <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={getTabIndex(24)}>
                     <SelectValue placeholder="Seleccionar" />
                   </SelectTrigger>
                 </FormControl>
@@ -709,16 +708,16 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
           )}
         />
 
-        {/* Campo 27 - Cantidad de trabajos en los últimos 24 meses */}
+        {/* Campo 25 - Cantidad de trabajos en los últimos 24 meses */}
         <FormField
           control={control}
           name="jobsLast24Months"
           render={({ field, fieldState }) => (
-            <FormItem className={`form-item ${getOrderClass(27)}`}>
+            <FormItem className={`form-item ${getOrderClass(25)}`}>
               <FormLabel className="body-text required">Cantidad de trabajos en los últimos 24 meses</FormLabel>
               <Select onValueChange={field.onChange} value={field.value || ""}>
                 <FormControl>
-                  <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={getTabIndex(27)}>
+                  <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={getTabIndex(25)}>
                     <SelectValue placeholder="Seleccionar" />
                   </SelectTrigger>
                 </FormControl>
