@@ -341,6 +341,9 @@ export default function Home() {
     } catch (error) {
       console.error('Error al procesar la solicitud:', error);
       
+      // En caso de runtime error, ocultar progress modal sin mostrar 100%
+      setProgressState({ isVisible: false, progress: 0 });
+      
       let errorMessage = "No se pudo iniciar el proceso de carga. Por favor intenta nuevamente.";
       
       if (error instanceof Error) {
@@ -374,9 +377,19 @@ export default function Home() {
           onSubmit={handleFormSubmit} 
           isSubmitting={isSubmitting}
           notificationState={notificationState}
-          onDismissNotification={() => setNotificationState(undefined)}
+          onDismissNotification={() => {
+            setNotificationState(undefined);
+            setProgressState({ isVisible: false, progress: 0 });
+          }}
         />
       </main>
+
+      {/* Progress Modal */}
+      <ProgressModal 
+        isVisible={progressState.isVisible}
+        progress={progressState.progress}
+        message="Procesando datos, por favor espera"
+      />
     </div>
   );
 }
