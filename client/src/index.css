@@ -190,28 +190,49 @@
     @apply min-h-[105px] mb-2 flex flex-col;
   }
 
-  /* Estilos específicos para el modal de éxito */
-  .success-modal {
-    color: inherit;
+  /* Estilos específicos para el modal de éxito con mayor especificidad */
+  [data-radix-portal] .success-modal .text-green-600,
+  .success-modal [class*="text-green-600"] {
+    color: rgb(34, 197, 94);
   }
   
-  .success-modal .text-green-600 {
-    color: hsl(150 100% 40%) !important;
+  [data-radix-portal] .success-modal .text-gray-600,
+  .success-modal [class*="text-gray-600"] {
+    color: rgb(75, 85, 99);
   }
   
-  .success-modal .text-gray-600 {
-    color: hsl(0 0% 45%) !important;
+  [data-radix-portal] .success-modal .text-gray-700,
+  .success-modal [class*="text-gray-700"] {
+    color: rgb(55, 65, 81);
   }
   
-  .success-modal .text-blue-600 {
-    color: hsl(200 100% 50%) !important;
+  [data-radix-portal] .success-modal .text-blue-600,
+  .success-modal [class*="text-blue-600"] {
+    color: rgb(37, 99, 235);
   }
   
-  .success-modal .hover\:text-blue-800:hover {
-    color: hsl(200 100% 30%) !important;
+  [data-radix-portal] .success-modal .text-blue-800,
+  .success-modal [class*="text-blue-800"]:hover {
+    color: rgb(30, 64, 175);
   }
   
-  .success-modal .text-green-800 {
-    color: hsl(150 100% 25%) !important;
+  [data-radix-portal] .success-modal .text-green-800,
+  .success-modal [class*="text-green-800"] {
+    color: rgb(22, 101, 52);
+  }
+  
+  [data-radix-portal] .success-modal .text-emerald-600,
+  .success-modal [class*="text-emerald-600"] {
+    color: rgb(5, 150, 105);
+  }
+  
+  [data-radix-portal] .success-modal .text-emerald-700,
+  .success-modal [class*="text-emerald-700"] {
+    color: rgb(4, 120, 87);
+  }
+  
+  [data-radix-portal] .success-modal .text-emerald-800,
+  .success-modal [class*="text-emerald-800"] {
+    color: rgb(6, 95, 70);
   }
 }
