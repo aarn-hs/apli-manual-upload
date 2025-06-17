@@ -78,7 +78,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, progress
 
   // Check if all required fields are completed AND valid
   const requiredFields = [
-    'source', 'position', 'location', 'pmx', 'firstName', 'firstLastName', 
+    'source', 'position', 'location', 'firstName', 'firstLastName', 
     'birthDate', 'email', 'phone', 'curp',
     'streetAndNumber', 'neighborhood', 'state', 'municipality', 'postalCode',
     'education', 'previousCompany', 'previousPosition', 
