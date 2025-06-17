@@ -47,7 +47,7 @@ export default function WebhookResponseModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleModalClose}>
-      <DialogContent className={`sm:max-w-md ${isSuccess ? 'bg-green-50 border-green-200' : ''}`}>
+      <DialogContent className={`sm:max-w-md ${isSuccess ? 'bg-green-100 border-green-300' : ''}`}>
         <DialogHeader>
           <div className="flex items-center justify-between">
             <DialogTitle className="flex items-center gap-2">
@@ -98,8 +98,8 @@ export default function WebhookResponseModal({
           )}
           
           {applicationId && (
-            <div className="p-3 bg-green-50 border border-green-200 rounded-md">
-              <p className="text-xs text-green-700 mb-1">ID de postulación:</p>
+            <div className="p-3 bg-green-200 border border-green-400 rounded-md">
+              <p className="text-xs text-green-800 mb-1">ID de postulación:</p>
               <a
                 href={`${baseUrl}/${applicationId}`}
                 target="_blank"
@@ -109,7 +109,7 @@ export default function WebhookResponseModal({
               >
                 {`${baseUrl}/${applicationId}`}
               </a>
-              <p className="text-xs text-green-600 mt-1">
+              <p className="text-xs text-green-700 mt-1">
                 Haz clic para ver en Apli
               </p>
             </div>
