@@ -6,13 +6,31 @@ import WebhookResponseModal from "@/components/ui/webhook-response-modal";
 
 export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // DATOS DE PRUEBA TEMPORAL - Forzar modales para testing
+  const [showTestModals, setShowTestModals] = useState(true);
+  const [testModalType, setTestModalType] = useState<'success' | 'error' | 'loading'>('success');
+  
   const [notificationState, setNotificationState] = useState<{
     isVisible: boolean;
     isSuccess: boolean;
     message: string;
     submissionRequestId?: string;
     applicationId?: string;
-  } | undefined>();
+  } | undefined>(() => {
+    // Inicializar con datos de prueba para modal de éxito
+    if (showTestModals && testModalType === 'success') {
+      return {
+        isVisible: true,
+        isSuccess: true,
+        message: 'Candidato cargado exitosamente',
+        submissionRequestId: 'REQ-1f6673f4-1750146382',
+        applicationId: '139360'
+      };
+    }
+    return undefined;
+  });
+  
   const { toast } = useToast();
 
   // Función para obtener parámetros de URL
@@ -355,9 +373,74 @@ export default function Home() {
     }
   };
 
+  // Función para cambiar el tipo de modal de prueba
+  const switchTestModal = (type: 'success' | 'error' | 'loading' | 'none') => {
+    setTestModalType(type);
+    
+    if (type === 'success') {
+      setNotificationState({
+        isVisible: true,
+        isSuccess: true,
+        message: 'Candidato cargado exitosamente',
+        submissionRequestId: 'REQ-1f6673f4-1750146382',
+        applicationId: '139360'
+      });
+      setIsSubmitting(false);
+    } else if (type === 'error') {
+      setNotificationState({
+        isVisible: true,
+        isSuccess: false,
+        message: 'El candidato es un reingreso no viable para este puesto. No puede participar nuevamente.',
+        submissionRequestId: 'REQ-2a8834b2-1750146500',
+        applicationId: undefined
+      });
+      setIsSubmitting(false);
+    } else if (type === 'loading') {
+      setNotificationState(undefined);
+      setIsSubmitting(true);
+    } else {
+      setNotificationState(undefined);
+      setIsSubmitting(false);
+      setShowTestModals(false);
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-full bg-white p-18">
       <main className="w-full flex-grow">
+        {/* PANEL DE PRUEBA TEMPORAL */}
+        {showTestModals && (
+          <div className="mb-6 p-4 bg-yellow-50 border border-yellow-300 rounded-lg">
+            <h3 className="font-bold text-sm mb-3">MODO PRUEBA - Testing de colores de modales</h3>
+            <div className="flex gap-2 flex-wrap">
+              <button 
+                onClick={() => switchTestModal('success')}
+                className="px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700"
+              >
+                Modal Éxito
+              </button>
+              <button 
+                onClick={() => switchTestModal('error')}
+                className="px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700"
+              >
+                Modal Error
+              </button>
+              <button 
+                onClick={() => switchTestModal('loading')}
+                className="px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
+              >
+                Modal Carga
+              </button>
+              <button 
+                onClick={() => switchTestModal('none')}
+                className="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700"
+              >
+                Desactivar Prueba
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="mb-6">
           <h1 className="title mb-2">Carga manual de candidato</h1>
           <p className="subtitle text-dark-grey">Completa el formulario con los datos del candidato que deseas cargar. Todos los campos marcados con <span className="text-red">*</span> son obligatorios. Una vez completado, haz clic en "Enviar Candidato" para mandar la información.</p>
