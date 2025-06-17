@@ -77,26 +77,21 @@ export default function LoadingModal({ isVisible, onComplete }: LoadingModalProp
 
   return (
     <div className="p-4 rounded-lg border-2 bg-white border-gray-400 mb-6">
-      <div className="flex justify-between items-start">
-        <div className="flex-1">
-          <p className="text-sm font-medium mb-4 text-gray-700">
-            Procesando datos, por favor espera
-          </p>
-          
-          {/* Barra de progreso */}
-          <div className="w-full bg-gray-300 h-2 mb-4">
-            <div 
-              className="bg-violet-600 h-2 transition-all duration-1000 ease-out"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-        </div>
-        
-        <div className="ml-4 flex items-center">
-          <span className="text-sm font-bold text-gray-700">
-            {Math.round(progress)}%
-          </span>
-        </div>
+      <div className="flex justify-between items-center mb-4">
+        <p className="text-sm font-medium text-gray-700">
+          Cargando candidato en Apli
+        </p>
+        <span className="text-sm font-bold text-gray-700">
+          {Math.round(progress)}%
+        </span>
+      </div>
+      
+      {/* Barra de progreso */}
+      <div className="w-full bg-gray-300 h-2">
+        <div 
+          className="bg-violet-600 h-2 transition-all duration-1000 ease-out"
+          style={{ width: `${progress}%` }}
+        />
       </div>
     </div>
   );
