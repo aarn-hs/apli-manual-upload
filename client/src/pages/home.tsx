@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import CandidateForm from "@/components/CandidateForm";
 import { useToast } from "@/hooks/use-toast";
-import { completeLoadingProgress } from "@/components/ui/loading-modal";
 
 export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -20,9 +19,9 @@ export default function Home() {
     
     // Por ahora usar datos de prueba, después se utilizarán los parámetros reales
     return {
-      name: urlParams.get('name') || 'No Asignado',
-      lastName: urlParams.get('lastName') || 'Sin dato', 
-      email: urlParams.get('email') || 'Sin dato'
+      name: urlParams.get('name') || 'Sin datos',
+      lastName: urlParams.get('lastName') || 'Sin datos', 
+      email: urlParams.get('email') || 'Sin datos'
     };
   };
 
@@ -179,11 +178,6 @@ export default function Home() {
       const elapsed = Date.now() - startTime;
       
       if (elapsed > maxWaitTime) {
-        // Completar la barra de progreso antes de mostrar el timeout
-        // No llegar al 100% para timeouts, mantener progreso actual
-        completeLoadingProgress(false);
-        
-        // Mostrar el timeout inmediatamente sin esperar
         setNotificationState({
           isVisible: true,
           isSuccess: false,
@@ -206,21 +200,14 @@ export default function Home() {
           message = result.message;
         }
         
-        // Completar la barra de progreso antes de mostrar la notificación
-        // Solo llegar al 100% si tenemos application_id
-        completeLoadingProgress(!!applicationId);
-        
-        // Esperar un momento para que se vea el 100% (si aplica) y luego mostrar la notificación
-        setTimeout(() => {
-          setNotificationState({
-            isVisible: true,
-            isSuccess: true,
-            message,
-            submissionRequestId: submissionRequestId,
-            applicationId
-          });
-          setIsSubmitting(false);
-        }, applicationId ? 1000 : 0);
+        setNotificationState({
+          isVisible: true,
+          isSuccess: true,
+          message,
+          submissionRequestId: submissionRequestId,
+          applicationId
+        });
+        setIsSubmitting(false);
         
       } else if (statusData.status === 'error') {
         // Error en el procesamiento
@@ -242,11 +229,6 @@ export default function Home() {
           message = error;
         }
         
-        // Completar la barra de progreso antes de mostrar el error
-        // No llegar al 100% para errores, mantener progreso actual
-        completeLoadingProgress(false);
-        
-        // Mostrar el error inmediatamente sin esperar
         setNotificationState({
           isVisible: true,
           isSuccess: false,

@@ -189,10 +189,4 @@
   .form-item {
     @apply min-h-[105px] mb-2 flex flex-col;
   }
-  
-  /* Force success modal styling with high specificity */
-  .webhook-success-modal {
-    background-color: #dcfce7 !important;
-    border-color: #86efac !important;
-  }
 }

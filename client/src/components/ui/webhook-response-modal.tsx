@@ -47,10 +47,9 @@ export default function WebhookResponseModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleModalClose}>
-      <DialogContent className="sm:max-w-md p-0">
-        <div className={`p-6 rounded-lg ${isSuccess ? 'webhook-success-modal' : ''}`} style={isSuccess ? { backgroundColor: '#dcfce7', border: '1px solid #86efac' } : { backgroundColor: 'white' }}>
-          <DialogHeader>
-            <div className="flex items-center justify-between">
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <div className="flex items-center justify-between">
             <DialogTitle className="flex items-center gap-2">
               {isSuccess ? (
                 <>
@@ -79,8 +78,8 @@ export default function WebhookResponseModal({
                 <X className="h-4 w-4" />
               </Button>
             )}
-            </div>
-          </DialogHeader>
+          </div>
+        </DialogHeader>
         
         <div className="space-y-4">
           <p className="text-sm text-gray-700">
@@ -123,7 +122,6 @@ export default function WebhookResponseModal({
             </p>
           </div>
 
-        </div>
         </div>
       </DialogContent>
     </Dialog>

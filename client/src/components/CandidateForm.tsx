@@ -1,10 +1,8 @@
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState, useEffect } from "react";
 import { simplifiedCandidateSchema } from "@/lib/simplified-schema";
 import { extractGenderFromCURP } from "@/lib/validation";
 import SimpleForm from "@/components/FormSections/SimpleForm";
-import LoadingModal, { completeLoadingProgress } from "@/components/ui/loading-modal";
 
 interface CandidateFormProps {
   onSubmit: (data: any) => void;
@@ -21,14 +19,6 @@ interface CandidateFormProps {
 
 export default function CandidateForm({ onSubmit, isSubmitting = false, notificationState, onDismissNotification }: CandidateFormProps) {
   const baseUrl = import.meta.env.VITE_APLI_CANDIDATES_BASE_URL || 'https://demo.apli.app/candidates';
-  const [isLoadingModalOpen, setIsLoadingModalOpen] = useState(false);
-  
-  // Cerrar modal de carga cuando aparezca una notificación
-  useEffect(() => {
-    if (notificationState?.isVisible) {
-      setIsLoadingModalOpen(false);
-    }
-  }, [notificationState?.isVisible]);
   
   // Determinar si el error es no cerrable
   const isNonClosableError = notificationState?.message && (
@@ -112,9 +102,6 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
 
 
   const handleFormSubmit = (data: any) => {
-    // Mostrar modal de carga
-    setIsLoadingModalOpen(true);
-    
     // Extraer automáticamente el género de la CURP
     const extractedGender = extractGenderFromCURP(data.curp || '');
     
@@ -165,12 +152,6 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8">
         <SimpleForm control={methods.control} watch={methods.watch} setValue={methods.setValue} />
-
-        {/* Modal de carga */}
-        <LoadingModal 
-          isVisible={isLoadingModalOpen}
-          onComplete={() => setIsLoadingModalOpen(false)}
-        />
 
         {/* Notification panel */}
         {notificationState?.isVisible && (
@@ -241,7 +222,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
           <button 
             type="submit" 
             className="btn-primary"
-            disabled={isSubmitting || isFormSubmitting || !isFormReadyForSubmission || notificationState?.isVisible || isLoadingModalOpen}
+            disabled={isSubmitting || isFormSubmitting || !isFormReadyForSubmission || notificationState?.isVisible}
           >
             {(isSubmitting || isFormSubmitting) ? "Cargando..." : "Cargar candidato"}
           </button>
@@ -260,8 +241,6 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
           Asegúrate de llenar todos los campos obligatorios para poder continuar.
         </p>
       </form>
-
-
     </FormProvider>
   );
 }
