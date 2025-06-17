@@ -6,7 +6,7 @@ import { CustomInput } from "@/components/ui/custom-input";
 import { SearchableSelect } from "@/components/ui/searchable-select";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { simplifiedCandidateSchema } from "@/lib/simplified-schema";
-import { agencySources, positions, locations, genders, nationalities, mexicanStates, getMunicipalitiesForState, educationLevels, maritalStatuses, motivations, yesNoOptions, jobsLast24MonthsOptions } from "@/lib/data";
+import { agencySources, positions, locations, genders, mexicanStates, getMunicipalitiesForState, educationLevels, maritalStatuses, motivations, yesNoOptions, jobsLast24MonthsOptions } from "@/lib/data";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface SimpleFormProps {
@@ -18,36 +18,32 @@ interface SimpleFormProps {
 export default function SimpleForm({ control, watch, setValue }: SimpleFormProps) {
   const isMobile = useIsMobile();
 
-  // Watch para detectar cambios en fecha de nacimiento y nacionalidad
+  // Watch para detectar cambios en fecha de nacimiento
   const birthDate = watch('birthDate');
-  const nationality = watch('nationality');
   const curp = watch('curp');
   const previousJobStartDate = watch('previousJobStartDate');
   const previousJobEndDate = watch('previousJobEndDate');
 
   // Referencias para detectar cambios previos
   const prevBirthDate = useRef(birthDate);
-  const prevNationality = useRef(nationality);
   const prevPreviousJobStartDate = useRef(previousJobStartDate);
   const isInitialLoad = useRef(true);
 
-  // Efecto para revalidar CURP cuando cambian fecha de nacimiento o nacionalidad
+  // Efecto para revalidar CURP cuando cambian fecha de nacimiento
   useEffect(() => {
     // No ejecutar en la carga inicial
     if (isInitialLoad.current) {
       isInitialLoad.current = false;
       prevBirthDate.current = birthDate;
-      prevNationality.current = nationality;
       prevPreviousJobStartDate.current = previousJobStartDate;
       return;
     }
 
     // Solo revalidar si CURP tiene valor y alguno de los campos dependientes cambió
     const birthDateChanged = prevBirthDate.current !== birthDate;
-    const nationalityChanged = prevNationality.current !== nationality;
     const previousJobStartDateChanged = prevPreviousJobStartDate.current !== previousJobStartDate;
     
-    if (curp && (birthDateChanged || nationalityChanged)) {
+    if (curp && (birthDateChanged)) {
       // Forzar revalidación del campo CURP
       setValue('curp', curp, { shouldValidate: true, shouldTouch: true });
     }
@@ -69,13 +65,12 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
 
     // Actualizar referencias
     prevBirthDate.current = birthDate;
-    prevNationality.current = nationality;
     prevPreviousJobStartDate.current = previousJobStartDate;
-  }, [birthDate, nationality, curp, previousJobStartDate, previousJobEndDate, setValue]);
+  }, [birthDate, curp, previousJobStartDate, previousJobEndDate, setValue]);
 
   // Helper functions for field dependencies
   const isCURPEnabled = () => {
-    return birthDate && nationality;
+    return birthDate;
   };
 
   const isBirthDateValidForWork = () => {
@@ -376,32 +371,6 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
           )}
         />
 
-        {/* Campo 11 - Nacionalidad */}
-        <FormField
-          control={control}
-          name="nationality"
-          render={({ field, fieldState }) => (
-            <FormItem className={`form-item ${getOrderClass(11)}`}>
-              <FormLabel className="body-text required">Nacionalidad</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value || ""}>
-                <FormControl>
-                  <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={getTabIndex(11)}>
-                    <SelectValue placeholder="Seleccionar" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {nationalities.map((nationality) => (
-                    <SelectItem key={nationality} value={nationality}>
-                      {nationality}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage className="error-message" />
-            </FormItem>
-          )}
-        />
-
         {/* Campo 12 - CURP */}
         <FormField
           control={control}
@@ -412,7 +381,7 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
               <FormControl>
                 <CustomInput
                   {...field}
-                  placeholder={isCURPEnabled() ? "18 caracteres" : "Completa fecha de nacimiento y nacionalidad"}
+                  placeholder={isCURPEnabled() ? "18 caracteres" : "Completa fecha de nacimiento"}
                   className={`form-control ${fieldState.error ? 'error' : ''}`}
                   autoUppercase={true}
                   tabIndex={getTabIndex(12)}
