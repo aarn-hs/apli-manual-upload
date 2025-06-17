@@ -6,7 +6,6 @@ import WebhookResponseModal from "@/components/ui/webhook-response-modal";
 
 export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
   const [notificationState, setNotificationState] = useState<{
     isVisible: boolean;
     isSuccess: boolean;
@@ -14,7 +13,6 @@ export default function Home() {
     submissionRequestId?: string;
     applicationId?: string;
   } | undefined>();
-  
   const { toast } = useToast();
 
   // Función para obtener parámetros de URL

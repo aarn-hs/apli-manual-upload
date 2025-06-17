@@ -76,12 +76,12 @@ export default function LoadingModal({ isVisible, onComplete }: LoadingModalProp
   if (!isVisible) return null;
 
   return (
-    <div className="loading-modal-container p-4 rounded-lg border-2 bg-white border-gray-400 mb-6">
+    <div className="p-4 rounded-lg border-2 bg-white border-gray-400 mb-6">
       <div className="flex justify-between items-center mb-4">
-        <p style={{ color: 'rgb(55, 65, 81)', fontSize: '0.875rem', fontWeight: '500' }}>
+        <p className="text-sm font-medium text-gray-700">
           Procesando datos, por favor espera
         </p>
-        <span style={{ color: 'rgb(55, 65, 81)', fontSize: '0.875rem', fontWeight: '700' }}>
+        <span className="text-sm font-bold text-gray-700">
           {Math.round(progress)}%
         </span>
       </div>
