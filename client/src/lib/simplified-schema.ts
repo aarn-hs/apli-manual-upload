@@ -71,7 +71,7 @@ export const simplifiedCandidateSchema = z.object({
   
 
   
-
+  nationality: z.string({ required_error: "Debes seleccionar una opción" }),
   
   curp: z.string({ required_error: "Ingrese la CURP" })
     .refine((val) => {
@@ -162,11 +162,11 @@ export const simplifiedCandidateSchema = z.object({
 
 }).refine(
   (data) => {
-    const validation = validateCURPWithDetails(data.curp, data.birthDate);
+    const validation = validateCURPWithDetails(data.curp, data.birthDate, data.nationality);
     return validation.isValid;
   },
   (data) => {
-    const validation = validateCURPWithDetails(data.curp, data.birthDate);
+    const validation = validateCURPWithDetails(data.curp, data.birthDate, data.nationality);
     return {
       message: validation.error || "El CURP no es válido",
       path: ["curp"]
