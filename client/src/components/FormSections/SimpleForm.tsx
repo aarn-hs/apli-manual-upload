@@ -70,7 +70,7 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
 
   // Helper functions for field dependencies
   const isCURPEnabled = () => {
-    return birthDate && nationality;
+    return birthDate;
   };
 
   const isBirthDateValidForWork = () => {

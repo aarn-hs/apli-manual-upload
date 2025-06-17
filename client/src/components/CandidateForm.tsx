@@ -39,7 +39,6 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
       birthDate: "",
       email: "",
       phone: "",
-      nationality: "",
       curp: "",
       streetAndNumber: "",
       interiorNumber: "",
@@ -75,7 +74,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
   // Check if all required fields are completed AND valid
   const requiredFields = [
     'source', 'position', 'location', 'pmx', 'firstName', 'firstLastName', 
-    'birthDate', 'email', 'phone', 'nationality', 'curp',
+    'birthDate', 'email', 'phone', 'curp',
     'streetAndNumber', 'neighborhood', 'state', 'municipality', 'postalCode',
     'education', 'previousCompany', 'previousPosition', 
     'retailExperience', 'motivation',
@@ -127,7 +126,6 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
       birthDate: "",
       email: "",
       phone: "",
-      nationality: "",
       curp: "",
       streetAndNumber: "",
       interiorNumber: "",

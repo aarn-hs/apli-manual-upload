@@ -123,7 +123,7 @@ export default function Home() {
       "Correo electrónico": formData.email || "",
       "Número de teléfono": formData.phone || "",
       "Género": formData.gender || "",
-      "Nacionalidad": formData.nationality || "",
+
       "Calle y número de la vivienda": formData.streetAndNumber || "",
       "Número interior": formData.interiorNumber || "",
       "Colonia": formData.neighborhood || "",
