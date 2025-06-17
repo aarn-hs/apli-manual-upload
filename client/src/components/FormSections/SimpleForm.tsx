@@ -399,7 +399,7 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
           control={control}
           name="state"
           render={({ field, fieldState }) => (
-            <FormItem className={`form-item ${getOrderClass(13)}`}>
+            <FormItem className={`form-item ${getOrderClass(12)}`}>
               <FormLabel className="body-text required">Estado de residencia</FormLabel>
               <FormControl>
                 <SearchableSelect
@@ -413,7 +413,7 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
                     setValue('municipality', '');
                   }}
                   className={`form-control ${fieldState.error ? 'error' : ''}`}
-                  tabIndex={getTabIndex(13)}
+                  tabIndex={getTabIndex(12)}
                 />
               </FormControl>
               <FormMessage className="error-message" />
@@ -421,12 +421,12 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
           )}
         />
 
-        {/* Campo 14 - Municipio */}
+        {/* Campo 13 - Municipio */}
         <FormField
           control={control}
           name="municipality"
           render={({ field, fieldState }) => (
-            <FormItem className={`form-item ${getOrderClass(14)}`}>
+            <FormItem className={`form-item ${getOrderClass(13)}`}>
               <FormLabel className="body-text required">Municipio</FormLabel>
               <FormControl>
                 <SearchableSelect
@@ -436,7 +436,7 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
                   value={field.value || ""}
                   onValueChange={field.onChange}
                   className={`form-control ${fieldState.error ? 'error' : ''}`}
-                  tabIndex={getTabIndex(14)}
+                  tabIndex={getTabIndex(13)}
                   disabled={!watch('state')}
                 />
               </FormControl>
@@ -445,19 +445,19 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
           )}
         />
 
-        {/* Campo 15 - Colonia */}
+        {/* Campo 14 - Colonia */}
         <FormField
           control={control}
           name="neighborhood"
           render={({ field }) => (
-            <FormItem className={`form-item ${getOrderClass(15)}`}>
+            <FormItem className={`form-item ${getOrderClass(14)}`}>
               <FormLabel className="body-text required">Colonia</FormLabel>
               <FormControl>
                 <CustomInput
                   {...field}
                   placeholder="Colonia"
                   className="form-control"
-                  tabIndex={getTabIndex(15)}
+                  tabIndex={getTabIndex(14)}
                   autoCleanSpaces={true}
                   maxLength={41}
                 />
