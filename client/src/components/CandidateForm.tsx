@@ -166,6 +166,12 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
       <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8">
         <SimpleForm control={methods.control} watch={methods.watch} setValue={methods.setValue} />
 
+        {/* Modal de carga */}
+        <LoadingModal 
+          isVisible={isLoadingModalOpen}
+          onComplete={() => setIsLoadingModalOpen(false)}
+        />
+
         {/* Notification panel */}
         {notificationState?.isVisible && (
           <div className={`p-4 rounded-lg border-2 ${
@@ -255,11 +261,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
         </p>
       </form>
 
-      {/* Modal de carga */}
-      <LoadingModal 
-        isOpen={isLoadingModalOpen}
-        onComplete={() => setIsLoadingModalOpen(false)}
-      />
+
     </FormProvider>
   );
 }

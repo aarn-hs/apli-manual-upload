@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
-import { Dialog, DialogContent, DialogOverlay } from "@/components/ui/dialog";
 
 interface LoadingModalProps {
-  isOpen: boolean;
+  isVisible: boolean;
   onComplete?: () => void;
 }
 
-export default function LoadingModal({ isOpen, onComplete }: LoadingModalProps) {
+export default function LoadingModal({ isVisible, onComplete }: LoadingModalProps) {
   const [progress, setProgress] = useState(0);
   const [isCompleting, setIsCompleting] = useState(false);
 
   useEffect(() => {
-    if (!isOpen) {
+    if (!isVisible) {
       setProgress(0);
       setIsCompleting(false);
       return;
@@ -38,7 +37,7 @@ export default function LoadingModal({ isOpen, onComplete }: LoadingModalProps) 
         clearInterval(interval);
       }
     };
-  }, [isOpen]);
+  }, [isVisible]);
 
   // Función pública para completar el progreso cuando se reciba respuesta
   const completeProgress = () => {
@@ -55,7 +54,7 @@ export default function LoadingModal({ isOpen, onComplete }: LoadingModalProps) 
 
   // Exponer la función completeProgress al componente padre
   useEffect(() => {
-    if (isOpen && (window as any).completeLoadingProgress) {
+    if (isVisible && (window as any).completeLoadingProgress) {
       // Si ya existe una función global, reemplazarla
     }
     (window as any).completeLoadingProgress = completeProgress;
@@ -65,35 +64,34 @@ export default function LoadingModal({ isOpen, onComplete }: LoadingModalProps) 
         delete (window as any).completeLoadingProgress;
       }
     };
-  }, [isOpen, onComplete]);
+  }, [isVisible, onComplete]);
 
-  if (!isOpen) return null;
+  if (!isVisible) return null;
 
   return (
-    <Dialog open={isOpen}>
-      <DialogOverlay className="bg-black/50 backdrop-blur-sm" />
-      <DialogContent className="max-w-md mx-auto bg-gray-800 border-gray-700 text-white p-8">
-        <div className="space-y-6">
-          {/* Título y porcentaje */}
-          <div className="flex justify-between items-center">
-            <h2 className="text-lg font-medium text-white">
-              Cargando candidato en Apli
-            </h2>
-            <span className="text-2xl font-bold text-white">
-              {Math.round(progress)}%
-            </span>
-          </div>
+    <div className="p-4 rounded-lg border-2 bg-gray-900 border-gray-700 mb-6">
+      <div className="flex justify-between items-start">
+        <div className="flex-1">
+          <p className="text-sm font-medium mb-4 text-white">
+            Cargando candidato en Apli
+          </p>
           
           {/* Barra de progreso */}
-          <div className="w-full bg-gray-600 rounded-full h-3">
+          <div className="w-full bg-gray-700 rounded-full h-3 mb-4">
             <div 
               className="bg-violet-600 h-3 rounded-full transition-all duration-1000 ease-out"
               style={{ width: `${progress}%` }}
             />
           </div>
         </div>
-      </DialogContent>
-    </Dialog>
+        
+        <div className="ml-4 flex items-center">
+          <span className="text-lg font-bold text-white">
+            {Math.round(progress)}%
+          </span>
+        </div>
+      </div>
+    </div>
   );
 }
 
