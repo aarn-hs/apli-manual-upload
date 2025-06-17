@@ -711,16 +711,16 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
           )}
         />
 
-        {/* Campo 27 - Cantidad de trabajos en los últimos 24 meses */}
+        {/* Campo 25 - Cantidad de trabajos en los últimos 24 meses */}
         <FormField
           control={control}
           name="jobsLast24Months"
           render={({ field, fieldState }) => (
-            <FormItem className={`form-item ${getOrderClass(27)}`}>
+            <FormItem className={`form-item ${getOrderClass(25)}`}>
               <FormLabel className="body-text required">Cantidad de trabajos en los últimos 24 meses</FormLabel>
               <Select onValueChange={field.onChange} value={field.value || ""}>
                 <FormControl>
-                  <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={getTabIndex(27)}>
+                  <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={getTabIndex(25)}>
                     <SelectValue placeholder="Seleccionar" />
                   </SelectTrigger>
                 </FormControl>
