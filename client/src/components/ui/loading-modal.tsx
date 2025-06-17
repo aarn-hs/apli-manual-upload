@@ -18,12 +18,12 @@ export default function LoadingModal({ isVisible, onComplete }: LoadingModalProp
 
     let interval: NodeJS.Timeout;
     
-    // Función para actualizar el progreso gradualmente hasta 90% en 3 minutos
+    // Función para actualizar el progreso gradualmente hasta 90% en 2 minutos
     const updateProgress = () => {
       interval = setInterval(() => {
         setProgress(current => {
-          // 90% en 180 segundos = 0.5% por segundo
-          const increment = 0.5;
+          // 90% en 120 segundos = 0.75% por segundo
+          const increment = 0.75;
           const newProgress = Math.min(current + increment, 90);
           return newProgress;
         });
@@ -40,23 +40,16 @@ export default function LoadingModal({ isVisible, onComplete }: LoadingModalProp
   }, [isVisible]);
 
   // Función pública para completar el progreso cuando se reciba respuesta
-  const completeProgress = (shouldReach100: boolean = false) => {
+  const completeProgress = (shouldReach100: boolean = true) => {
     setIsCompleting(true);
+    setProgress(100);
     
-    if (shouldReach100) {
-      setProgress(100);
-      // Esperar un momento para mostrar el 100% y luego cerrar
-      setTimeout(() => {
-        if (onComplete) {
-          onComplete();
-        }
-      }, 1000);
-    } else {
-      // No llegar al 100%, mantener el progreso actual y cerrar inmediatamente
+    // Esperar un momento para mostrar el 100% y luego cerrar
+    setTimeout(() => {
       if (onComplete) {
         onComplete();
       }
-    }
+    }, 1000);
   };
 
   // Exponer la función completeProgress al componente padre
@@ -98,7 +91,7 @@ export default function LoadingModal({ isVisible, onComplete }: LoadingModalProp
 }
 
 // Función helper para completar el progreso desde cualquier lugar
-export const completeLoadingProgress = (shouldReach100: boolean = false) => {
+export const completeLoadingProgress = (shouldReach100: boolean = true) => {
   if ((window as any).completeLoadingProgress) {
     (window as any).completeLoadingProgress(shouldReach100);
   }

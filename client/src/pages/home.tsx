@@ -172,7 +172,7 @@ export default function Home() {
   // Función para hacer polling hasta obtener resultado
   const pollForResult = async (candidateSubmissionId: string, submissionRequestId: string) => {
     const startTime = Date.now();
-    const maxWaitTime = 10 * 60 * 1000; // 10 minutos máximo
+    const maxWaitTime = 2 * 60 * 1000; // 2 minutos máximo
     const pollInterval = 5000; // 5 segundos (reducido de 3 para evitar rate limiting)
 
     const poll = async (): Promise<void> => {
@@ -180,18 +180,19 @@ export default function Home() {
       
       if (elapsed > maxWaitTime) {
         // Completar la barra de progreso antes de mostrar el timeout
-        // No llegar al 100% para timeouts, mantener progreso actual
-        completeLoadingProgress(false);
+        completeLoadingProgress();
         
-        // Mostrar el timeout inmediatamente sin esperar
-        setNotificationState({
-          isVisible: true,
-          isSuccess: false,
-          message: "El proceso tardó más de 10 minutos",
-          submissionRequestId: submissionRequestId,
-          applicationId: undefined
-        });
-        setIsSubmitting(false);
+        // Esperar un momento para que se vea el 100% y luego mostrar el timeout
+        setTimeout(() => {
+          setNotificationState({
+            isVisible: true,
+            isSuccess: false,
+            message: "El proceso tardó más de 2 minutos",
+            submissionRequestId: submissionRequestId,
+            applicationId: undefined
+          });
+          setIsSubmitting(false);
+        }, 1000);
         return;
       }
 
@@ -207,10 +208,9 @@ export default function Home() {
         }
         
         // Completar la barra de progreso antes de mostrar la notificación
-        // Solo llegar al 100% si tenemos application_id
-        completeLoadingProgress(!!applicationId);
+        completeLoadingProgress();
         
-        // Esperar un momento para que se vea el 100% (si aplica) y luego mostrar la notificación
+        // Esperar un momento para que se vea el 100% y luego mostrar la notificación
         setTimeout(() => {
           setNotificationState({
             isVisible: true,
@@ -220,7 +220,7 @@ export default function Home() {
             applicationId
           });
           setIsSubmitting(false);
-        }, applicationId ? 1000 : 0);
+        }, 1000);
         
       } else if (statusData.status === 'error') {
         // Error en el procesamiento
@@ -243,18 +243,19 @@ export default function Home() {
         }
         
         // Completar la barra de progreso antes de mostrar el error
-        // No llegar al 100% para errores, mantener progreso actual
-        completeLoadingProgress(false);
+        completeLoadingProgress();
         
-        // Mostrar el error inmediatamente sin esperar
-        setNotificationState({
-          isVisible: true,
-          isSuccess: false,
-          message,
-          submissionRequestId: submissionRequestId,
-          applicationId: applicationId
-        });
-        setIsSubmitting(false);
+        // Esperar un momento para que se vea el 100% y luego mostrar el error
+        setTimeout(() => {
+          setNotificationState({
+            isVisible: true,
+            isSuccess: false,
+            message,
+            submissionRequestId: submissionRequestId,
+            applicationId: applicationId
+          });
+          setIsSubmitting(false);
+        }, 1000);
         
       } else if (statusData.status === 'processing') {
         // Sigue procesando, continuar polling
