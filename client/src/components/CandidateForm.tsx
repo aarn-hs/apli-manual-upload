@@ -47,7 +47,6 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
       state: "",
       postalCode: "",
       education: "",
-      maritalStatus: "",
       previousCompany: "",
       previousPosition: "",
       retailExperience: "",
@@ -77,7 +76,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
     'source', 'position', 'location', 'pmx', 'firstName', 'firstLastName', 
     'birthDate', 'email', 'phone', 'curp',
     'streetAndNumber', 'neighborhood', 'state', 'municipality', 'postalCode',
-    'education', 'maritalStatus', 'previousCompany', 'previousPosition', 
+    'education', 'previousCompany', 'previousPosition', 
     'retailExperience', 'motivation',
     'jobsLast24Months', 'previousJobStartDate', 'previousJobEndDate'
   ];
@@ -135,7 +134,6 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
       state: "",
       postalCode: "",
       education: "",
-      maritalStatus: "",
       previousCompany: "",
       previousPosition: "",
       retailExperience: "",
