@@ -47,7 +47,7 @@ export default function WebhookResponseModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleModalClose}>
-      <DialogContent className={`sm:max-w-md ${isSuccess ? '!bg-emerald-100 !border-emerald-300' : ''}`}>
+      <DialogContent className={`success-modal sm:max-w-md ${isSuccess ? '!bg-emerald-100 !border-emerald-300' : ''}`}>
         <DialogHeader>
           <div className="flex items-center justify-between">
             <DialogTitle className="flex items-center gap-2">

@@ -189,4 +189,29 @@
   .form-item {
     @apply min-h-[105px] mb-2 flex flex-col;
   }
+
+  /* Estilos específicos para el modal de éxito */
+  .success-modal {
+    color: inherit;
+  }
+  
+  .success-modal .text-green-600 {
+    color: hsl(150 100% 40%) !important;
+  }
+  
+  .success-modal .text-gray-600 {
+    color: hsl(0 0% 45%) !important;
+  }
+  
+  .success-modal .text-blue-600 {
+    color: hsl(200 100% 50%) !important;
+  }
+  
+  .success-modal .hover\:text-blue-800:hover {
+    color: hsl(200 100% 30%) !important;
+  }
+  
+  .success-modal .text-green-800 {
+    color: hsl(150 100% 25%) !important;
+  }
 }
