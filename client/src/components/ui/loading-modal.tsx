@@ -40,16 +40,23 @@ export default function LoadingModal({ isVisible, onComplete }: LoadingModalProp
   }, [isVisible]);
 
   // Función pública para completar el progreso cuando se reciba respuesta
-  const completeProgress = () => {
+  const completeProgress = (shouldReach100: boolean = false) => {
     setIsCompleting(true);
-    setProgress(100);
     
-    // Esperar un momento para mostrar el 100% y luego cerrar
-    setTimeout(() => {
+    if (shouldReach100) {
+      setProgress(100);
+      // Esperar un momento para mostrar el 100% y luego cerrar
+      setTimeout(() => {
+        if (onComplete) {
+          onComplete();
+        }
+      }, 1000);
+    } else {
+      // No llegar al 100%, mantener el progreso actual y cerrar inmediatamente
       if (onComplete) {
         onComplete();
       }
-    }, 1000);
+    }
   };
 
   // Exponer la función completeProgress al componente padre
@@ -69,24 +76,24 @@ export default function LoadingModal({ isVisible, onComplete }: LoadingModalProp
   if (!isVisible) return null;
 
   return (
-    <div className="p-4 rounded-lg border-2 bg-gray-900 border-gray-700 mb-6">
+    <div className="p-4 rounded-lg border-2 bg-white border-gray-400 mb-6">
       <div className="flex justify-between items-start">
         <div className="flex-1">
-          <p className="text-sm font-medium mb-4 text-white">
+          <p className="text-sm font-medium mb-4 text-gray-700">
             Cargando candidato en Apli
           </p>
           
           {/* Barra de progreso */}
-          <div className="w-full bg-gray-700 rounded-full h-3 mb-4">
+          <div className="w-full bg-gray-300 h-2 mb-4">
             <div 
-              className="bg-violet-600 h-3 rounded-full transition-all duration-1000 ease-out"
+              className="bg-violet-600 h-2 transition-all duration-1000 ease-out"
               style={{ width: `${progress}%` }}
             />
           </div>
         </div>
         
         <div className="ml-4 flex items-center">
-          <span className="text-lg font-bold text-white">
+          <span className="text-sm font-bold text-gray-700">
             {Math.round(progress)}%
           </span>
         </div>
@@ -96,8 +103,8 @@ export default function LoadingModal({ isVisible, onComplete }: LoadingModalProp
 }
 
 // Función helper para completar el progreso desde cualquier lugar
-export const completeLoadingProgress = () => {
+export const completeLoadingProgress = (shouldReach100: boolean = false) => {
   if ((window as any).completeLoadingProgress) {
-    (window as any).completeLoadingProgress();
+    (window as any).completeLoadingProgress(shouldReach100);
   }
 };
