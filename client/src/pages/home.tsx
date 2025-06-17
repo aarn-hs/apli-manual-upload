@@ -171,7 +171,7 @@ export default function Home() {
   // Función para hacer polling hasta obtener resultado
   const pollForResult = async (candidateSubmissionId: string, submissionRequestId: string) => {
     const startTime = Date.now();
-    const maxWaitTime = 10 * 60 * 1000; // 10 minutos máximo
+    const maxWaitTime = 3 * 60 * 1000; // 3 minutos máximo
     const pollInterval = 5000; // 5 segundos (reducido de 3 para evitar rate limiting)
 
     const poll = async (): Promise<void> => {
@@ -181,7 +181,7 @@ export default function Home() {
         setNotificationState({
           isVisible: true,
           isSuccess: false,
-          message: "El proceso tardó más de 10 minutos",
+          message: "El proceso tardó más de 3 minutos",
           submissionRequestId: submissionRequestId,
           applicationId: undefined
         });
