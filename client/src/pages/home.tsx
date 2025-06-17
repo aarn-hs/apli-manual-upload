@@ -1,9 +1,14 @@
 import { useState, useEffect } from "react";
 import CandidateForm from "@/components/CandidateForm";
+import ProgressModal from "@/components/ui/progress-modal";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [progressState, setProgressState] = useState<{
+    isVisible: boolean;
+    progress: number;
+  }>({ isVisible: false, progress: 0 });
   const [notificationState, setNotificationState] = useState<{
     isVisible: boolean;
     isSuccess: boolean;
@@ -174,10 +179,19 @@ export default function Home() {
     const maxWaitTime = 3 * 60 * 1000; // 3 minutos máximo
     const pollInterval = 5000; // 5 segundos (reducido de 3 para evitar rate limiting)
 
+    // Mostrar modal de progreso
+    setProgressState({ isVisible: true, progress: 0 });
+
     const poll = async (): Promise<void> => {
       const elapsed = Date.now() - startTime;
       
+      // Calcular progreso (hasta 90% basado en tiempo transcurrido)
+      const progressPercentage = Math.min((elapsed / maxWaitTime) * 90, 90);
+      setProgressState({ isVisible: true, progress: progressPercentage });
+      
       if (elapsed > maxWaitTime) {
+        // Timeout - no mostrar 100%, mantener progreso actual y mostrar error
+        setProgressState({ isVisible: false, progress: progressPercentage });
         setNotificationState({
           isVisible: true,
           isSuccess: false,
@@ -191,52 +205,66 @@ export default function Home() {
 
       const statusData = await checkProcessingStatus(candidateSubmissionId);
       if (statusData.status === 'completed') {
-        // Procesamiento completado exitosamente
-        const result = statusData.result;
-        const applicationId = result?.application_id;
-        let message = 'Postulación creada exitosamente';
+        // Mostrar 100% y luego ocultar modal de progreso
+        setProgressState({ isVisible: true, progress: 100 });
         
-        if (typeof result?.message === 'string') {
-          message = result.message;
-        }
-        
-        setNotificationState({
-          isVisible: true,
-          isSuccess: true,
-          message,
-          submissionRequestId: submissionRequestId,
-          applicationId
-        });
-        setIsSubmitting(false);
+        setTimeout(() => {
+          setProgressState({ isVisible: false, progress: 100 });
+          
+          // Procesamiento completado exitosamente
+          const result = statusData.result;
+          const applicationId = result?.application_id;
+          let message = 'Postulación creada exitosamente';
+          
+          if (typeof result?.message === 'string') {
+            message = result.message;
+          }
+          
+          setNotificationState({
+            isVisible: true,
+            isSuccess: true,
+            message,
+            submissionRequestId: submissionRequestId,
+            applicationId
+          });
+          setIsSubmitting(false);
+        }, 500); // Breve pausa para mostrar 100%
         
       } else if (statusData.status === 'error') {
-        // Error en el procesamiento
-        const error = statusData.result;
+        // Mostrar 100% y luego ocultar modal de progreso
+        setProgressState({ isVisible: true, progress: 100 });
+        
+        setTimeout(() => {
+          setProgressState({ isVisible: false, progress: 100 });
+          
+          // Error en el procesamiento
+          const error = statusData.result;
 
-        let message = 'Error durante el procesamiento';
-        let applicationId = undefined;
-        
-        // La estructura es: result.error.message
-        if (typeof error?.error?.message === 'string') {
-          message = error.error.message;
-          applicationId = error.error.application_id;
-        } else if (typeof error?.message === 'string') {
-          message = error.message;
-          applicationId = error.application_id;
-        } else if (typeof error?.error === 'string') {
-          message = error.error;
-        } else if (typeof error === 'string') {
-          message = error;
-        }
-        
-        setNotificationState({
-          isVisible: true,
-          isSuccess: false,
-          message,
-          submissionRequestId: submissionRequestId,
-          applicationId: applicationId
-        });
-        setIsSubmitting(false);
+          let message = 'Error durante el procesamiento';
+          let applicationId = undefined;
+          
+          // La estructura es: result.error.message
+          if (typeof error?.error?.message === 'string') {
+            message = error.error.message;
+            applicationId = error.error.application_id;
+          } else if (typeof error?.message === 'string') {
+            message = error.message;
+            applicationId = error.application_id;
+          } else if (typeof error?.error === 'string') {
+            message = error.error;
+          } else if (typeof error === 'string') {
+            message = error;
+          }
+          
+          setNotificationState({
+            isVisible: true,
+            isSuccess: false,
+            message,
+            submissionRequestId: submissionRequestId,
+            applicationId: applicationId
+          });
+          setIsSubmitting(false);
+        }, 500); // Breve pausa para mostrar 100%
         
       } else if (statusData.status === 'processing') {
         // Sigue procesando, continuar polling
