@@ -79,7 +79,7 @@ export default function LoadingModal({ isVisible, onComplete }: LoadingModalProp
     <div className="p-4 rounded-lg border-2 bg-white border-gray-400 mb-6">
       <div className="flex justify-between items-center mb-4">
         <p className="text-sm font-medium text-gray-700">
-          Cargando candidato en Apli
+          Procesando datos, por favor espera
         </p>
         <span className="text-sm font-bold text-gray-700">
           {Math.round(progress)}%
@@ -87,7 +87,7 @@ export default function LoadingModal({ isVisible, onComplete }: LoadingModalProp
       </div>
       
       {/* Barra de progreso */}
-      <div className="w-full bg-gray-300 h-2">
+      <div className="w-full bg-gray-300 h-2 mb-2">
         <div 
           className="bg-violet-600 h-2 transition-all duration-1000 ease-out"
           style={{ width: `${progress}%` }}
