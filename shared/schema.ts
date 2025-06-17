@@ -18,7 +18,7 @@ export const candidates = pgTable("candidates", {
   email: text("email").notNull(),
   phone: text("phone").notNull(),
   gender: text("gender").notNull(),
-  nationality: text("nationality").notNull(),
+
   streetAndNumber: text("street_and_number").notNull(),
   interiorNumber: text("interior_number"),
   neighborhood: text("neighborhood").notNull(),
