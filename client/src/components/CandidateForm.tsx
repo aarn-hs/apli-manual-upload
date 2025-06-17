@@ -1,6 +1,6 @@
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { simplifiedCandidateSchema } from "@/lib/simplified-schema";
 import { extractGenderFromCURP } from "@/lib/validation";
 import SimpleForm from "@/components/FormSections/SimpleForm";
@@ -22,6 +22,13 @@ interface CandidateFormProps {
 export default function CandidateForm({ onSubmit, isSubmitting = false, notificationState, onDismissNotification }: CandidateFormProps) {
   const baseUrl = import.meta.env.VITE_APLI_CANDIDATES_BASE_URL || 'https://demo.apli.app/candidates';
   const [isLoadingModalOpen, setIsLoadingModalOpen] = useState(false);
+  
+  // Cerrar modal de carga cuando aparezca una notificación
+  useEffect(() => {
+    if (notificationState?.isVisible) {
+      setIsLoadingModalOpen(false);
+    }
+  }, [notificationState?.isVisible]);
   
   // Determinar si el error es no cerrable
   const isNonClosableError = notificationState?.message && (
@@ -228,7 +235,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
           <button 
             type="submit" 
             className="btn-primary"
-            disabled={isSubmitting || isFormSubmitting || !isFormReadyForSubmission || notificationState?.isVisible}
+            disabled={isSubmitting || isFormSubmitting || !isFormReadyForSubmission || notificationState?.isVisible || isLoadingModalOpen}
           >
             {(isSubmitting || isFormSubmitting) ? "Cargando..." : "Cargar candidato"}
           </button>
