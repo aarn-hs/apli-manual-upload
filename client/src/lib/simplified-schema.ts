@@ -124,7 +124,7 @@ export const simplifiedCandidateSchema = z.object({
   // Información laboral y educativa (Obligatorio)
   education: z.string({ required_error: "Debes seleccionar una opción" }),
   
-  maritalStatus: z.string({ required_error: "Debes seleccionar una opción" }),
+
   
   previousCompany: z.string({ required_error: "Ingrese la compañía de experiencia previa" })
     .refine((text) => {

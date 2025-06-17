@@ -26,7 +26,7 @@ export const candidates = pgTable("candidates", {
   municipality: text("municipality").notNull(),
   postalCode: text("postal_code").notNull(),
   education: text("education").notNull(),
-  maritalStatus: text("marital_status").notNull(),
+
   previousCompany: text("previous_company").notNull(),
   previousPosition: text("previous_position").notNull(),
   previousTasks: text("previous_tasks").notNull(),

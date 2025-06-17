@@ -6,7 +6,7 @@ import { CustomInput } from "@/components/ui/custom-input";
 import { SearchableSelect } from "@/components/ui/searchable-select";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { simplifiedCandidateSchema } from "@/lib/simplified-schema";
-import { agencySources, positions, locations, genders, nationalities, mexicanStates, getMunicipalitiesForState, educationLevels, maritalStatuses, motivations, yesNoOptions, jobsLast24MonthsOptions } from "@/lib/data";
+import { agencySources, positions, locations, genders, nationalities, mexicanStates, getMunicipalitiesForState, educationLevels, motivations, yesNoOptions, jobsLast24MonthsOptions } from "@/lib/data";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface SimpleFormProps {
@@ -764,31 +764,7 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
           )}
         />
 
-        {/* Campo 27 - Estado civil */}
-        <FormField
-          control={control}
-          name="maritalStatus"
-          render={({ field, fieldState }) => (
-            <FormItem className={`form-item ${getOrderClass(27)}`}>
-              <FormLabel className="body-text required">Estado civil</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value || ""}>
-                <FormControl>
-                  <SelectTrigger className={`form-control ${fieldState.error ? 'error' : ''}`} tabIndex={getTabIndex(27)}>
-                    <SelectValue placeholder="Seleccionar" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {maritalStatuses.map((status) => (
-                    <SelectItem key={status} value={status}>
-                      {status}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage className="error-message" />
-            </FormItem>
-          )}
-        />
+
         
       </div>
     </section>

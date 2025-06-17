@@ -131,7 +131,7 @@ export default function Home() {
       "Estado": formData.state || "",
       "Código postal": formData.postalCode || "",
       "Escolaridad": formData.education || "",
-      "Estado civil": formData.maritalStatus || "",
+
       "Compañía Experiencia Previa": formData.previousCompany || "",
       "Puesto Experiencia Previa": formData.previousPosition || "",
 

@@ -78,7 +78,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
     'source', 'position', 'location', 'pmx', 'firstName', 'firstLastName', 
     'birthDate', 'email', 'phone', 'nationality', 'curp',
     'streetAndNumber', 'neighborhood', 'state', 'municipality', 'postalCode',
-    'education', 'maritalStatus', 'previousCompany', 'previousPosition', 
+    'education', 'previousCompany', 'previousPosition', 
     'retailExperience', 'motivation',
     'jobsLast24Months', 'previousJobStartDate', 'previousJobEndDate'
   ];
