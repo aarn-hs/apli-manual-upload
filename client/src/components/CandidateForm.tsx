@@ -39,6 +39,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
       birthDate: "",
       email: "",
       phone: "",
+      nationality: "",
       curp: "",
       streetAndNumber: "",
       interiorNumber: "",
@@ -47,6 +48,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
       state: "",
       postalCode: "",
       education: "",
+      maritalStatus: "",
       previousCompany: "",
       previousPosition: "",
       retailExperience: "",
@@ -74,9 +76,9 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
   // Check if all required fields are completed AND valid
   const requiredFields = [
     'source', 'position', 'location', 'pmx', 'firstName', 'firstLastName', 
-    'birthDate', 'email', 'phone', 'curp',
+    'birthDate', 'email', 'phone', 'nationality', 'curp',
     'streetAndNumber', 'neighborhood', 'state', 'municipality', 'postalCode',
-    'education', 'previousCompany', 'previousPosition', 
+    'education', 'maritalStatus', 'previousCompany', 'previousPosition', 
     'retailExperience', 'motivation',
     'jobsLast24Months', 'previousJobStartDate', 'previousJobEndDate'
   ];
@@ -126,6 +128,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
       birthDate: "",
       email: "",
       phone: "",
+      nationality: "",
       curp: "",
       streetAndNumber: "",
       interiorNumber: "",
@@ -134,6 +137,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
       state: "",
       postalCode: "",
       education: "",
+      maritalStatus: "",
       previousCompany: "",
       previousPosition: "",
       retailExperience: "",
@@ -157,13 +161,13 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
         {notificationState?.isVisible && (
           <div className={`p-4 rounded-lg border-2 ${
             notificationState.isSuccess 
-              ? 'bg-green-50 border-green-400' 
+              ? 'bg-emerald-50 border-emerald-400' 
               : 'bg-violet-50 border-violet-400'
           }`}>
             <div className="flex justify-between items-start">
               <div className="flex-1">
                 <p className={`text-sm font-medium mb-2 ${
-                  notificationState.isSuccess ? 'text-green-600' : 'text-violet-700'
+                  notificationState.isSuccess ? 'text-emerald-600' : 'text-violet-700'
                 }`}>
                   {notificationState.message}
                 </p>
@@ -171,7 +175,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
                 {notificationState.submissionRequestId && (
                   <p className="text-xs mb-1">
                     <span className="font-medium">ID de solicitud:</span>{' '}
-                    <span className={notificationState.isSuccess ? 'text-green-600' : 'text-violet-600'}>
+                    <span className={notificationState.isSuccess ? 'text-emerald-600' : 'text-violet-600'}>
                       {notificationState.submissionRequestId}
                     </span>
                   </p>
@@ -185,7 +189,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
                       target="_blank"
                       rel="noopener noreferrer"
                       className={`underline hover:no-underline ${
-                        notificationState.isSuccess ? 'text-green-600 hover:text-green-800' : 'text-violet-600 hover:text-violet-800'
+                        notificationState.isSuccess ? 'text-emerald-600 hover:text-emerald-800' : 'text-violet-600 hover:text-violet-800'
                       }`}
                     >
                       {`${baseUrl}/${notificationState.applicationId}`}
@@ -205,7 +209,7 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
                 <button
                   onClick={onDismissNotification}
                   className={`ml-4 p-1 rounded-full hover:bg-gray-200 transition-colors ${
-                    notificationState.isSuccess ? 'text-green-600 hover:text-green-800' : 'text-violet-600 hover:text-violet-800'
+                    notificationState.isSuccess ? 'text-emerald-600 hover:text-emerald-800' : 'text-violet-600 hover:text-violet-800'
                   }`}
                   aria-label="Cerrar notificación"
                 >

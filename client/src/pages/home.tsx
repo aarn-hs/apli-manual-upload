@@ -19,9 +19,9 @@ export default function Home() {
     
     // Por ahora usar datos de prueba, después se utilizarán los parámetros reales
     return {
-      name: urlParams.get('name') || 'Sin datos',
-      lastName: urlParams.get('lastName') || 'Sin datos', 
-      email: urlParams.get('email') || 'Sin datos'
+      name: urlParams.get('name') || 'Aarón',
+      lastName: urlParams.get('lastName') || 'Hernández', 
+      email: urlParams.get('email') || 'aaron.hernandez@apli.jobs'
     };
   };
 
@@ -123,7 +123,7 @@ export default function Home() {
       "Correo electrónico": formData.email || "",
       "Número de teléfono": formData.phone || "",
       "Género": formData.gender || "",
-
+      "Nacionalidad": formData.nationality || "",
       "Calle y número de la vivienda": formData.streetAndNumber || "",
       "Número interior": formData.interiorNumber || "",
       "Colonia": formData.neighborhood || "",
@@ -131,7 +131,7 @@ export default function Home() {
       "Estado": formData.state || "",
       "Código postal": formData.postalCode || "",
       "Escolaridad": formData.education || "",
-
+      "Estado civil": formData.maritalStatus || "",
       "Compañía Experiencia Previa": formData.previousCompany || "",
       "Puesto Experiencia Previa": formData.previousPosition || "",
 

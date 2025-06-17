@@ -538,9 +538,30 @@ export function validateCURPWithBirthDate(curp: string, birthDate: string): bool
   );
 }
 
+// CURP validation with nationality cross-check
+export function validateCURPWithNationality(curp: string, nationality: string): boolean {
+  // First check basic CURP format
+  if (!validateCURP(curp)) return false;
+  
+  // If no nationality provided, we can't cross-validate
+  if (!nationality) return true;
+  
+  // Extract state code from CURP (positions 11-12)
+  const stateCode = curp.substring(11, 13);
+  
+  // Check nationality consistency
+  if (nationality === 'México') {
+    // For Mexican nationality, state code should NOT be NE (Nacido en el Extranjero)
+    return stateCode !== 'NE';
+  } else {
+    // For foreign nationality, state code SHOULD be NE (Nacido en el Extranjero)
+    return stateCode === 'NE';
+  }
+}
+
 // Complete CURP validation with birth date and nationality
 export function validateCURPComplete(curp: string, birthDate: string, nationality: string): boolean {
-  return validateCURPWithBirthDate(curp, birthDate)
+  return validateCURPWithBirthDate(curp, birthDate) && validateCURPWithNationality(curp, nationality);
 }
 
 // CURP validation with detailed error messages
@@ -582,6 +603,16 @@ export function validateCURPWithDetails(curp: string, birthDate?: string, nation
   const actualCheckDigit = curp.substring(17, 18);
   if (expectedCheckDigit !== actualCheckDigit) {
     return { isValid: false, error: "El dígito verificador del CURP es incorrecto" };
+  }
+  
+  // Validate nationality consistency if provided
+  if (nationality) {
+    if (nationality === 'México' && stateCode === 'NE') {
+      return { isValid: false, error: "Para nacionalidad mexicana, el CURP no debe tener código NE (extranjero)" };
+    }
+    if (nationality !== 'México' && stateCode !== 'NE') {
+      return { isValid: false, error: "Para nacionalidad extranjera, el CURP debe tener código NE" };
+    }
   }
   
   // Validate birth date consistency if provided

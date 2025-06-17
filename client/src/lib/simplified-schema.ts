@@ -69,6 +69,10 @@ export const simplifiedCandidateSchema = z.object({
   phone: z.string({ required_error: "Ingrese el número de teléfono" })
     .refine(validatePhone, "El número debe tener exactamente 10 dígitos"),
   
+
+  
+  nationality: z.string({ required_error: "Debes seleccionar una opción" }),
+  
   curp: z.string({ required_error: "Ingrese la CURP" })
     .refine((val) => {
       const validation = validateCURPWithDetails(val);
@@ -120,7 +124,7 @@ export const simplifiedCandidateSchema = z.object({
   // Información laboral y educativa (Obligatorio)
   education: z.string({ required_error: "Debes seleccionar una opción" }),
   
-
+  maritalStatus: z.string({ required_error: "Debes seleccionar una opción" }),
   
   previousCompany: z.string({ required_error: "Ingrese la compañía de experiencia previa" })
     .refine((text) => {
@@ -158,11 +162,11 @@ export const simplifiedCandidateSchema = z.object({
 
 }).refine(
   (data) => {
-    const validation = validateCURPWithDetails(data.curp, data.birthDate);
+    const validation = validateCURPWithDetails(data.curp, data.birthDate, data.nationality);
     return validation.isValid;
   },
   (data) => {
-    const validation = validateCURPWithDetails(data.curp, data.birthDate);
+    const validation = validateCURPWithDetails(data.curp, data.birthDate, data.nationality);
     return {
       message: validation.error || "El CURP no es válido",
       path: ["curp"]
