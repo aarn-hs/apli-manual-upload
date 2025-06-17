@@ -3,6 +3,7 @@ import CandidateForm from "@/components/CandidateForm";
 import { useToast } from "@/hooks/use-toast";
 import { completeLoadingProgress } from "@/components/ui/loading-modal";
 import WebhookResponseModal from "@/components/ui/webhook-response-modal";
+import ModalTestPanel from "@/components/ui/modal-test-panel";
 
 export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -378,6 +379,9 @@ export default function Home() {
           message={notificationState?.message || ''}
           applicationId={notificationState?.applicationId}
         />
+
+        {/* Panel de prueba de modales */}
+        <ModalTestPanel />
       </main>
     </div>
   );
