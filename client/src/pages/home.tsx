@@ -20,9 +20,9 @@ export default function Home() {
     
     // Por ahora usar datos de prueba, después se utilizarán los parámetros reales
     return {
-      name: urlParams.get('name') || 'Aarón',
-      lastName: urlParams.get('lastName') || 'Hernández', 
-      email: urlParams.get('email') || 'aaron.hernandez@apli.jobs'
+      name: urlParams.get('name') || 'No Asignado',
+      lastName: urlParams.get('lastName') || 'Sin dato', 
+      email: urlParams.get('email') || 'Sin dato'
     };
   };
 
