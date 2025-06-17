@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import CandidateForm from "@/components/CandidateForm";
 import { useToast } from "@/hooks/use-toast";
 import { completeLoadingProgress } from "@/components/ui/loading-modal";
-import WebhookResponseModal from "@/components/ui/webhook-response-modal";
-import ModalTestPanel from "@/components/ui/modal-test-panel";
 
 export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -174,7 +172,7 @@ export default function Home() {
   // Función para hacer polling hasta obtener resultado
   const pollForResult = async (candidateSubmissionId: string, submissionRequestId: string) => {
     const startTime = Date.now();
-    const maxWaitTime = 2 * 60 * 1000; // 2 minutos máximo
+    const maxWaitTime = 10 * 60 * 1000; // 10 minutos máximo
     const pollInterval = 5000; // 5 segundos (reducido de 3 para evitar rate limiting)
 
     const poll = async (): Promise<void> => {
@@ -189,7 +187,7 @@ export default function Home() {
         setNotificationState({
           isVisible: true,
           isSuccess: false,
-          message: "El proceso tardó más de 2 minutos",
+          message: "El proceso tardó más de 10 minutos",
           submissionRequestId: submissionRequestId,
           applicationId: undefined
         });
@@ -209,10 +207,10 @@ export default function Home() {
         }
         
         // Completar la barra de progreso antes de mostrar la notificación
-        // Solo llegar al 100% para respuestas exitosas
-        completeLoadingProgress(true);
+        // Solo llegar al 100% si tenemos application_id
+        completeLoadingProgress(!!applicationId);
         
-        // Esperar un momento para que se vea el 100% y luego mostrar la notificación
+        // Esperar un momento para que se vea el 100% (si aplica) y luego mostrar la notificación
         setTimeout(() => {
           setNotificationState({
             isVisible: true,
@@ -222,7 +220,7 @@ export default function Home() {
             applicationId
           });
           setIsSubmitting(false);
-        }, 1000);
+        }, applicationId ? 1000 : 0);
         
       } else if (statusData.status === 'error') {
         // Error en el procesamiento
@@ -245,20 +243,18 @@ export default function Home() {
         }
         
         // Completar la barra de progreso antes de mostrar el error
-        // Llegar al 100% porque recibimos respuesta del webhook
-        completeLoadingProgress(true);
+        // No llegar al 100% para errores, mantener progreso actual
+        completeLoadingProgress(false);
         
-        // Esperar un momento para que se vea el 100% y luego mostrar el error
-        setTimeout(() => {
-          setNotificationState({
-            isVisible: true,
-            isSuccess: false,
-            message,
-            submissionRequestId: submissionRequestId,
-            applicationId: applicationId
-          });
-          setIsSubmitting(false);
-        }, 1000);
+        // Mostrar el error inmediatamente sin esperar
+        setNotificationState({
+          isVisible: true,
+          isSuccess: false,
+          message,
+          submissionRequestId: submissionRequestId,
+          applicationId: applicationId
+        });
+        setIsSubmitting(false);
         
       } else if (statusData.status === 'processing') {
         // Sigue procesando, continuar polling
@@ -370,18 +366,6 @@ export default function Home() {
           notificationState={notificationState}
           onDismissNotification={() => setNotificationState(undefined)}
         />
-
-        {/* Modal de respuesta del webhook */}
-        <WebhookResponseModal
-          isOpen={notificationState?.isVisible || false}
-          onClose={() => setNotificationState(undefined)}
-          isSuccess={notificationState?.isSuccess || false}
-          message={notificationState?.message || ''}
-          applicationId={notificationState?.applicationId}
-        />
-
-        {/* Panel de prueba de modales */}
-        <ModalTestPanel />
       </main>
     </div>
   );

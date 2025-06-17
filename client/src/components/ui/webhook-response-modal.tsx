@@ -47,13 +47,13 @@ export default function WebhookResponseModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleModalClose}>
-      <DialogContent className={`sm:max-w-md ${isSuccess ? '!bg-emerald-100 !border-emerald-300' : ''}`}>
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <div className="flex items-center justify-between">
             <DialogTitle className="flex items-center gap-2">
               {isSuccess ? (
                 <>
-                  <CheckCircle className="h-5 w-5 text-emerald-600" />
+                  <CheckCircle className="h-5 w-5 text-green-600" />
                   Candidato Enviado
                 </>
               ) : isConnectionError ? (
@@ -98,8 +98,8 @@ export default function WebhookResponseModal({
           )}
           
           {applicationId && (
-            <div className="p-3 bg-emerald-200 border border-emerald-400 rounded-md">
-              <p className="text-xs text-emerald-800 mb-1">ID de postulación:</p>
+            <div className="p-3 bg-gray-50 rounded-md">
+              <p className="text-xs text-gray-600 mb-1">ID de postulación:</p>
               <a
                 href={`${baseUrl}/${applicationId}`}
                 target="_blank"
@@ -109,7 +109,7 @@ export default function WebhookResponseModal({
               >
                 {`${baseUrl}/${applicationId}`}
               </a>
-              <p className="text-xs text-emerald-700 mt-1">
+              <p className="text-xs text-gray-500 mt-1">
                 Haz clic para ver en Apli
               </p>
             </div>

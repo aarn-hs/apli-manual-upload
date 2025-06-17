@@ -5,7 +5,6 @@ import { simplifiedCandidateSchema } from "@/lib/simplified-schema";
 import { extractGenderFromCURP } from "@/lib/validation";
 import SimpleForm from "@/components/FormSections/SimpleForm";
 import LoadingModal, { completeLoadingProgress } from "@/components/ui/loading-modal";
-import ModalTestPanel from "@/components/ui/modal-test-panel";
 
 interface CandidateFormProps {
   onSubmit: (data: any) => void;
@@ -173,8 +172,8 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
           onComplete={() => setIsLoadingModalOpen(false)}
         />
 
-        {/* Notification panel - Disabled in favor of WebhookResponseModal */}
-        {false && notificationState?.isVisible && (
+        {/* Notification panel */}
+        {notificationState?.isVisible && (
           <div className={`p-4 rounded-lg border-2 ${
             notificationState.isSuccess 
               ? 'bg-green-50 border-green-400' 
@@ -237,9 +236,6 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
             </div>
           </div>
         )}
-
-        {/* Panel de prueba de modales */}
-        <ModalTestPanel showInForm={true} />
 
         <div className="flex justify-start gap-4 pt-6">
           <button 

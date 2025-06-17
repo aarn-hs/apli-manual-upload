@@ -18,12 +18,12 @@ export default function LoadingModal({ isVisible, onComplete }: LoadingModalProp
 
     let interval: NodeJS.Timeout;
     
-    // Función para actualizar el progreso gradualmente hasta 90% en 2 minutos
+    // Función para actualizar el progreso gradualmente hasta 90% en 3 minutos
     const updateProgress = () => {
       interval = setInterval(() => {
         setProgress(current => {
-          // 90% en 120 segundos = 0.75% por segundo
-          const increment = 0.75;
+          // 90% en 180 segundos = 0.5% por segundo
+          const increment = 0.5;
           const newProgress = Math.min(current + increment, 90);
           return newProgress;
         });
