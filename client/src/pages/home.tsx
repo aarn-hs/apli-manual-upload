@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import CandidateForm from "@/components/CandidateForm";
-import ProgressModal from "@/components/ui/progress-modal";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Home() {
@@ -376,6 +375,7 @@ export default function Home() {
         <CandidateForm 
           onSubmit={handleFormSubmit} 
           isSubmitting={isSubmitting}
+          progressState={progressState}
           notificationState={notificationState}
           onDismissNotification={() => {
             setNotificationState(undefined);
@@ -383,13 +383,6 @@ export default function Home() {
           }}
         />
       </main>
-
-      {/* Progress Modal */}
-      <ProgressModal 
-        isVisible={progressState.isVisible}
-        progress={progressState.progress}
-        message="Procesando datos, por favor espera"
-      />
     </div>
   );
 }

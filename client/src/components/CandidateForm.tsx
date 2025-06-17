@@ -3,10 +3,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { simplifiedCandidateSchema } from "@/lib/simplified-schema";
 import { extractGenderFromCURP } from "@/lib/validation";
 import SimpleForm from "@/components/FormSections/SimpleForm";
+import ProgressModal from "@/components/ui/progress-modal";
 
 interface CandidateFormProps {
   onSubmit: (data: any) => void;
   isSubmitting?: boolean;
+  progressState?: {
+    isVisible: boolean;
+    progress: number;
+  };
   notificationState?: {
     isVisible: boolean;
     isSuccess: boolean;
@@ -17,7 +22,7 @@ interface CandidateFormProps {
   onDismissNotification?: () => void;
 }
 
-export default function CandidateForm({ onSubmit, isSubmitting = false, notificationState, onDismissNotification }: CandidateFormProps) {
+export default function CandidateForm({ onSubmit, isSubmitting = false, progressState, notificationState, onDismissNotification }: CandidateFormProps) {
   const baseUrl = import.meta.env.VITE_APLI_CANDIDATES_BASE_URL || 'https://demo.apli.app/candidates';
   
   // Determinar si el error es no cerrable
@@ -152,6 +157,15 @@ export default function CandidateForm({ onSubmit, isSubmitting = false, notifica
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8">
         <SimpleForm control={methods.control} watch={methods.watch} setValue={methods.setValue} />
+
+        {/* Progress Modal - inline between form and buttons */}
+        {progressState?.isVisible && (
+          <ProgressModal 
+            isVisible={progressState.isVisible}
+            progress={progressState.progress}
+            message="Procesando datos, por favor espera"
+          />
+        )}
 
         {/* Notification panel */}
         {notificationState?.isVisible && (
