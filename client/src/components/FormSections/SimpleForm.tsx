@@ -220,12 +220,12 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
           name="pmx"
           render={({ field }) => (
             <FormItem className={`form-item ${getOrderClass(4)}`}>
-              <FormLabel className="body-text required">PMX</FormLabel>
+              <FormLabel className="body-text">PMX</FormLabel>
               <FormControl>
                 <CustomInput
                   {...field}
                   autoUppercase={true}
-                  placeholder="PMX + 8 dígitos"
+                  placeholder="PMX + 8 dígitos (opcional)"
                   className="form-control"
                   tabIndex={getTabIndex(4)}
                   maxLength={11}

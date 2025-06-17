@@ -12,9 +12,9 @@ export const simplifiedCandidateSchema = z.object({
   // Ubicación (Obligatorio)
   location: z.string({ required_error: "Debes seleccionar una opción" }),
   
-  // PMX (Obligatorio)
-  pmx: z.string({ required_error: "Ingrese el PMX" })
-    .refine(validatePMX, "Formato inválido. Debe ser PMX seguido de 8 dígitos"),
+  // PMX (Opcional)
+  pmx: z.string().optional()
+    .refine((val) => !val || validatePMX(val), "Formato inválido. Debe ser PMX seguido de 8 dígitos"),
   
   // Información personal (Obligatorio)
   firstName: z.string({ required_error: "Ingrese el nombre" })
