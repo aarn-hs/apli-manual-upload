@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import CandidateForm from "@/components/CandidateForm";
 import { useToast } from "@/hooks/use-toast";
+import { completeLoadingProgress } from "@/components/ui/loading-modal";
 
 export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -200,14 +201,20 @@ export default function Home() {
           message = result.message;
         }
         
-        setNotificationState({
-          isVisible: true,
-          isSuccess: true,
-          message,
-          submissionRequestId: submissionRequestId,
-          applicationId
-        });
-        setIsSubmitting(false);
+        // Completar la barra de progreso antes de mostrar la notificación
+        completeLoadingProgress();
+        
+        // Esperar un momento para que se vea el 100% y luego mostrar la notificación
+        setTimeout(() => {
+          setNotificationState({
+            isVisible: true,
+            isSuccess: true,
+            message,
+            submissionRequestId: submissionRequestId,
+            applicationId
+          });
+          setIsSubmitting(false);
+        }, 1000);
         
       } else if (statusData.status === 'error') {
         // Error en el procesamiento
