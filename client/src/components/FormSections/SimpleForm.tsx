@@ -381,7 +381,7 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
               <FormControl>
                 <CustomInput
                   {...field}
-                  placeholder={isCURPEnabled() ? "18 caracteres" : "Completa fecha de nacimiento y nacionalidad"}
+                  placeholder={isCURPEnabled() ? "18 caracteres" : "Primero ingresa una fecha de nacimiento válida"}
                   className={`form-control ${fieldState.error ? 'error' : ''}`}
                   autoUppercase={true}
                   tabIndex={getTabIndex(11)}
@@ -614,7 +614,7 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
                 <CustomInput
                   {...field}
                   type="text"
-                  placeholder={isBirthDateValidForWork() ? "dd/mm/aaaa" : "Primero ingresa fecha de nacimiento"}
+                  placeholder={isBirthDateValidForWork() ? "dd/mm/aaaa" : "Primero ingresa una fecha de nacimiento válida"}
                   className={`form-control ${fieldState.error ? 'error' : ''}`}
                   tabIndex={getTabIndex(21)}
                   maxLength={10}
@@ -640,7 +640,7 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
                 <CustomInput
                   {...field}
                   type="text"
-                  placeholder={isBirthDateValidForWork() ? "dd/mm/aaaa" : "Primero ingresa fecha de nacimiento"}
+                  placeholder={isBirthDateValidForWork() ? "dd/mm/aaaa" : "Primero ingresa una fecha de nacimiento válida"}
                   className={`form-control ${fieldState.error ? 'error' : ''}`}
                   tabIndex={getTabIndex(22)}
                   maxLength={10}
