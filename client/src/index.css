@@ -161,7 +161,15 @@
   }
 
   .form-control:disabled {
-    @apply cursor-not-allowed opacity-50;
+    @apply cursor-not-allowed;
+    background-color: #f3f4f6;
+    color: #6b7280;
+    opacity: 1;
+  }
+
+  .form-control:disabled::placeholder {
+    color: #6b7280;
+    opacity: 1;
   }
 
   .error-message {
