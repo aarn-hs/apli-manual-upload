@@ -161,7 +161,7 @@
   }
 
   .form-control:disabled {
-    @apply cursor-not-allowed opacity-50;
+    @apply cursor-not-allowed opacity-55;
   }
 
   .error-message {
