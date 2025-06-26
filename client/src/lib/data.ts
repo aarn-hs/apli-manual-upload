@@ -1,7 +1,12 @@
 // Source agencies
 export const agencySources = [
   { value: "walk-ins", label: "Walk-In" },
-  { value: "candidato-analogo", label: "Candidato Análogo" }
+  { value: "candidato-analogo", label: "Candidato Análogo" },
+  { value: "agencia_cygnus", label: "Agencia Cygnus"" },
+  { value: "agencia_bbn", label: "Agencia BBN"" },
+  { value: "agencia_peoplecare", label: "Agencia Peoplecare" },,
+  { value: "agencia_hq", label: "Agencia HQ },
+  { value: "agencia_stoneway", label: "Agencia Stoneway }
 ];
 
 // Genders
