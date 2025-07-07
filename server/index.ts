@@ -12,15 +12,15 @@ app.use(express.urlencoded({ extended: false }));
 // ALLOWED_DOMAINS=https://tudominio.com,https://app.tudominio.com
 // BLOCK_LOCALHOST=true (para producción)
 
-// Valores por defecto solo para desarrollo en Replit
+// Configuración de producción
 if (!process.env.TESTING_MODE) {
-  process.env.TESTING_MODE = 'true';
+  process.env.TESTING_MODE = 'false';
 }
 if (!process.env.ALLOWED_DOMAINS) {
-  process.env.ALLOWED_DOMAINS = 'https://a0846e20-5ed9-446b-a265-bdd6d36e57f8-00-31e29bhx9duhu.worf.replit.dev';
+  process.env.ALLOWED_DOMAINS = 'https://manual-upload.apli.app,https://demo.apli.app,https://apli.app,https://recruitment.apli.app';
 }
 if (!process.env.BLOCK_LOCALHOST) {
-  process.env.BLOCK_LOCALHOST = 'false';
+  process.env.BLOCK_LOCALHOST = 'true';
 }
 
 // Middleware de protección de dominios simplificado con soporte mejorado para VPN
@@ -53,9 +53,8 @@ app.use((req, res, next) => {
   
   // En modo testing, permitir todo y configurar headers permisivos
   if (testingMode) {
-    res.setHeader('X-Frame-Options', 'ALLOWALL');
+    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
     res.setHeader('Content-Security-Policy', 'frame-ancestors *');
-    // Agregar headers adicionales para VPN
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
     return next();

@@ -1,9 +1,6 @@
 import { useState, useEffect } from "react";
 import CandidateForm from "@/components/CandidateForm";
 import { useToast } from "@/hooks/use-toast";
-import { Link } from "wouter";
-import { Button } from "@/components/ui/button";
-import { Wifi } from "lucide-react";
 
 export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -371,15 +368,7 @@ export default function Home() {
     <div className="flex flex-col min-h-full bg-white p-18">
       <main className="w-full flex-grow">
         <div className="mb-6">
-          <div className="flex items-center justify-between mb-2">
-            <h1 className="title">Carga manual de candidato</h1>
-            <Link href="/vpn-diagnostic">
-              <Button variant="outline" size="sm">
-                <Wifi className="w-4 h-4 mr-2" />
-                Probar VPN
-              </Button>
-            </Link>
-          </div>
+          <h1 className="title mb-2">Carga manual de candidato</h1>
           <p className="subtitle text-dark-grey">Completa el formulario con los datos del candidato que deseas cargar. Todos los campos marcados con <span className="text-red">*</span> son obligatorios. Una vez completado, haz clic en "Enviar Candidato" para mandar la información.</p>
         </div>
 
