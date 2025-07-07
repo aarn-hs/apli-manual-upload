@@ -342,6 +342,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // Endpoint específico para diagnóstico de conexiones VPN
+  app.get("/api/vpn-test", async (req, res) => {
+    try {
+      const headers = {
+        'user-agent': req.get('User-Agent') || '',
+        'x-forwarded-for': req.get('X-Forwarded-For') || '',
+        'x-real-ip': req.get('X-Real-IP') || '',
+        'cf-connecting-ip': req.get('CF-Connecting-IP') || '',
+        'x-forwarded-proto': req.get('X-Forwarded-Proto') || '',
+        'origin': req.get('Origin') || '',
+        'referer': req.get('Referer') || '',
+        'host': req.get('Host') || '',
+        'connection': req.get('Connection') || ''
+      };
+
+      const clientIP = req.ip || 
+                      req.connection.remoteAddress || 
+                      req.socket.remoteAddress ||
+                      (req.connection.socket ? req.connection.socket.remoteAddress : null) ||
+                      req.get('X-Forwarded-For')?.split(',')[0]?.trim() ||
+                      req.get('X-Real-IP') ||
+                      'unknown';
+
+      res.json({
+        success: true,
+        message: "Conexión VPN funcionando correctamente",
+        clientIP: clientIP,
+        headers: headers,
+        timestamp: new Date().toISOString(),
+        testingMode: process.env.TESTING_MODE === 'true',
+        allowedDomains: process.env.ALLOWED_DOMAINS?.split(',').map(d => d.trim()) || []
+      });
+    } catch (error) {
+      res.status(500).json({ 
+        error: "Error en test VPN", 
+        details: error instanceof Error ? error.message : "Error desconocido"
+      });
+    }
+  });
+
   // API simplificada para validación del formulario
   app.post("/api/candidates", apiKeyMiddleware, rateLimitMiddleware, async (req, res) => {
     try {
