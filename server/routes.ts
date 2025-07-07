@@ -323,16 +323,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Endpoint de salud para verificar el estado del servidor
+  // Endpoint de diagnóstico para verificar rutas disponibles (sin rate limit)
   app.get("/api/health", async (req, res) => {
     res.json({ 
       status: "ok", 
       timestamp: new Date().toISOString(),
-      environment: process.env.NODE_ENV || 'development'
+      endpoints: [
+        "POST /api/candidates (Auth Required)",
+        "POST /api/webhook-result", 
+        "GET /api/check-status/:candidate_submission_id (Auth Required, No Rate Limit)",
+        "POST /api/liquidate (Auth Required)",
+        "POST /api/webhook (Auth Required)",
+        "GET /api/admin/active-processings",
+        "GET /api/admin/queue-status",
+        "GET /api/admin/api-keys/stats",
+        "POST /api/admin/api-keys/reload"
+      ]
     });
   });
-
-
 
   // API simplificada para validación del formulario
   app.post("/api/candidates", apiKeyMiddleware, rateLimitMiddleware, async (req, res) => {

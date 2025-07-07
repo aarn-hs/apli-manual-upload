@@ -12,59 +12,40 @@ app.use(express.urlencoded({ extended: false }));
 // ALLOWED_DOMAINS=https://tudominio.com,https://app.tudominio.com
 // BLOCK_LOCALHOST=true (para producción)
 
-// Configuración de producción
+// Valores por defecto solo para desarrollo en Replit
 if (!process.env.TESTING_MODE) {
-  process.env.TESTING_MODE = 'false';
+  process.env.TESTING_MODE = 'true';
 }
 if (!process.env.ALLOWED_DOMAINS) {
-  process.env.ALLOWED_DOMAINS = 'https://manual-upload.apli.app,https://demo.apli.app,https://apli.app,https://recruitment.apli.app';
+  process.env.ALLOWED_DOMAINS = 'https://a0846e20-5ed9-446b-a265-bdd6d36e57f8-00-31e29bhx9duhu.worf.replit.dev';
 }
 if (!process.env.BLOCK_LOCALHOST) {
-  process.env.BLOCK_LOCALHOST = 'true';
+  process.env.BLOCK_LOCALHOST = 'false';
 }
 
-// Middleware de protección de dominios simplificado con soporte mejorado para VPN
+// Middleware de protección de dominios simplificado
 app.use((req, res, next) => {
   const testingMode = process.env.TESTING_MODE === 'true';
   
-  // Headers CORS más permisivos para VPNs
-  const origin = req.get('Origin');
-  const referer = req.get('Referer') || req.get('Referrer') || '';
-  
-  // Determinar el origen permitido
-  let allowedOrigin = '*';
-  if (origin) {
-    // Si hay un origen específico, usarlo para CORS más restrictivo
-    allowedOrigin = origin;
-  }
-  
-  // Headers básicos de CORS con soporte para VPN
-  res.header('Access-Control-Allow-Origin', allowedOrigin);
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, X-Forwarded-For, X-Real-IP');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Max-Age', '86400'); // Cache preflight por 24 horas
-  
-  // Manejar solicitudes OPTIONS (preflight)
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
-  }
+  // Headers básicos de CORS
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   
   // En modo testing, permitir todo y configurar headers permisivos
   if (testingMode) {
     res.setHeader('X-Frame-Options', 'SAMEORIGIN');
     res.setHeader('Content-Security-Policy', 'frame-ancestors *');
-    res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
     return next();
   }
   
-  // En producción, aplicar validación de dominios más flexible
+  // En producción, aplicar validación de dominios
   const allowedDomains = process.env.ALLOWED_DOMAINS?.split(',').map(d => d.trim()) || [];
+  const referer = req.get('Referer') || req.get('Referrer') || '';
+  const origin = req.get('Origin') || '';
   
-  // Skip para assets y APIs - siempre permitir
-  const skipPaths = ['/src/', '/@vite/', '/@fs/', '/@react-refresh', '/node_modules/', '/api/', '/.vite/', '/assets/', '/favicon.ico', '/vite/', '/static/'];
+  // Skip para assets y APIs
+  const skipPaths = ['/src/', '/@vite/', '/@fs/', '/@react-refresh', '/node_modules/', '/api/', '/.vite/', '/assets/', '/favicon.ico'];
   if (skipPaths.some(path => req.path.startsWith(path))) {
     return next();
   }
@@ -75,48 +56,23 @@ app.use((req, res, next) => {
   
   let isAllowed = !referer && !origin; // Permitir acceso directo
   
-  // Verificación más flexible para VPNs
   if ((referer || origin) && !isAllowed) {
     const checkUrl = referer || origin;
-    try {
-      const url = new URL(checkUrl);
-      const hostname = url.hostname;
-      
-      isAllowed = allowedDomains.some(domain => {
-        const cleanDomain = domain.replace(/^https?:\/\//, '').replace(/\/$/, '');
-        return hostname === cleanDomain || hostname.includes(cleanDomain);
-      }) ||
-      apliDomains.some(domain => hostname.includes(domain)) ||
-      replitDomains.some(domain => hostname.includes(domain)) ||
-      // Permitir localhost y IPs locales para desarrollo
-      hostname === 'localhost' || 
-      hostname.startsWith('127.') || 
-      hostname.startsWith('192.168.') ||
-      hostname.startsWith('10.') ||
-      // Permitir dominios de Replit con cualquier subdominio
-      hostname.endsWith('.replit.dev') ||
-      hostname.endsWith('.replit.app');
-    } catch (e) {
-      // Si no se puede parsear la URL, permitir el acceso
-      isAllowed = true;
-    }
+    isAllowed = allowedDomains.some(domain => checkUrl.includes(domain)) ||
+                apliDomains.some(domain => checkUrl.includes(domain)) ||
+                replitDomains.some(domain => checkUrl.includes(domain));
   }
   
-  // Solo bloquear si es muy obviamente no permitido
-  if (!isAllowed && (referer || origin) && req.path === '/' && 
-      !referer.includes('replit') && !referer.includes('apli')) {
+  if (!isAllowed && (referer || origin) && req.path === '/') {
     return res.status(403).json({ 
       error: 'Server Access Blocked',
-      code: 'ACCESS_DENIED',
-      referer: referer,
-      origin: origin
+      code: 'ACCESS_DENIED'
     });
   }
   
-  // Configurar headers de seguridad más permisivos para producción
+  // Configurar headers de seguridad para producción
   res.setHeader('X-Frame-Options', 'SAMEORIGIN');
-  const cspDomains = [...allowedDomains, ...apliDomains.map(d => `https://${d}`), '*.replit.dev', '*.replit.app'].join(' ');
-  res.setHeader('Content-Security-Policy', `frame-ancestors 'self' ${cspDomains} *`);
+  res.setHeader('Content-Security-Policy', `frame-ancestors 'self' ${allowedDomains.join(' ')}`);
   
   next();
 });

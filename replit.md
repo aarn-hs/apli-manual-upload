@@ -83,8 +83,8 @@ This is a comprehensive candidate management system for APLI, designed to handle
 - **Development workflow**: Automatic restart on file changes
 
 ### Environment Configuration
-- **Production Mode**: Secure iframe protection with proper domain validation
-- **Domain Protection**: Restricted to APLI production domains
+- **Testing Mode**: Configurable iframe protection for development
+- **Domain Protection**: Configurable allowed domains for iframe embedding
 - **API Authentication**: Environment-based API key management
 - **Webhook URLs**: Configurable n8n integration endpoints
 
@@ -95,13 +95,6 @@ This is a comprehensive candidate management system for APLI, designed to handle
 4. **Asset Optimization**: Static assets served efficiently in production
 
 ## Changelog
-
-- January 8, 2025. Configured for production deployment
-  - Removed VPN diagnostic tools and testing components
-  - Set TESTING_MODE=false for production security
-  - Configured proper ALLOWED_DOMAINS for APLI
-  - Optimized CORS headers for production use
-  - Ready for deployment
 
 - June 17, 2025. Initial setup
 
