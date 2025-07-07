@@ -271,8 +271,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         'https://manual-upload-apli.replit.app/',
         'https://replit.com/',
         'replit.dev',
-        'replit.app',
-        'https://a-monitoring.apli.network/'
+        'replit.app'
       ];
       
       // Determinar si está en iframe
