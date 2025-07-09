@@ -12,16 +12,11 @@ app.use(express.urlencoded({ extended: false }));
 // ALLOWED_DOMAINS=https://tudominio.com,https://app.tudominio.com
 // BLOCK_LOCALHOST=true (para producción)
 
-// Valores por defecto solo para desarrollo en Replit
-if (!process.env.TESTING_MODE) {
-  process.env.TESTING_MODE = 'true';
-}
-if (!process.env.ALLOWED_DOMAINS) {
-  process.env.ALLOWED_DOMAINS = 'https://a0846e20-5ed9-446b-a265-bdd6d36e57f8-00-31e29bhx9duhu.worf.replit.dev';
-}
-if (!process.env.BLOCK_LOCALHOST) {
-  process.env.BLOCK_LOCALHOST = 'false';
-}
+// Configuración temporal para pruebas de iframe - PERMITIR TODO
+// NOTA: Esto es temporal para pruebas con VDI del cliente
+process.env.TESTING_MODE = 'true';
+process.env.ALLOWED_DOMAINS = '*';
+process.env.BLOCK_LOCALHOST = 'false';
 
 // Middleware de protección de dominios simplificado
 app.use((req, res, next) => {
@@ -32,47 +27,27 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   
-  // En modo testing, permitir todo y configurar headers permisivos
+  // En modo testing, permitir TODO - headers ultra permisivos para iframe
   if (testingMode) {
-    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
-    res.setHeader('Content-Security-Policy', 'frame-ancestors *');
+    res.removeHeader('X-Frame-Options'); // Remover completamente para evitar conflictos
+    res.setHeader('Content-Security-Policy', 'frame-ancestors *'); // Permitir cualquier parent
+    res.setHeader('X-Content-Type-Options', 'nosniff'); // Mantener seguridad básica
     return next();
   }
   
-  // En producción, aplicar validación de dominios
-  const allowedDomains = process.env.ALLOWED_DOMAINS?.split(',').map(d => d.trim()) || [];
-  const referer = req.get('Referer') || req.get('Referrer') || '';
-  const origin = req.get('Origin') || '';
+  // MODO PRODUCCIÓN TEMPORALMENTE DESACTIVADO PARA PRUEBAS DE VDI
+  // Permitir todos los orígenes y referencias temporalmente
   
-  // Skip para assets y APIs
+  // Skip para assets y APIs (mantener optimización)
   const skipPaths = ['/src/', '/@vite/', '/@fs/', '/@react-refresh', '/node_modules/', '/api/', '/.vite/', '/assets/', '/favicon.ico'];
   if (skipPaths.some(path => req.path.startsWith(path))) {
     return next();
   }
   
-  // Verificar dominios APLI y Replit para producción
-  const apliDomains = ['manual-upload.apli.app', 'demo.apli.app', 'apli.app', 'recruitment.apli.app', 'manual-upload-apli.replit.app'];
-  const replitDomains = ['replit.dev', 'replit.app', 'replit.com'];
-  
-  let isAllowed = !referer && !origin; // Permitir acceso directo
-  
-  if ((referer || origin) && !isAllowed) {
-    const checkUrl = referer || origin;
-    isAllowed = allowedDomains.some(domain => checkUrl.includes(domain)) ||
-                apliDomains.some(domain => checkUrl.includes(domain)) ||
-                replitDomains.some(domain => checkUrl.includes(domain));
-  }
-  
-  if (!isAllowed && (referer || origin) && req.path === '/') {
-    return res.status(403).json({ 
-      error: 'Server Access Blocked',
-      code: 'ACCESS_DENIED'
-    });
-  }
-  
-  // Configurar headers de seguridad para producción
-  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
-  res.setHeader('Content-Security-Policy', `frame-ancestors 'self' ${allowedDomains.join(' ')}`);
+  // TEMPORAL: Permitir TODO para pruebas de iframe en VDI
+  // Configurar headers ultra permisivos
+  res.removeHeader('X-Frame-Options'); // No establecer restricciones de frame
+  res.setHeader('Content-Security-Policy', 'frame-ancestors *'); // Permitir cualquier parent
   
   next();
 });
