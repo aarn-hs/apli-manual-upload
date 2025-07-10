@@ -71,7 +71,7 @@ app.use((req, res, next) => {
   }
   
   // Configurar headers de seguridad para producción
-  res.setHeader('X-Frame-Options', 'ALLOWED_FROM https://recruitment.apli.app');
+  res.setHeader('X-Frame-Options', 'ALLOW-FROM https://recruitment.apli.app');
   res.setHeader('Content-Security-Policy', `frame-ancestors 'self' ${allowedDomains.join(' ')}`);
   
   next();
