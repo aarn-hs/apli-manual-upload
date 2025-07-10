@@ -80,12 +80,7 @@ cp .env.example .env
 
 Configurar las siguientes variables:
 ```env
-# Protección de dominios
-TESTING_MODE=true
-ALLOWED_DOMAINS=https://manual-upload.apli.app,https://demo.apli.app,https://apli.app
-BLOCK_LOCALHOST=false
-
-# Autenticación API
+# Autenticación API (solo para webhooks)
 API_KEYS=tu_api_key_aqui
 VITE_WEBHOOK_AUTH_TOKEN=tu_token_webhook
 
@@ -93,6 +88,11 @@ VITE_WEBHOOK_AUTH_TOKEN=tu_token_webhook
 N8N_WEBHOOK_URL=https://tu-instancia-n8n.com/webhook/candidate
 VITE_APLI_CANDIDATES_BASE_URL=https://demo.apli.app/candidates
 ```
+
+**Variables eliminadas (ya no necesarias):**
+- `TESTING_MODE` - La app ahora permite acceso universal
+- `ALLOWED_DOMAINS` - Se removieron las restricciones de dominio  
+- `BLOCK_LOCALHOST` - Localhost ahora está permitido por defecto
 
 4. **Configurar base de datos**
 ```bash
@@ -144,34 +144,26 @@ La aplicación estará disponible en `http://localhost:5000`
 
 ## 🔒 Seguridad
 
-### Protección Iframe
-- Validación de dominios autorizados
-- Headers CSP configurados
-- Bypass automático en desarrollo
+### Acceso Universal
+- **Iframe embedding permitido** desde cualquier dominio
+- **Headers permisivos** para máxima compatibilidad
+- **Sin restricciones de localhost** para desarrollo
 
 ### Autenticación API
-- Tokens Bearer para autenticación
-- Rate limiting por IP
-- Validación de claves API
+- Tokens Bearer para autenticación de webhooks
+- Validación de claves API para endpoints protegidos
 
 ### Validaciones
 - Sanitización de entrada
 - Validación servidor y cliente
 - Manejo seguro de errores
 
-## 🌐 Dominios Autorizados
+## 🌐 Acceso sin Restricciones
 
-### Producción
-- `https://manual-upload.apli.app`
-- `https://demo.apli.app`
-- `https://apli.app`
-- `https://recruitment.apli.app`
-- `https://manual-upload-apli.replit.app`
-
-### Desarrollo
-- `*.replit.dev`
-- `*.replit.app`
-- `localhost`
+La aplicación ahora puede ser embebida como iframe desde:
+- **Cualquier dominio** (incluyendo localhost)
+- **Entornos de desarrollo y producción**
+- **Aplicaciones web externas**
 
 ## 📊 Validaciones CURP
 
@@ -217,13 +209,14 @@ function calculateCURPCheckDigit(curp: string): string {
 
 ### Errores Comunes
 
-**Error 403 - Access Denied**
-- Verificar dominios en `ALLOWED_DOMAINS`
-- Confirmar `TESTING_MODE=true` en desarrollo
+**Problemas de iframe embedding**
+- La app ya permite embedding desde cualquier dominio
+- No se requieren configuraciones especiales
 
 **Webhook no funciona**
 - Verificar `N8N_WEBHOOK_URL` y `VITE_WEBHOOK_AUTH_TOKEN`
 - Comprobar conectividad de red
+- Validar API key en `API_KEYS`
 
 **Validación CURP falla**
 - Verificar formato exacto (18 caracteres)
