@@ -36,11 +36,9 @@ This is a comprehensive candidate management system for APLI, designed to handle
 - **Input sanitization**: Automatic text cleaning, case conversion, and space normalization
 
 ### Security Features
-- **Iframe Protection**: Domain-based access control with configurable allowed domains
-- **API Key Authentication**: Bearer token authentication for API endpoints
-- **Rate Limiting**: Request throttling with queuing system to prevent abuse
-- **CORS Management**: Configurable cross-origin resource sharing policies
-- **Environment-based Configuration**: Secure configuration through environment variables
+- **API Key Authentication**: Bearer token authentication for API endpoints (maintained for webhook security)
+- **Open CORS Policy**: Permissive cross-origin resource sharing for iframe embedding
+- **Universal Iframe Access**: Application can be embedded in any domain including localhost
 
 ### External Integrations
 - **n8n Webhook Integration**: Asynchronous candidate processing through webhook endpoints
@@ -52,7 +50,7 @@ This is a comprehensive candidate management system for APLI, designed to handle
 
 1. **User Input**: Candidate fills out the 28-field form with real-time validation
 2. **Client Validation**: Zod schema validation on the frontend with immediate feedback
-3. **Submission**: Form data sent to Express API with rate limiting applied
+3. **Submission**: Form data sent to Express API without restrictions
 4. **Server Validation**: Additional server-side validation and sanitization
 5. **Database Storage**: Candidate data stored in PostgreSQL via Drizzle ORM
 6. **Webhook Processing**: Data sent to n8n webhook for external processing
@@ -83,9 +81,8 @@ This is a comprehensive candidate management system for APLI, designed to handle
 - **Development workflow**: Automatic restart on file changes
 
 ### Environment Configuration
-- **Testing Mode**: Configurable iframe protection for development
-- **Domain Protection**: Configurable allowed domains for iframe embedding
-- **API Authentication**: Environment-based API key management
+- **Open Access**: Application accessible from any domain without restrictions
+- **API Authentication**: Environment-based API key management for webhook endpoints
 - **Webhook URLs**: Configurable n8n integration endpoints
 
 ### Build Process
@@ -96,6 +93,7 @@ This is a comprehensive candidate management system for APLI, designed to handle
 
 ## Changelog
 
+- July 10, 2025. Removed all domain verification, IP rate limiting, and iframe blocking restrictions for universal iframe access
 - June 17, 2025. Initial setup
 
 ## User Preferences

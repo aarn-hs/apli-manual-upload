@@ -10,119 +10,7 @@ const pendingResults = new Map<string, {
 }>();
 
 // Sistema de rate limiting con cola de espera
-class RequestQueue {
-  private activeRequests = 0;
-  private readonly maxConcurrent = 10;
-  private queue: Array<() => void> = [];
-
-  async executeWithLimit<T>(operation: () => Promise<T>): Promise<T> {
-    return new Promise((resolve, reject) => {
-      const execute = async () => {
-        this.activeRequests++;
-        try {
-          const result = await operation();
-          resolve(result);
-        } catch (error) {
-          reject(error);
-        } finally {
-          this.activeRequests--;
-          this.processQueue();
-        }
-      };
-
-      if (this.activeRequests < this.maxConcurrent) {
-        execute();
-      } else {
-        this.queue.push(execute);
-      }
-    });
-  }
-
-  private processQueue() {
-    if (this.queue.length > 0 && this.activeRequests < this.maxConcurrent) {
-      const nextRequest = this.queue.shift();
-      if (nextRequest) {
-        nextRequest();
-      }
-    }
-  }
-
-  getStatus() {
-    return {
-      activeRequests: this.activeRequests,
-      queuedRequests: this.queue.length,
-      maxConcurrent: this.maxConcurrent
-    };
-  }
-}
-
-const requestQueue = new RequestQueue();
-
-// Sistema de rate limiting por IP
-class IPRateLimiter {
-  private requests = new Map<string, Array<number>>();
-  private readonly maxRequests = 25; // máximo 25 peticiones para permitir polling
-  private readonly windowMs = 60 * 1000; // por minuto
-  private readonly cleanupInterval = 5 * 60 * 1000; // limpiar cada 5 minutos
-
-  constructor() {
-    // Limpiar IPs antiguos periódicamente
-    setInterval(() => {
-      const now = Date.now();
-      this.requests.forEach((timestamps, ip) => {
-        const validTimestamps = timestamps.filter(t => now - t < this.windowMs);
-        if (validTimestamps.length === 0) {
-          this.requests.delete(ip);
-        } else {
-          this.requests.set(ip, validTimestamps);
-        }
-      });
-    }, this.cleanupInterval);
-  }
-
-  isAllowed(ip: string): boolean {
-    const now = Date.now();
-    const ipRequests = this.requests.get(ip) || [];
-    
-    // Filtrar peticiones dentro de la ventana de tiempo
-    const recentRequests = ipRequests.filter(timestamp => now - timestamp < this.windowMs);
-    
-    if (recentRequests.length >= this.maxRequests) {
-      return false;
-    }
-
-    // Agregar esta petición
-    recentRequests.push(now);
-    this.requests.set(ip, recentRequests);
-    return true;
-  }
-
-  getRemainingRequests(ip: string): number {
-    const now = Date.now();
-    const ipRequests = this.requests.get(ip) || [];
-    const recentRequests = ipRequests.filter(timestamp => now - timestamp < this.windowMs);
-    return Math.max(0, this.maxRequests - recentRequests.length);
-  }
-
-  getResetTime(ip: string): number {
-    const ipRequests = this.requests.get(ip) || [];
-    if (ipRequests.length === 0) return 0;
-    
-    const oldestRequest = Math.min(...ipRequests);
-    return oldestRequest + this.windowMs;
-  }
-
-  getStatus() {
-    return {
-      maxRequests: this.maxRequests,
-      windowMs: this.windowMs,
-      activeIPs: this.requests.size,
-      totalTrackedRequests: Array.from(this.requests.values()).reduce((sum, arr) => sum + arr.length, 0)
-    };
-  }
-}
-
-const ipLimiter = new IPRateLimiter();
+// Removed request queue and IP rate limiting for open access
 
 // Sistema de autenticación por API Keys (solo lectura desde env)
 class APIKeyManager {
@@ -220,104 +108,27 @@ function apiKeyMiddleware(req: any, res: any, next: any) {
   next();
 }
 
-// Middleware de rate limiting por IP
-function rateLimitMiddleware(req: any, res: any, next: any) {
-  // Obtener IP real del cliente
-  const ip = req.ip || 
-           req.connection.remoteAddress || 
-           req.socket.remoteAddress ||
-           (req.connection.socket ? req.connection.socket.remoteAddress : null) ||
-           req.get('X-Forwarded-For')?.split(',')[0]?.trim() ||
-           req.get('X-Real-IP') ||
-           'unknown';
-
-  if (!ipLimiter.isAllowed(ip)) {
-    const resetTime = ipLimiter.getResetTime(ip);
-    const retryAfter = Math.ceil((resetTime - Date.now()) / 1000);
-    
-    return res.status(429).json({
-      error: 'Too Many Requests',
-      message: 'Rate limit exceeded. Try again later.',
-      retryAfter: retryAfter > 0 ? retryAfter : 60,
-      limit: 5,
-      window: '1 minute'
-    });
-  }
-
-  // Agregar headers informativos
-  res.set({
-    'X-RateLimit-Limit': '5',
-    'X-RateLimit-Remaining': ipLimiter.getRemainingRequests(ip).toString(),
-    'X-RateLimit-Reset': new Date(ipLimiter.getResetTime(ip)).toISOString()
-  });
-
-  next();
-}
+// Rate limiting middleware removed for open access
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Endpoint para verificar estado de iframe y dominios permitidos
+  // Simplified iframe status endpoint - always allows access
   app.get("/api/debug/iframe-status", async (req, res) => {
     try {
       const referer = req.get('Referer') || '';
       const origin = req.get('Origin') || '';
       const host = req.get('Host') || '';
       
-      // Obtener dominios permitidos de variables de entorno
-      const allowedDomains = process.env.ALLOWED_DOMAINS?.split(',').map(d => d.trim()) || [
-        'https://manual-upload.apli.app/',
-        'https://demo.apli.app/',
-        'https://apli.app/',
-        'https://recruitment.apli.app/',
-        'https://manual-upload-apli.replit.app/',
-        'https://replit.com/',
-        'replit.dev',
-        'replit.app',
-        'https://a-monitoring.apli.network/'
-      ];
-      
-      // Determinar si está en iframe
+      // Always allow iframe embedding from any domain
       const isInIframe = referer && referer !== `${req.protocol}://${host}${req.originalUrl}`;
-      
-      // Verificar si el dominio está permitido
-      let isAllowed = true;
-      if (isInIframe && referer) {
-        try {
-          const referrerUrl = new URL(referer);
-          const referrerDomain = referrerUrl.hostname;
-          
-          isAllowed = allowedDomains.some(domain => {
-            // Remover protocolo y trailing slash si existe en el dominio permitido
-            const cleanDomain = domain.replace(/^https?:\/\//, '').replace(/\/$/, '');
-            
-            if (cleanDomain.startsWith('*.')) {
-              const baseDomain = cleanDomain.substring(2);
-              return referrerDomain.endsWith(baseDomain);
-            }
-            return referrerDomain === cleanDomain || referrerDomain.includes(cleanDomain);
-          });
-          
-          // Verificar dominios específicos de APLI y Replit
-          const apliDomains = ['manual-upload.apli.app', 'demo.apli.app', 'apli.app', 'recruitment.apli.app', 'manual-upload-apli.replit.app'];
-          const replitDomains = ['replit.dev', 'replit.app', 'replit.com'];
-          
-          if (!isAllowed) {
-            isAllowed = apliDomains.some(domain => referrerDomain.includes(domain)) ||
-                       replitDomains.some(domain => referrerDomain.includes(domain));
-          }
-        } catch (e) {
-          // Si hay error parseando la URL, asumir que está permitido
-          isAllowed = true;
-        }
-      }
       
       res.json({
         isInIframe,
         referer,
         origin,
         host,
-        isAllowed,
-        allowedDomains,
-        testingMode: process.env.TESTING_MODE === 'true'
+        isAllowed: true, // Always allow
+        allowedDomains: ['*'], // Allow all domains
+        testingMode: true
       });
     } catch (error) {
       res.status(500).json({ error: "Error checking iframe status" });
@@ -344,7 +155,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // API simplificada para validación del formulario
-  app.post("/api/candidates", apiKeyMiddleware, rateLimitMiddleware, async (req, res) => {
+  app.post("/api/candidates", apiKeyMiddleware, async (req, res) => {
     try {
       // Validar datos del formulario
       const validatedData = await insertCandidateSchema.parseAsync(req.body);
@@ -459,15 +270,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Endpoint para monitorear el estado del rate limiting
+  // Endpoint para monitorear el estado del sistema
   app.get("/api/admin/queue-status", async (req, res) => {
     try {
-      const queueStatus = requestQueue.getStatus();
-      const rateLimitStatus = ipLimiter.getStatus();
       const apiKeyStats = apiKeyManager.getStats();
       res.json({
-        queue: queueStatus,
-        rateLimit: rateLimitStatus,
+        queue: { message: "Queue system removed for open access" },
+        rateLimit: { message: "Rate limiting removed for open access" },
         apiKeys: apiKeyStats,
         timestamp: new Date().toISOString()
       });
@@ -507,7 +316,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Endpoint para limpiar todos los procesamientos (liquidar)
-  app.post("/api/liquidate", apiKeyMiddleware, rateLimitMiddleware, async (req, res) => {
+  app.post("/api/liquidate", apiKeyMiddleware, async (req, res) => {
     try {
       const beforeCount = pendingResults.size;
       pendingResults.clear();
@@ -522,8 +331,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Proxy endpoint para el webhook de n8n (asíncrono con rate limiting)
-  app.post("/api/webhook", apiKeyMiddleware, rateLimitMiddleware, async (req, res) => {
+  // Proxy endpoint para el webhook de n8n (asíncrono)
+  app.post("/api/webhook", apiKeyMiddleware, async (req, res) => {
     try {
       const webhookUrl = process.env.N8N_WEBHOOK_URL;
       const authToken = process.env.VITE_WEBHOOK_AUTH_TOKEN;
@@ -564,16 +373,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         callback_url: `${protocol}://${req.get('host')}/api/webhook-result`
       };
 
-      // Enviar a n8n con rate limiting
-      requestQueue.executeWithLimit(async () => {
-        return fetch(webhookUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${authToken}`,
-          },
-          body: JSON.stringify(dataForN8n)
-        });
+      // Enviar a n8n directamente
+      fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`,
+        },
+        body: JSON.stringify(dataForN8n)
       }).catch((error) => {
         pendingResults.set(candidate_submission_id, {
           status: 'error',
@@ -593,107 +400,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Rutas de debug y testing para iframe protection
-  app.get("/api/debug/iframe-status", async (req, res) => {
-    const testingMode = process.env.TESTING_MODE === 'true';
-    
-    if (!testingMode) {
-      return res.status(404).json({ error: "Debug endpoint not available" });
-    }
-    
-    const allowedDomains = process.env.ALLOWED_DOMAINS?.split(',').map(d => d.trim()) || [];
-    const blockLocalhost = process.env.BLOCK_LOCALHOST === 'true';
-    const referer = req.get('Referer') || req.get('Referrer') || '';
-    const origin = req.get('Origin') || '';
-    const host = req.get('Host') || '';
-    
-    // Detectar si está en iframe
-    const isInIframe = referer !== '';
-    
-    // Verificar si el dominio está permitido
-    let isAllowed = false;
-    if (allowedDomains.length > 0) {
-      for (const domain of allowedDomains) {
-        if (referer.includes(domain) || origin.includes(domain)) {
-          isAllowed = true;
-          break;
-        }
-      }
-    }
-    
-    // Verificar localhost
-    const isLocalhost = /localhost|127\.0\.0\.1|0\.0\.0\.0|192\.168\.|10\.|file:\/\//.test(host + referer + origin);
-    
-    res.json({
-      isInIframe,
-      referer,
-      origin,
-      host,
-      isAllowed,
-      allowedDomains,
-      blockLocalhost,
-      isLocalhost,
-      testingMode,
-      headers: {
-        'user-agent': req.get('User-Agent'),
-        'x-forwarded-for': req.get('X-Forwarded-For'),
-        'x-real-ip': req.get('X-Real-IP')
-      }
-    });
-  });
-
-  // Endpoint para simular diferentes escenarios de iframe
-  app.get("/api/test/simulate-iframe", async (req, res) => {
-    const testingMode = process.env.TESTING_MODE === 'true';
-    
-    if (!testingMode) {
-      return res.status(404).json({ error: "Test endpoint not available" });
-    }
-    
-    const { referrer, origin } = req.query;
-    const allowedDomains = process.env.ALLOWED_DOMAINS?.split(',').map(d => d.trim()) || [];
-    
-    // Simular validación con parámetros dados
-    let isAllowed = false;
-    if (allowedDomains.length > 0 && (referrer || origin)) {
-      for (const domain of allowedDomains) {
-        if (String(referrer).includes(domain) || String(origin).includes(domain)) {
-          isAllowed = true;
-          break;
-        }
-      }
-    }
-    
-    res.json({
-      simulation: true,
-      referrer: referrer || '',
-      origin: origin || '',
-      isAllowed,
-      allowedDomains,
-      wouldBlock: !isAllowed && (referrer || origin),
-      message: isAllowed ? 'Domain would be allowed' : 'Domain would be blocked'
-    });
-  });
-
-  // Serve test iframe page in testing mode
-  app.get("/test-iframe", (req, res) => {
-    const testingMode = process.env.TESTING_MODE === 'true';
-    
-    if (!testingMode) {
-      return res.status(404).json({ error: "Test page not available" });
-    }
-    
-    const fs = require('fs');
-    const path = require('path');
-    
-    try {
-      const testFile = fs.readFileSync(path.join(process.cwd(), 'test-iframe.html'), 'utf8');
-      res.setHeader('Content-Type', 'text/html');
-      res.send(testFile);
-    } catch (error) {
-      res.status(500).json({ error: "Test page not found" });
-    }
-  });
+  // Debug endpoints removed - iframe embedding allowed from any domain
 
   const httpServer = createServer(app);
   return httpServer;
