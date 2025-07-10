@@ -93,6 +93,7 @@ This is a comprehensive candidate management system for APLI, designed to handle
 
 ## Changelog
 
+- July 10, 2025. Fixed X-Frame-Options header issue - removed invalid 'ALLOWALL' value to enable proper iframe embedding from any domain
 - July 10, 2025. Removed all domain verification, IP rate limiting, and iframe blocking restrictions for universal iframe access
 - June 17, 2025. Initial setup
 

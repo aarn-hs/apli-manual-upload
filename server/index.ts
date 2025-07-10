@@ -14,7 +14,7 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   
   // Allow iframe embedding from any domain
-  res.setHeader('X-Frame-Options', 'ALLOWALL');
+  // Note: X-Frame-Options is intentionally omitted to allow all domains
   res.setHeader('Content-Security-Policy', 'frame-ancestors *');
   
   next();
