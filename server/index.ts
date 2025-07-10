@@ -71,9 +71,8 @@ app.use((req, res, next) => {
   }
   
   // Configurar headers de seguridad para producción
-  res.setHeader('X-Frame-Options', 'ALLOW-FROM *');
-  res.setHeader('Content-Security-Policy', `frame-ancestors 'self' ${allowedDomains.join(' ')}`);
-  
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('Content-Security-Policy', "frame-ancestors *");
   next();
 });
 
