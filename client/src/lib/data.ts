@@ -1,10 +1,16 @@
 // Source agencies
 export const agencySources = [
   { value: "agencia_bbn", label: "Agencia BBN" },
+  { value: "agencia_conexion-pacifico", label: "Agencia Conexión Pacifico" },
   { value: "agencia_cygnus", label: "Agencia Cygnus" },
+  { value: "agencia_gentex", label: "Agencia Gentex" },
   { value: "agencia_hq", label: "Agencia HQ" },
   { value: "agencia_peoplecare", label: "Agencia Peoplecare" },
+  { value: "agencia_power-bell", label: "Agencia Power Bell" },
+  { value: "agencia_perza", label: "Agencia Perza" },
+  { value: "agencia_sniperht", label: "Agencia Sniperht" },
   { value: "agencia_stoneway", label: "Agencia Stoneway" },
+  { value: "agencia_worken", label: "Agencia Worken" },
   { value: "candidato-analogo", label: "Candidato Análogo" },
   { value: "walk-ins", label: "Walk-In" }
 ];
