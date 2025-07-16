@@ -369,7 +369,7 @@ export default function Home() {
       <main className="w-full flex-grow">
         <div className="mb-6">
           <h1 className="title mb-2">Carga manual de candidato</h1>
-          <p className="subtitle text-dark-grey">Completa el formulario con los datos del candidato que deseas cargar. Todos los campos marcados con <span className="text-red">*</span> son obligatorios. Una vez completado, haz clic en "Enviar Candidato" para mandar la información.</p>
+          <p className="subtitle text-dark-grey">Llena el formulario con los datos del candidato que quieres registrar. Los campos marcados con <span className="text-red">*</span> son obligatorios. Cuando termines, haz clic en “Cargar candidato” para completar la postulación.</p>
         </div>
 
         <CandidateForm 
