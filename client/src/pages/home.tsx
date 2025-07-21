@@ -25,7 +25,8 @@ export default function Home() {
     return {
       name: urlParams.get('name') || 'Aarón',
       lastName: urlParams.get('lastName') || 'Hernández', 
-      email: urlParams.get('email') || 'aaron.hernandez@apli.jobs'
+      email: urlParams.get('email') || 'aaron.hernandez@apli.jobs',
+      token: urlParams.get('token') || ''
     };
   };
 
@@ -116,6 +117,7 @@ export default function Home() {
       "requesting_user_name": userParams.name,
       "requesting_user_lastname": userParams.lastName,
       "requesting_user_email": userParams.email,
+      "token": userParams.token,
       "Fuente": formData.source || "",
       "Puesto": formData.position || "",
       "Ubicación": formData.location || "",
