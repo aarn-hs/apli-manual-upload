@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { simplifiedCandidateSchema } from "@/lib/simplified-schema";
 import { agencySources, positions, locations, genders, mexicanStates, getMunicipalitiesForState, educationLevels, motivations, yesNoOptions, jobsLast24MonthsOptions } from "@/lib/data";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useToast } from "@/hooks/use-toast";
 
 interface SimpleFormProps {
   control: any;
@@ -17,6 +18,7 @@ interface SimpleFormProps {
 
 export default function SimpleForm({ control, watch, setValue }: SimpleFormProps) {
   const isMobile = useIsMobile();
+  const { toast } = useToast();
 
   // Watch para detectar cambios en fecha de nacimiento
   const birthDate = watch('birthDate');
@@ -122,7 +124,7 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
     return isMobile ? `order-[${order}]` : '';
   };
 
-  // Helper function for numeric/date fields key handling
+  // Helper function for numeric/date fields key handling (conservar para campos de fecha)
   const handleNumericKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     // Allow: backspace, delete, tab, escape, enter, arrow keys
     if ([8, 9, 27, 13, 46, 37, 38, 39, 40].indexOf(e.keyCode) !== -1 ||
@@ -139,22 +141,27 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
     }
   };
 
-  // Helper function for phone number paste handling
-  const handlePhonePaste = (fieldOnChange: any) => (e: React.ClipboardEvent<HTMLInputElement>) => {
-    console.log('handlePhonePaste triggered');
-    e.preventDefault();
-    const pastedText = e.clipboardData.getData('text');
-    console.log('Pasted text:', pastedText);
+  // Helper function for phone number input handling with validation
+  const handlePhoneInput = (fieldOnChange: any) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+    const hasNonNumeric = /\D/.test(inputValue);
     
-    // Extraer solo números del texto pegado
-    const numbersOnly = pastedText.replace(/\D/g, '');
-    console.log('Numbers only:', numbersOnly);
+    // Extraer solo números
+    const numbersOnly = inputValue.replace(/\D/g, '');
     
-    // Limitar a 10 dígitos máximo
+    // Limitar a 10 dígitos
     const limitedNumbers = numbersOnly.slice(0, 10);
-    console.log('Limited to 10 digits:', limitedNumbers);
     
-    // Usar el onChange del field para mantener la sincronización con react-hook-form
+    // Si había caracteres no numéricos, mostrar alerta
+    if (hasNonNumeric && inputValue.length > 0) {
+      toast({
+        title: "Solo se permiten números",
+        description: "El número de teléfono debe contener solo dígitos",
+        variant: "destructive",
+      });
+    }
+    
+    // Actualizar el campo solo con números
     fieldOnChange(limitedNumbers);
   };
 
@@ -382,8 +389,7 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
                   className={`form-control ${fieldState.error ? 'error' : ''}`}
                   tabIndex={getTabIndex(10)}
                   maxLength={10}
-                  onKeyDown={handleNumericKeyDown}
-                  onPaste={handlePhonePaste(field.onChange)}
+                  onChange={handlePhoneInput(field.onChange)}
                 />
               </FormControl>
               <FormMessage className="error-message" />
