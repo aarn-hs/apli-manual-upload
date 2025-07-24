@@ -379,7 +379,7 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
                   tabIndex={getTabIndex(10)}
                   maxLength={10}
                   onKeyDown={handleNumericKeyDown}
-                  onPaste={handlePhonePaste}
+                  onPaste={handlePhonePaste(field.onChange)}
                 />
               </FormControl>
               <FormMessage className="error-message" />
