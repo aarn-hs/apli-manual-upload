@@ -141,14 +141,18 @@ export default function SimpleForm({ control, watch, setValue }: SimpleFormProps
 
   // Helper function for phone number paste handling
   const handlePhonePaste = (fieldOnChange: any) => (e: React.ClipboardEvent<HTMLInputElement>) => {
+    console.log('handlePhonePaste triggered');
     e.preventDefault();
     const pastedText = e.clipboardData.getData('text');
+    console.log('Pasted text:', pastedText);
     
     // Extraer solo números del texto pegado
     const numbersOnly = pastedText.replace(/\D/g, '');
+    console.log('Numbers only:', numbersOnly);
     
     // Limitar a 10 dígitos máximo
     const limitedNumbers = numbersOnly.slice(0, 10);
+    console.log('Limited to 10 digits:', limitedNumbers);
     
     // Usar el onChange del field para mantener la sincronización con react-hook-form
     fieldOnChange(limitedNumbers);

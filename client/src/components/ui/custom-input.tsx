@@ -84,6 +84,12 @@ export const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
         props.onBlur(e);
       }
     };
+
+    const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+      if (props.onPaste) {
+        props.onPaste(e);
+      }
+    };
     
     return (
       <input
@@ -98,6 +104,7 @@ export const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         onBlur={handleBlur}
+        onPaste={handlePaste}
       />
     );
   }
