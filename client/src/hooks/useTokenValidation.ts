@@ -13,7 +13,7 @@ export function useTokenValidation(): UseTokenValidationResult {
   const [error, setError] = useState<string | undefined>();
 
   useEffect(() => {
-    const performValidation = () => {
+    const performValidation = async () => {
       try {
         // Extraer token de la URL
         const token = getTokenFromUrl();
@@ -25,8 +25,8 @@ export function useTokenValidation(): UseTokenValidationResult {
           return;
         }
 
-        // Validar el token
-        const validationResult = validateToken(token);
+        // Validar el token (función ahora es async)
+        const validationResult = await validateToken(token);
         
         setIsValid(validationResult.isValid);
         setError(validationResult.error);

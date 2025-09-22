@@ -1,4 +1,4 @@
-import { decodeJwt } from "jose";
+import { jwtVerify, createRemoteJWKSet } from "jose";
 
 interface TokenPayload {
   iss: string;
@@ -8,6 +8,7 @@ interface TokenPayload {
   email_verified: boolean;
   iat: number;
   exp: number;
+  sub: string; // Firebase ID token required field
 }
 
 interface ValidationResult {
@@ -15,63 +16,69 @@ interface ValidationResult {
   error?: string;
 }
 
-const EXPECTED_ISS = "https://securetoken.google.com/recruitment-azure-production";
-const EXPECTED_AUD = "recruitment-azure-production";
+// Obtener configuración de variables de entorno
+const EXPECTED_ISS = import.meta.env.VITE_FIREBASE_ISS || "https://securetoken.google.com/recruitment-azure-production";
+const EXPECTED_AUD = import.meta.env.VITE_FIREBASE_AUD || "recruitment-azure-production";
 
-export function validateToken(tokenString: string): ValidationResult {
+// JWKS endpoint for Firebase tokens
+const JWKS = createRemoteJWKSet(new URL('https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com'));
+
+export async function validateToken(tokenString: string): Promise<ValidationResult> {
   try {
     // Si no hay token, es inválido
     if (!tokenString || tokenString.trim() === '') {
+      console.error('Token validation: No token provided');
       return {
         isValid: false,
         error: "Token no proporcionado"
       };
     }
 
-    // Decodificar el JWT (sin validar firma)
-    let payload: TokenPayload;
+    // Verificar y validar JWT con firma usando JWKS
+    let result;
     try {
-      payload = decodeJwt(tokenString) as TokenPayload;
+      result = await jwtVerify(tokenString, JWKS, {
+        issuer: EXPECTED_ISS,
+        audience: EXPECTED_AUD,
+        clockTolerance: 60 // 60 segundos de tolerancia
+      });
     } catch (error) {
+      console.error('JWT verification failed:', error);
       return {
         isValid: false,
-        error: "Token malformado o inválido"
+        error: "Token inválido o firma no verificada"
       };
     }
 
+    const payload = result.payload as unknown as TokenPayload;
+
     // Verificar que todas las claves requeridas estén presentes
-    const requiredKeys = ['iss', 'aud', 'user_id', 'email', 'email_verified', 'iat', 'exp'];
+    const requiredKeys = ['iss', 'aud', 'user_id', 'email', 'email_verified', 'iat', 'exp', 'sub'];
     for (const key of requiredKeys) {
       if (!(key in payload)) {
+        console.error(`Missing required claim: ${key}`);
         return {
           isValid: false,
-          error: `Clave requerida '${key}' no encontrada en el token`
+          error: "Token incompleto"
         };
       }
     }
 
-    // Validar issuer
-    if (payload.iss !== EXPECTED_ISS) {
+    // Validar que email_verified sea true
+    if (payload.email_verified !== true) {
+      console.error('Email not verified');
       return {
         isValid: false,
-        error: `Issuer inválido. Esperado: ${EXPECTED_ISS}, Recibido: ${payload.iss}`
+        error: "Email no verificado"
       };
     }
 
-    // Validar audience
-    if (payload.aud !== EXPECTED_AUD) {
+    // Validar que sub === user_id (requerimiento Firebase)
+    if (payload.sub !== payload.user_id) {
+      console.error('Subject mismatch: sub !== user_id');
       return {
         isValid: false,
-        error: `Audience inválido. Esperado: ${EXPECTED_AUD}, Recibido: ${payload.aud}`
-      };
-    }
-
-    // Validar expiración
-    const currentTime = Math.floor(Date.now() / 1000); // Tiempo actual en segundos
-    if (payload.exp <= currentTime) {
-      return {
-        isValid: false,
-        error: "Token expirado"
+        error: "Token inválido"
       };
     }
 
@@ -81,9 +88,10 @@ export function validateToken(tokenString: string): ValidationResult {
     };
 
   } catch (error) {
+    console.error('Unexpected token validation error:', error);
     return {
       isValid: false,
-      error: `Error inesperado al validar el token: ${error}`
+      error: "Error de validación"
     };
   }
 }
