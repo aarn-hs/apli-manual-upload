@@ -5,6 +5,7 @@ import { useTokenValidation } from "@/hooks/useTokenValidation";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import UnauthorizedScreen from "@/components/UnauthorizedScreen";
+import LoadingScreen from "@/components/LoadingScreen";
 
 function Router() {
   return (
@@ -18,15 +19,18 @@ function Router() {
 function AuthGuard({ children }: { children: React.ReactNode }) {
   const { isValid, loading, error } = useTokenValidation();
 
+  // CRÍTICO: Mostrar pantalla de carga completa durante validación
+  // No renderizar contenido hasta que la validación esté completamente terminada
   if (loading) {
-    // Mantener comportamiento actual - el componente Home ya tiene su propia pantalla de carga
-    return <>{children}</>;
+    return <LoadingScreen />;
   }
 
+  // Solo mostrar contenido no autorizado cuando validación está completa
   if (!isValid) {
     return <UnauthorizedScreen error={error} />;
   }
 
+  // Solo renderizar contenido de la app cuando token es completamente válido
   return <>{children}</>;
 }
 
