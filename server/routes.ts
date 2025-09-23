@@ -209,9 +209,20 @@ class APIKeyManager {
   }
 
   getStats() {
+    // Sanitize usage data to never expose actual API keys
+    const sanitizedUsage: Record<string, { count: number; lastUsed: number }> = {};
+    
+    let keyIndex = 1;
+    this.keyUsage.forEach((usage, apiKey) => {
+      // Use a hash or safe identifier instead of the actual API key
+      const safeKeyId = `key_${keyIndex}`;
+      sanitizedUsage[safeKeyId] = usage;
+      keyIndex++;
+    });
+
     return {
       totalKeys: this.validKeys.size,
-      usage: Object.fromEntries(this.keyUsage)
+      usage: sanitizedUsage
     };
   }
 
