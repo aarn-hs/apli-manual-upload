@@ -348,9 +348,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         polling: `${process.env.RATE_LIMIT_POLLING_PER_MIN || '50'} requests/min`
       },
       concurrency: {
-        maxConcurrent: parseInt(process.env.MAX_CONCURRENT_N8N_REQUESTS || '7'),
+        maxConcurrent: parseInt(process.env.MAX_CONCURRENT_WEBHOOKS || '7'),
         maxQueueSize: parseInt(process.env.MAX_QUEUE_SIZE || '50'),
-        timeout: `${parseInt(process.env.WEBHOOK_TIMEOUT_MS || '180000')}ms`
+        timeout: `${parseInt(process.env.WEBHOOK_TIMEOUT_MINUTES || '3')} minutes`
       }
     });
   });
