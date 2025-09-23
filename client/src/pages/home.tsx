@@ -345,13 +345,13 @@ export default function Home() {
       // En caso de runtime error, ocultar progress modal sin mostrar 100%
       setProgressState({ isVisible: false, progress: 0 });
       
-      let errorMessage = "No se pudo iniciar el proceso de carga. Por favor intenta nuevamente.";
+      let errorMessage = "No se pudo iniciar el proceso de carga. Por favor intenta nuevamente después de unos minutos.";
       
       if (error instanceof Error) {
         if (error.message.includes('Failed to fetch')) {
           errorMessage = "No se pudo conectar con el servidor. Verifica tu conexión a internet.";
         } else if (error.message.includes('Error del servidor')) {
-          errorMessage = "Error del servidor. Por favor intenta nuevamente.";
+          errorMessage = "Error del servidor. Por favor intenta nuevamente después de unos minutos.";
         }
       }
       
