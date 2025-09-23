@@ -1,16 +1,176 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { insertCandidateSchema } from "@shared/schema";
+import rateLimit from "express-rate-limit";
 
 // Almacenamiento temporal en memoria para resultados pendientes
 const pendingResults = new Map<string, {
-  status: 'processing' | 'completed' | 'error';
+  status: 'queued' | 'processing' | 'completed' | 'error';
   result?: any;
   timestamp: number;
 }>();
 
-// Sistema de rate limiting con cola de espera
-// Removed request queue and IP rate limiting for open access
+// Sistema de concurrencia y rate limiting
+interface SlotInfo {
+  id: string;
+  startTime: number;
+  timeout: NodeJS.Timeout;
+}
+
+class ConcurrencyManager {
+  private concurrent = new Map<string, SlotInfo>();
+  private queue: string[] = [];
+  private readonly maxConcurrent: number;
+  private readonly maxQueueSize: number;
+  private readonly timeoutMinutes: number;
+
+  constructor() {
+    this.maxConcurrent = parseInt(process.env.MAX_CONCURRENT_WEBHOOKS || '7');
+    this.maxQueueSize = parseInt(process.env.MAX_QUEUE_SIZE || '50');
+    this.timeoutMinutes = parseInt(process.env.WEBHOOK_TIMEOUT_MINUTES || '3');
+    console.log(`🔄 ConcurrencyManager initialized: ${this.maxConcurrent} concurrent, ${this.maxQueueSize} queue size`);
+  }
+
+  canProcess(): boolean {
+    return this.concurrent.size < this.maxConcurrent;
+  }
+
+  addToQueue(id: string): boolean {
+    if (this.queue.length >= this.maxQueueSize) {
+      return false; // Queue lleno
+    }
+    this.queue.push(id);
+    console.log(`📤 Added to queue: ${id} (queue size: ${this.queue.length})`);
+    return true;
+  }
+
+  addToConcurrent(id: string): void {
+    const timeout = setTimeout(() => {
+      console.warn(`⏰ Timeout reached for ${id}, releasing slot`);
+      this.onTimeout(id);
+    }, this.timeoutMinutes * 60 * 1000);
+
+    this.concurrent.set(id, {
+      id,
+      startTime: Date.now(),
+      timeout
+    });
+    
+    console.log(`🚀 Started processing: ${id} (${this.concurrent.size}/${this.maxConcurrent} slots used)`);
+  }
+
+  onWebhookResponse(id: string): void {
+    const slot = this.concurrent.get(id);
+    if (slot) {
+      clearTimeout(slot.timeout);
+      this.concurrent.delete(id);
+      console.log(`✅ Webhook response for ${id}, slot released (${this.concurrent.size}/${this.maxConcurrent} slots used)`);
+      this.processNext();
+    }
+  }
+
+  onTimeout(id: string): void {
+    const slot = this.concurrent.get(id);
+    if (slot) {
+      clearTimeout(slot.timeout);
+      this.concurrent.delete(id);
+      
+      // Marcar como error por timeout
+      pendingResults.set(id, {
+        status: 'error',
+        result: { error: 'El proceso tardó más de 3 minutos' },
+        timestamp: Date.now()
+      });
+      
+      console.log(`⏰ Timeout for ${id}, marked as error and slot released`);
+      this.processNext();
+    }
+  }
+
+  processNext(): void {
+    if (this.queue.length > 0 && this.canProcess()) {
+      const nextId = this.queue.shift()!;
+      console.log(`📋 Processing next from queue: ${nextId} (queue size: ${this.queue.length})`);
+      
+      // Cambiar estado de queued a processing
+      const pending = pendingResults.get(nextId);
+      if (pending) {
+        pendingResults.set(nextId, {
+          ...pending,
+          status: 'processing'
+        });
+      }
+      
+      // Agregar a concurrent y enviar webhook
+      this.addToConcurrent(nextId);
+      this.sendWebhookRequest(nextId);
+    }
+  }
+
+  private async sendWebhookRequest(candidateSubmissionId: string): Promise<void> {
+    try {
+      const pending = pendingResults.get(candidateSubmissionId);
+      if (!pending || !pending.result?.webhookData) {
+        console.error(`No webhook data found for ${candidateSubmissionId}`);
+        return;
+      }
+
+      const webhookUrl = process.env.N8N_WEBHOOK_URL;
+      const authToken = process.env.VITE_WEBHOOK_AUTH_TOKEN;
+      
+      if (!webhookUrl) {
+        throw new Error('N8N_WEBHOOK_URL no configurada');
+      }
+      
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json'
+      };
+      
+      if (authToken) {
+        headers['Authorization'] = `Bearer ${authToken}`;
+      }
+      
+      console.log(`🌐 Sending webhook for ${candidateSubmissionId} to ${webhookUrl}`);
+      
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(pending.result.webhookData)
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Webhook failed: ${response.status} ${response.statusText}`);
+      }
+      
+      console.log(`✅ Webhook sent successfully for ${candidateSubmissionId}`);
+      
+    } catch (error) {
+      console.error(`❌ Error sending webhook for ${candidateSubmissionId}:`, error);
+      
+      // Marcar como error y liberar slot
+      pendingResults.set(candidateSubmissionId, {
+        status: 'error',
+        result: { error: 'Error al conectar con el servicio de procesamiento' },
+        timestamp: Date.now()
+      });
+      
+      this.onWebhookResponse(candidateSubmissionId); // Liberar slot
+    }
+  }
+
+  getStats() {
+    return {
+      concurrent: this.concurrent.size,
+      maxConcurrent: this.maxConcurrent,
+      queueSize: this.queue.length,
+      maxQueueSize: this.maxQueueSize,
+      concurrentIds: Array.from(this.concurrent.keys()),
+      queuedIds: [...this.queue]
+    };
+  }
+}
+
+const concurrencyManager = new ConcurrencyManager();
 
 // Sistema de autenticación por API Keys (solo lectura desde env)
 class APIKeyManager {
