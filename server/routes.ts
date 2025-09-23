@@ -107,7 +107,7 @@ class ConcurrencyManager {
     }
   }
 
-  private async sendWebhookRequest(candidateSubmissionId: string): Promise<void> {
+  async sendWebhookRequest(candidateSubmissionId: string): Promise<void> {
     try {
       const pending = pendingResults.get(candidateSubmissionId);
       if (!pending || !pending.result?.webhookData) {
@@ -268,7 +268,28 @@ function apiKeyMiddleware(req: any, res: any, next: any) {
   next();
 }
 
-// Rate limiting middleware removed for open access
+// Rate limiting middlewares
+const webhookRateLimit = rateLimit({
+  windowMs: 60 * 1000, // 1 minuto
+  max: parseInt(process.env.RATE_LIMIT_WEBHOOK_PER_MIN || '3'),
+  message: {
+    error: 'Rate limit exceeded',
+    message: 'Has enviado muchas solicitudes, espera un momento'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const pollingRateLimit = rateLimit({
+  windowMs: 60 * 1000, // 1 minuto  
+  max: parseInt(process.env.RATE_LIMIT_POLLING_PER_MIN || '50'),
+  message: {
+    error: 'Rate limit exceeded',
+    message: 'Demasiadas consultas de estado, espera un momento'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Simplified iframe status endpoint - always allows access
@@ -351,14 +372,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         timestamp: Date.now()
       });
 
+      // CRÍTICO: Liberar slot y procesar siguiente del queue
+      concurrencyManager.onWebhookResponse(candidate_submission_id);
+
       res.json({ success: true, message: "Resultado recibido" });
     } catch (error) {
+      console.error('Error in webhook-result endpoint:', error);
       res.status(500).json({ error: "Error interno del servidor" });
     }
   });
 
   // Endpoint para verificar el estado de un procesamiento (polling)
-  app.get("/api/check-status/:candidate_submission_id", apiKeyMiddleware, async (req, res) => {
+  app.get("/api/check-status/:candidate_submission_id", pollingRateLimit, apiKeyMiddleware, async (req, res) => {
     try {
       const { candidate_submission_id } = req.params;
       const result = pendingResults.get(candidate_submission_id);
@@ -492,7 +517,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Proxy endpoint para el webhook de n8n (asíncrono)
-  app.post("/api/webhook", apiKeyMiddleware, async (req, res) => {
+  app.post("/api/webhook", webhookRateLimit, apiKeyMiddleware, async (req, res) => {
     try {
       const webhookUrl = process.env.N8N_WEBHOOK_URL;
       const authToken = process.env.VITE_WEBHOOK_AUTH_TOKEN;
@@ -512,19 +537,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Generar ID único para este candidato
       const candidate_submission_id = `CSI-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       
-      // Registrar procesamiento como "en curso"
-      pendingResults.set(candidate_submission_id, {
-        status: 'processing',
-        timestamp: Date.now()
-      });
-
-      // Responder inmediatamente al frontend
-      res.json({
-        candidate_submission_id,
-        status: 'processing',
-        message: 'Solicitud recibida, procesando en segundo plano'
-      });
-
       // Preparar datos para n8n
       const protocol = process.env.NODE_ENV === 'production' ? 'https' : req.protocol;
       const dataForN8n = {
@@ -533,26 +545,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
         callback_url: `${protocol}://${req.get('host')}/api/webhook-result`
       };
 
-      // Enviar a n8n directamente
-      fetch(webhookUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`,
-        },
-        body: JSON.stringify(dataForN8n)
-      }).catch((error) => {
+      // Verificar si se puede procesar inmediatamente o debe ir al queue
+      if (concurrencyManager.canProcess()) {
+        // Procesar inmediatamente
         pendingResults.set(candidate_submission_id, {
-          status: 'error',
-          result: { 
-            error: 'Error de conexión con el servicio externo',
-            details: error.message
-          },
+          status: 'processing',
+          result: { webhookData: dataForN8n },
           timestamp: Date.now()
         });
-      });
+
+        concurrencyManager.addToConcurrent(candidate_submission_id);
+        
+        // Responder al frontend
+        res.json({
+          candidate_submission_id,
+          status: 'processing',
+          message: 'Solicitud recibida, procesando'
+        });
+
+        // Procesar inmediatamente sin bloquear la respuesta
+        setTimeout(() => {
+          concurrencyManager.sendWebhookRequest(candidate_submission_id);
+        }, 100);
+
+      } else {
+        // Agregar al queue
+        const queueSuccess = concurrencyManager.addToQueue(candidate_submission_id);
+        
+        if (!queueSuccess) {
+          return res.status(429).json({
+            error: 'Queue full',
+            message: 'Muchas solicitudes en proceso, intenta en 1 minuto'
+          });
+        }
+
+        // Registrar en queue
+        pendingResults.set(candidate_submission_id, {
+          status: 'queued',
+          result: { webhookData: dataForN8n },
+          timestamp: Date.now()
+        });
+
+        // Responder al frontend
+        res.json({
+          candidate_submission_id,
+          status: 'queued',
+          message: 'Solicitud recibida, en cola de procesamiento'
+        });
+      }
 
     } catch (error) {
+      console.error('Error in webhook endpoint:', error);
       res.status(500).json({
         error: 'Error interno del servidor',
         details: error instanceof Error ? error.message : 'Error desconocido'
