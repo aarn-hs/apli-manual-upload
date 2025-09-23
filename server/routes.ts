@@ -324,14 +324,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       endpoints: [
         "POST /api/candidates (Auth Required)",
         "POST /api/webhook-result", 
-        "GET /api/check-status/:candidate_submission_id (Auth Required, No Rate Limit)",
+        "GET /api/check-status/:candidate_submission_id (Auth + Polling Rate Limit)",
         "POST /api/liquidate (Auth Required)",
-        "POST /api/webhook (Auth Required)",
+        "POST /api/webhook (Auth + Webhook Rate Limit + Concurrency Queue)",
         "GET /api/admin/active-processings",
         "GET /api/admin/queue-status",
         "GET /api/admin/api-keys/stats",
         "POST /api/admin/api-keys/reload"
-      ]
+      ],
+      rateLimiting: {
+        webhook: `${process.env.RATE_LIMIT_WEBHOOK_PER_MIN || '3'} requests/min`,
+        polling: `${process.env.RATE_LIMIT_POLLING_PER_MIN || '50'} requests/min`
+      },
+      concurrency: {
+        maxConcurrent: parseInt(process.env.MAX_CONCURRENT_N8N_REQUESTS || '7'),
+        maxQueueSize: parseInt(process.env.MAX_QUEUE_SIZE || '50'),
+        timeout: `${parseInt(process.env.WEBHOOK_TIMEOUT_MS || '180000')}ms`
+      }
     });
   });
 
@@ -459,9 +468,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/admin/queue-status", async (req, res) => {
     try {
       const apiKeyStats = apiKeyManager.getStats();
+      const concurrencyStats = concurrencyManager.getStats();
+      
       res.json({
-        queue: { message: "Queue system removed for open access" },
-        rateLimit: { message: "Rate limiting removed for open access" },
+        concurrency: {
+          currentConcurrent: concurrencyStats.concurrent,
+          maxConcurrent: concurrencyStats.maxConcurrent,
+          queueSize: concurrencyStats.queueSize,
+          maxQueueSize: concurrencyStats.maxQueueSize,
+          concurrentIds: concurrencyStats.concurrentIds,
+          queuedIds: concurrencyStats.queuedIds
+        },
+        rateLimit: {
+          webhookLimit: parseInt(process.env.RATE_LIMIT_WEBHOOK_PER_MIN || '3'),
+          pollingLimit: parseInt(process.env.RATE_LIMIT_POLLING_PER_MIN || '50'),
+          status: "active"
+        },
         apiKeys: apiKeyStats,
         timestamp: new Date().toISOString()
       });
