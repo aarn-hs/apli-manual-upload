@@ -6,6 +6,8 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+app.set('trust proxy', 1);
+
 // Basic CORS headers allowing iframe embedding from any domain
 app.use((req, res, next) => {
   // Permissive CORS headers
